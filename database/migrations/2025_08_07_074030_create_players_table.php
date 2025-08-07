@@ -12,14 +12,14 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('players', function (Blueprint $table) {
-    $table->id();
-    $table->foreignId('event_registration_id')->constrained()->onDelete('cascade');
-    $table->string('student_id');
-    $table->string('name');
-    $table->string('image_path')->nullable();
-    $table->timestamps();
-});
-
+            $table->id();
+            $table->foreignId('event_registration_id')->constrained()->onDelete('cascade');
+            $table->string('student_id');
+            $table->string('name');
+            $table->string('department'); // ✅ Add department field
+            $table->string('image_path')->nullable();
+            $table->timestamps();
+        });
     }
 
     /**

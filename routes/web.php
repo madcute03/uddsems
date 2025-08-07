@@ -54,9 +54,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::delete('/events/{id}', [EventController::class, 'destroy'])->name('events.destroy');
     Route::post('/events/{id}/done', [EventController::class, 'markDone'])->name('events.markDone');
 
-    // Admin: View who registered for an event
-    Route::get('/events/{event}/registrations', [EventRegistrationController::class, 'show'])->name('events.registrations');
-
+   
     // User profile
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');

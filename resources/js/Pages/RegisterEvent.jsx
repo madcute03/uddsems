@@ -1,4 +1,4 @@
-import { useForm, usePage } from '@inertiajs/react';
+import { useForm, usePage, Link } from '@inertiajs/react';
 import { useEffect, useState } from 'react';
 
 export default function RegisterEvent({ event }) {
@@ -6,7 +6,6 @@ export default function RegisterEvent({ event }) {
   const [showMessage, setShowMessage] = useState(true);
 
   const { data, setData, post, errors, reset } = useForm({
-    department: '',
     players: [],
   });
 
@@ -16,6 +15,7 @@ export default function RegisterEvent({ event }) {
     const initialPlayers = Array.from({ length: requiredPlayers }, () => ({
       studentId: '',
       name: '',
+      department: '',
       image: null,
     }));
     setData('players', initialPlayers);
@@ -41,11 +41,11 @@ export default function RegisterEvent({ event }) {
     e.preventDefault();
 
     const formData = new FormData();
-    formData.append('department', data.department || '');
 
     data.players.forEach((player, index) => {
       formData.append(`players[${index}][studentId]`, player.studentId || '');
       formData.append(`players[${index}][name]`, player.name || '');
+      formData.append(`players[${index}][department]`, player.department || '');
       if (player.image) {
         formData.append(`players[${index}][image]`, player.image);
       }
@@ -64,7 +64,7 @@ export default function RegisterEvent({ event }) {
       <div className="max-w-3xl mx-auto bg-white p-6 rounded shadow">
         <h1 className="text-2xl font-bold mb-4">Register for: {event.title}</h1>
 
-        {/* Safe Flash Messages */}
+        {/* Flash Messages */}
         {showMessage && flash?.success && (
           <div className="mb-4 p-4 bg-green-100 text-green-800 rounded shadow transition-opacity duration-500">
             ✅ {flash.success}
@@ -78,21 +78,11 @@ export default function RegisterEvent({ event }) {
 
         {/* Registration Form */}
         <form onSubmit={handleSubmit} encType="multipart/form-data">
-          <div className="mb-4">
-            <label className="block font-semibold mb-1">Department</label>
-            <input
-              type="text"
-              className="w-full border px-3 py-2 rounded"
-              value={data.department}
-              onChange={(e) => setData('department', e.target.value)}
-            />
-            {errors.department && <div className="text-red-500 text-sm mt-1">{errors.department}</div>}
-          </div>
-
           {data.players.map((player, idx) => (
             <div key={idx} className="mb-6 border p-4 rounded bg-gray-50">
               <h2 className="font-semibold mb-2">Player {idx + 1}</h2>
 
+              {/* Student ID */}
               <label className="block mb-1">Student ID</label>
               <input
                 type="text"
@@ -104,6 +94,7 @@ export default function RegisterEvent({ event }) {
                 <div className="text-red-500 text-sm mb-1">{errors[`players.${idx}.studentId`]}</div>
               )}
 
+              {/* Name */}
               <label className="block mb-1">Name</label>
               <input
                 type="text"
@@ -115,6 +106,19 @@ export default function RegisterEvent({ event }) {
                 <div className="text-red-500 text-sm mb-1">{errors[`players.${idx}.name`]}</div>
               )}
 
+              {/* Department */}
+              <label className="block mb-1">Department</label>
+              <input
+                type="text"
+                className="w-full border px-3 py-2 rounded mb-2"
+                value={player.department}
+                onChange={(e) => handlePlayerChange(idx, 'department', e.target.value)}
+              />
+              {errors[`players.${idx}.department`] && (
+                <div className="text-red-500 text-sm mb-1">{errors[`players.${idx}.department`]}</div>
+              )}
+
+              {/* Image Upload */}
               <label className="block mb-1">Image (optional)</label>
               <input
                 type="file"
@@ -133,7 +137,12 @@ export default function RegisterEvent({ event }) {
           >
             Submit Registration
           </button>
+          
         </form>
+        <Link href={route('home')} className="mt-6 block text-blue-600 hover:underline">
+                        ← Back to Events
+                    </Link>
+        
       </div>
     </div>
   );
