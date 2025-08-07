@@ -71,14 +71,7 @@ export default function Dashboard({ auth, events = [] }) {
         }
     };
 
-    const handleMarkDone = (id) => {
-        fetch(`/events/${id}/done`, {
-            method: 'POST',
-            headers: {
-                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-            },
-        }).then(() => window.location.reload());
-    };
+    
 
     return (
         <AuthenticatedLayout user={auth.user}>
@@ -135,12 +128,7 @@ export default function Dashboard({ auth, events = [] }) {
 
                         {events.map(event => (
                             <div key={event.id} className="border-b py-4">
-                                <Link
-                                    href={route('events.registrations', event.id)}
-                                    className="text-blue-500 underline"
-                                >
-                                    View Registered Players
-                                </Link>
+                                
 
                                 <p className="text-sm text-gray-500">Required Players: {event.required_players}</p>
 
@@ -180,9 +168,7 @@ export default function Dashboard({ auth, events = [] }) {
                                             {event.is_done && <p className="text-green-600 font-bold">✓ Done</p>}
                                         </div>
                                         <div className="space-x-2">
-                                            {!event.is_done && (
-                                                <button onClick={() => handleMarkDone(event.id)} className="bg-green-500 text-white px-3 py-1 rounded">Mark Done</button>
-                                            )}
+                                            
                                             <button onClick={() => startEdit(event)} className="bg-yellow-500 text-white px-3 py-1 rounded">Edit</button>
                                             <button onClick={() => handleDelete(event.id)} className="bg-red-500 text-white px-3 py-1 rounded">Delete</button>
                                         </div>

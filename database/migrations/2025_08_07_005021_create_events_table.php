@@ -19,7 +19,6 @@ return new class extends Migration
             $table->string('image_path')->nullable();
             $table->date('event_date');
             $table->unsignedTinyInteger('required_players')->nullable(); // ✅ Added this line
-            $table->boolean('is_done')->default(false);
             $table->timestamps();
         });
     }
