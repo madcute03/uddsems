@@ -9,7 +9,7 @@ return new class extends Migration {
     {
         Schema::create('registrations', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->string('team_name')->nullable(); // Nullable for solo participants
             $table->foreignId('event_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });
