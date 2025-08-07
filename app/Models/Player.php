@@ -6,10 +6,15 @@ use Illuminate\Database\Eloquent\Model;
 
 class Player extends Model
 {
-    //
-    public function registration()
-{
-    return $this->belongsTo(Registration::class);
-}
+    protected $fillable = [
+    'event_registration_id',
+    'student_id',
+    'name',
+    'image_path',
+];
 
+    public function registration()
+    {
+        return $this->belongsTo(EventRegistration::class);
+    }
 }

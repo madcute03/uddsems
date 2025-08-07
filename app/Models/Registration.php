@@ -2,21 +2,21 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Registration extends Model
 {
-    protected $fillable = ['event_id', 'department'];
+    use HasFactory;
 
-    public function players()
+    protected $fillable = ['user_id', 'event_id'];
+
+    public function user()
     {
-            return $this->hasMany(Player::class);
-
-        return $this->hasMany(RegistrationPlayer::class);
+        return $this->belongsTo(User::class);
     }
 
     public function event()
     {
         return $this->belongsTo(Event::class);
     }
-    
 }

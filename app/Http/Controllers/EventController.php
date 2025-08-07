@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Event;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use App\Models\Registration;
+
 
 class EventController extends Controller
 {
@@ -86,4 +88,17 @@ class EventController extends Controller
 
         return back()->with('success', 'Event marked as done.');
     }
+
+    //new delte pag mali
+
+public function registrations(Event $event)
+{
+    $registrations = $event->registrations()->with('players')->get();
+
+    return Inertia::render('Events/ViewRegistrations', [
+        'event' => $event,
+        'registrations' => $registrations,
+    ]);
+}
+
 }

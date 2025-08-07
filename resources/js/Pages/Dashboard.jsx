@@ -76,10 +76,13 @@ export default function Dashboard({ auth, events = [] }) {
     return (
         <AuthenticatedLayout user={auth.user}>
             <Head title="Dashboard" />
+          
+
             <div className="py-12">
                 <div className="mx-auto max-w-7xl sm:px-6 lg:px-8 space-y-6">
 
                     {/* Create Event Form */}
+                    
                     <div className="bg-white p-6 rounded shadow">
                         <h2 className="text-lg font-semibold mb-4">Create Event</h2>
                         <form onSubmit={handleSubmit} encType="multipart/form-data">
@@ -125,6 +128,7 @@ export default function Dashboard({ auth, events = [] }) {
                     <div className="bg-white p-6 rounded shadow">
                         <h2 className="text-lg font-semibold mb-4">Events</h2>
                         {events.length === 0 && <p>No events created.</p>}
+                        
 
                         {events.map(event => (
                             <div key={event.id} className="border-b py-4">
