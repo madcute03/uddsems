@@ -30,7 +30,7 @@ class EventRegistrationController extends Controller
             // ✅ Save team registration with team name (nullable)
             $registration = EventRegistration::create([
                 'event_id' => $event->id,
-                'team_name' => $request->teamName,
+        'team_name' => $request->input('teamName'), // ← DITO DAPAT
             ]);
 
             // ✅ Save each player to this registration
@@ -78,7 +78,7 @@ class EventRegistrationController extends Controller
     }
     public function index()
 {
-    $registrations = EventRegistration::with(['event', 'players'])->get();
+    $registrations = EventRegistration::with(['event', 'players', 'team'])->get();
 
     return Inertia::render('Registrations/Index', [
         'registrations' => $registrations,

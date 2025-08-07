@@ -15,6 +15,8 @@ class EventRegistration extends Model
         'name',
         'image_path',
         'is_leader',
+            'team_name', // ✅ this must be here
+
     ];
 
     /**
@@ -32,4 +34,9 @@ class EventRegistration extends Model
     {
     return $this->hasMany(Player::class, 'event_registration_id');
     }
+    public function team()
+{
+    return $this->belongsTo(Team::class);
+}
+
 }
