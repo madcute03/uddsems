@@ -11,9 +11,10 @@ use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\EventRegistrationController;
 use App\Models\Event;
 
-
-Route::get('/registrations', [EventRegistrationController::class, 'index'])
-    ->name('registrations.index');
+// ✅ PDF download route
+Route::get('/registrations', [EventRegistrationController::class, 'index'])->name('registrations.index');
+Route::post('/registrations', [EventRegistrationController::class, 'store'])->name('registrations.store');
+Route::get('/players/{id}/download-pdf', [EventRegistrationController::class, 'downloadPDF'])->name('players.downloadPDF');
 
 
 /*

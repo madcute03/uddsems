@@ -18,6 +18,7 @@ class Event extends Model
         'image_path', // only if you're saving image path!
         'is_done',
         'required_players',     // only if you're updating this
+        'pdf_path',
     ];
     public function registrations()
 {

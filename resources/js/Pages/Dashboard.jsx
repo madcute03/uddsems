@@ -103,11 +103,11 @@ export default function Dashboard({ auth, events = [] }) {
                                 <input type="date" className="w-full border" value={data.event_date} onChange={e => setData('event_date', e.target.value)} />
                             </div>
                             <div className="mb-2">
-                                <label>Image</label>
+                                <label>Image of the event</label>
                                 <input type="file" className="w-full border" onChange={e => setData('image', e.target.files[0])} />
                             </div>
                             <div className="mb-2">
-                                <label>Require Player for this Event</label>
+                                <label>Required Player for this Event</label>
                                 <select
                                     className="w-full border"
                                     value={data.required_players}

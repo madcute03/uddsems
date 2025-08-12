@@ -5,8 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\Event;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
-use App\Models\Registration;
-
 
 class EventController extends Controller
 {
@@ -89,16 +87,16 @@ class EventController extends Controller
         return back()->with('success', 'Event marked as done.');
     }
 
-    //new delte pag mali
+    // ADMIN: View event registrations with players (includes PDF paths)
+    public function registrations(Event $event)
+    {
+        $registrations = $event->registrations()
+            ->with('players') // Players now have image_path and pdf_path
+            ->get();
 
-public function registrations(Event $event)
-{
-    $registrations = $event->registrations()->with('players')->get();
-
-    return Inertia::render('Events/ViewRegistrations', [
-        'event' => $event,
-        'registrations' => $registrations,
-    ]);
-}
-
+        return Inertia::render('Events/ViewRegistrations', [
+            'event' => $event,
+            'registrations' => $registrations,
+        ]);
+    }
 }

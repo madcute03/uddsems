@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class RegistrationPlayer extends Model
 {
-    protected $fillable = ['registration_id', 'student_id', 'name', 'image_path'];
+    protected $fillable = ['registration_id', 'student_id', 'name', 'image_path','pdf_path'];
 
     public function registration()
     {

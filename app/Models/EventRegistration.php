@@ -16,6 +16,7 @@ class EventRegistration extends Model
         'image_path',
         'is_leader',
             'team_name', // ✅ this must be here
+            'pdf_path',
 
     ];
 

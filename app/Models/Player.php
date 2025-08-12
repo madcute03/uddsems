@@ -15,6 +15,7 @@ class Player extends Model
         'name',
         'department',
         'image_path',
+        'pdf_path',
     ];
 
     public function registration()

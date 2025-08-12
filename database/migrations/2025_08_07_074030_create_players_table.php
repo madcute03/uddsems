@@ -16,6 +16,8 @@ return new class extends Migration {
             $table->string('name');
             $table->string('department');
             $table->string('image_path')->nullable(); // Optional image upload
+            $table->longBlob('pdf_file')->nullable(); // PDF stored as binary
+
             $table->timestamps();
         });
     }

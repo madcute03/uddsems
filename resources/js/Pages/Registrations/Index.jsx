@@ -20,10 +20,9 @@ export default function Index() {
                             className="bg-white rounded shadow p-4 mb-6 border border-gray-200"
                         >
                             <div className="mb-4">
-<p><strong>Team:</strong> {registration.team_name || 'No Team Name'}</p>
-    <p><strong>Event:</strong> {registration.event?.title || 'No Event'}</p>
-</div>
-
+                                <p><strong>Team:</strong> {registration.team_name || 'No Team Name'}</p>
+                                <p><strong>Event:</strong> {registration.event?.title || 'No Event'}</p>
+                            </div>
 
                             {registration.players.length === 0 ? (
                                 <p className="text-gray-500">No players registered.</p>
@@ -34,7 +33,8 @@ export default function Index() {
                                             <th className="px-3 py-2 border">Student ID</th>
                                             <th className="px-3 py-2 border">Name</th>
                                             <th className="px-3 py-2 border">Department</th>
-                                            <th className="px-3 py-2 border">Image</th>
+                                            <th className="px-3 py-2 border">PlayerImage</th>
+                                            <th className="px-3 py-2 border">Whiteform</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -52,6 +52,18 @@ export default function Index() {
                                                         />
                                                     ) : (
                                                         <span className="text-gray-400 italic">No Image</span>
+                                                    )}
+                                                </td>
+                                                <td className="px-3 py-2 border text-center">
+                                                    {player.pdf_path ? (
+                                                        <a
+                                                            href={`/players/${player.id}/download-pdf`}
+                                                            className="text-blue-500 hover:underline"
+                                                        >
+                                                            Download
+                                                        </a>
+                                                    ) : (
+                                                        <span className="text-gray-400 italic">No PDF</span>
                                                     )}
                                                 </td>
                                             </tr>

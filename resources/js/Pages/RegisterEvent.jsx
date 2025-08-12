@@ -1,4 +1,3 @@
-// 📦 Your updated RegisterEvent.jsx
 import { useForm, usePage, Link } from '@inertiajs/react';
 import { useEffect, useState } from 'react';
 
@@ -18,6 +17,7 @@ export default function RegisterEvent({ event }) {
       name: '',
       department: '',
       image: null,
+      pdf: null,
     }));
     setData('players', initialPlayers);
   }, [event.required_players]);
@@ -48,6 +48,9 @@ export default function RegisterEvent({ event }) {
       if (player.image) {
         formData.append(`players[${index}][image]`, player.image);
       }
+      if (player.pdf) {
+        formData.append(`players[${index}][pdf]`, player.pdf);
+      }
     });
 
     post(route('events.register', event.id), {
@@ -61,7 +64,7 @@ export default function RegisterEvent({ event }) {
   return (
     <div className="min-h-screen bg-gray-100 py-10 px-4">
       <div className="max-w-3xl mx-auto bg-white p-6 rounded shadow">
-        <h1 className="text-2xl font-bold mb-4">Register for: {event.title}</h1>
+        <h1 className="text-2xl font-bold mb-4">Register for tryouts:</h1>
 
         {showMessage && flash?.success && (
           <div className="mb-4 p-4 bg-green-100 text-green-800 rounded shadow">
@@ -130,11 +133,23 @@ export default function RegisterEvent({ event }) {
               <label className="block mb-1">Image (optional)</label>
               <input
                 type="file"
+                accept="image/*"
                 className="mb-2"
                 onChange={(e) => handlePlayerChange(idx, 'image', e.target.files[0])}
               />
               {errors[`players.${idx}.image`] && (
                 <div className="text-red-500 text-sm">{errors[`players.${idx}.image`]}</div>
+              )}
+
+              <label className="block mb-1">PDF Document (optional)</label>
+              <input
+                type="file"
+                accept="application/pdf"
+                className="mb-2"
+                onChange={(e) => handlePlayerChange(idx, 'pdf', e.target.files[0])}
+              />
+              {errors[`players.${idx}.pdf`] && (
+                <div className="text-red-500 text-sm">{errors[`players.${idx}.pdf`]}</div>
               )}
             </div>
           ))}
