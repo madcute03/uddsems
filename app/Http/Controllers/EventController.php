@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Event;
+use App\Models\EventImage;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -12,17 +13,21 @@ class EventController extends Controller
     public function index()
     {
         return Inertia::render('Dashboard', [
-            'events' => Event::orderBy('event_date')->get(),
+            'events' => Event::with('images')->orderBy('event_date')->get(),
         ]);
     }
 
     // PUBLIC: View a single event
     public function show(Event $event)
-    {
-        return Inertia::render('ShowEvent', [
-            'event' => $event,
-        ]);
-    }
+{
+    // ✅ Eager load images relation
+    $event->load('images');
+
+    return Inertia::render('ShowEvent', [
+        'event' => $event,
+    ]);
+}
+
 
     // ADMIN: Create a new event
     public function store(Request $request)
@@ -32,15 +37,25 @@ class EventController extends Controller
             'description'      => 'required|string',
             'coordinator_name' => 'required|string|max:255',
             'event_date'       => 'required|date',
-            'image'            => 'nullable|image|max:2048',
+            'images.*'         => 'nullable|image|max:2048',
             'required_players' => 'required|integer|min:1|max:20',
         ]);
 
-        if ($request->hasFile('image')) {
-            $data['image_path'] = $request->file('image')->store('events', 'public');
-        }
+        $event = Event::create([
+            'title' => $data['title'],
+            'description' => $data['description'],
+            'coordinator_name' => $data['coordinator_name'],
+            'event_date' => $data['event_date'],
+            'required_players' => $data['required_players'],
+        ]);
 
-        Event::create($data);
+        // Store multiple images
+        if ($request->hasFile('images')) {
+            foreach ($request->file('images') as $file) {
+                $path = $file->store('events', 'public');
+                $event->images()->create(['image_path' => $path]);
+            }
+        }
 
         return redirect()->back()->with('success', 'Event created successfully.');
     }
@@ -55,15 +70,26 @@ class EventController extends Controller
             'description'      => 'required|string',
             'coordinator_name' => 'required|string|max:255',
             'event_date'       => 'required|date',
-            'image'            => 'nullable|image|max:2048',
+            'images.*'         => 'nullable|image|max:2048',
             'required_players' => 'required|integer|min:1|max:20',
         ]);
 
-        if ($request->hasFile('image')) {
-            $data['image_path'] = $request->file('image')->store('events', 'public');
-        }
+        $event->update([
+            'title' => $data['title'],
+            'description' => $data['description'],
+            'coordinator_name' => $data['coordinator_name'],
+            'event_date' => $data['event_date'],
+            'required_players' => $data['required_players'],
+        ]);
 
-        $event->update($data);
+        // Update images: delete old then save new
+        if ($request->hasFile('images')) {
+            $event->images()->delete();
+            foreach ($request->file('images') as $file) {
+                $path = $file->store('events', 'public');
+                $event->images()->create(['image_path' => $path]);
+            }
+        }
 
         return redirect()->back()->with('success', 'Event updated successfully.');
     }
@@ -72,31 +98,21 @@ class EventController extends Controller
     public function destroy($id)
     {
         $event = Event::findOrFail($id);
-        $event->delete();
-
+        $event->delete(); // child images deleted automatically via cascade
         return redirect()->back()->with('success', 'Event deleted successfully.');
     }
 
-    // ADMIN: Mark event as done
-    public function markDone($id)
-    {
-        $event = Event::findOrFail($id);
-        $event->is_done = true;
-        $event->save();
+    // PUBLIC: Welcome page
+   public function welcome()
+{
+    $events = Event::with('images')->orderBy('event_date')->get();
 
-        return back()->with('success', 'Event marked as done.');
-    }
+    return Inertia::render('Welcome', [
+        'events' => $events,
+    ]);
+}
 
-    // ADMIN: View event registrations with players (includes PDF paths)
-    public function registrations(Event $event)
-    {
-        $registrations = $event->registrations()
-            ->with('players') // Players now have image_path and pdf_path
-            ->get();
 
-        return Inertia::render('Events/ViewRegistrations', [
-            'event' => $event,
-            'registrations' => $registrations,
-        ]);
-    }
+
+
 }

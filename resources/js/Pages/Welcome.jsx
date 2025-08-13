@@ -6,7 +6,6 @@ export default function Welcome({ events = [] }) {
             <Head title="Welcome" />
             
             <div className="min-h-screen bg-gray-100 py-10 px-4">
-                
                 <div className="max-w-4xl mx-auto">
                     <h1 className="text-3xl font-bold mb-6 text-center">Welcome to Our Event Page</h1>
 
@@ -25,10 +24,22 @@ export default function Welcome({ events = [] }) {
                                 <p className="text-sm text-gray-600">
                                     By {event.coordinator_name} | {event.event_date}
                                 </p>
-                                {event.image_path && (
-                                    <img src={`/storage/${event.image_path}`} alt={event.title} className="w-32 mt-2" />
+
+                                {/* Display all images */}
+                                {event.images && event.images.length > 0 && (
+                                    <div className="flex flex-wrap gap-2 mt-2">
+                                        {event.images.map(img => (
+                                            <img 
+                                                key={img.id} 
+                                                src={`/storage/${img.image_path}`} 
+                                                alt={event.title} 
+                                                className="w-24 h-24 object-cover rounded" 
+                                            />
+                                        ))}
+                                    </div>
                                 )}
-                                {event.is_done && <p className="text-green-600 font-bold">✓ Done</p>}
+
+                                {event.is_done && <p className="text-green-600 font-bold mt-2">✓ Done</p>}
                             </Link>
                         ))
                     )}

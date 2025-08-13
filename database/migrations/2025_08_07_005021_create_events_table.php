@@ -18,7 +18,14 @@ return new class extends Migration
             $table->string('coordinator_name');
             $table->string('image_path')->nullable();
             $table->date('event_date');
-            $table->unsignedTinyInteger('required_players')->nullable(); // ✅ Added this line
+            $table->unsignedTinyInteger('required_players')->nullable();
+            $table->timestamps();
+        });
+
+        Schema::create('event_images', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('event_id')->constrained()->onDelete('cascade');
+            $table->string('image_path');
             $table->timestamps();
         });
     }
@@ -28,6 +35,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('events');
+        Schema::dropIfExists('event_images'); // drop child table first
+        Schema::dropIfExists('events');       // then drop parent table
     }
 };

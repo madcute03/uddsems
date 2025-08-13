@@ -8,7 +8,7 @@ export default function Dashboard({ auth, events = [] }) {
         description: '',
         coordinator_name: '',
         event_date: '',
-        image: null,
+        images: [null],
         required_players: '',
     });
 
@@ -18,13 +18,25 @@ export default function Dashboard({ auth, events = [] }) {
         description: '',
         coordinator_name: '',
         event_date: '',
-        image: null,
+        images: [null],
         required_players: '',
     });
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        post('/events', { onSuccess: () => reset() });
+        const formData = new FormData();
+        Object.entries(data).forEach(([key, val]) => {
+            if (key === 'images') {
+                val.forEach(img => img && formData.append('images[]', img));
+            } else {
+                formData.append(key, val);
+            }
+        });
+
+        post('/events', {
+            data: formData,
+            onSuccess: () => reset(),
+        });
     };
 
     const startEdit = (event) => {
@@ -34,7 +46,7 @@ export default function Dashboard({ auth, events = [] }) {
             description: event.description,
             coordinator_name: event.coordinator_name,
             event_date: event.event_date,
-            image: null,
+            images: [null],
             required_players: event.required_players,
         });
     };
@@ -43,7 +55,11 @@ export default function Dashboard({ auth, events = [] }) {
         e.preventDefault();
         const formData = new FormData();
         Object.entries(editData).forEach(([key, val]) => {
-            if (val !== null) formData.append(key, val);
+            if (key === 'images') {
+                val.forEach(img => img && formData.append('images[]', img));
+            } else {
+                formData.append(key, val);
+            }
         });
 
         fetch(`/events/${editingEventId}`, {
@@ -71,18 +87,14 @@ export default function Dashboard({ auth, events = [] }) {
         }
     };
 
-    
-
     return (
         <AuthenticatedLayout user={auth.user}>
             <Head title="Dashboard" />
-          
 
             <div className="py-12">
                 <div className="mx-auto max-w-7xl sm:px-6 lg:px-8 space-y-6">
 
                     {/* Create Event Form */}
-                    
                     <div className="bg-white p-6 rounded shadow">
                         <h2 className="text-lg font-semibold mb-4">Create Event</h2>
                         <form onSubmit={handleSubmit} encType="multipart/form-data">
@@ -102,10 +114,31 @@ export default function Dashboard({ auth, events = [] }) {
                                 <label>Event Date</label>
                                 <input type="date" className="w-full border" value={data.event_date} onChange={e => setData('event_date', e.target.value)} />
                             </div>
+
+                            {/* Images */}
                             <div className="mb-2">
                                 <label>Image of the event</label>
-                                <input type="file" className="w-full border" onChange={e => setData('image', e.target.files[0])} />
+                                {data.images.map((img, idx) => (
+                                    <input
+                                        key={idx}
+                                        type="file"
+                                        className="w-full border mt-1"
+                                        onChange={e => {
+                                            const newImages = [...data.images];
+                                            newImages[idx] = e.target.files[0];
+                                            setData('images', newImages);
+                                        }}
+                                    />
+                                ))}
+                                <button
+                                    type="button"
+                                    onClick={() => setData('images', [...data.images, null])}
+                                    className="mt-2 text-blue-600 underline"
+                                >
+                                    + Add another image
+                                </button>
                             </div>
+
                             <div className="mb-2">
                                 <label>Required Player for this Event</label>
                                 <select
@@ -120,6 +153,7 @@ export default function Dashboard({ auth, events = [] }) {
                                     ))}
                                 </select>
                             </div>
+
                             <button type="submit" className="mt-2 px-4 py-2 bg-blue-600 text-white rounded">Create Event</button>
                         </form>
                     </div>
@@ -128,12 +162,9 @@ export default function Dashboard({ auth, events = [] }) {
                     <div className="bg-white p-6 rounded shadow">
                         <h2 className="text-lg font-semibold mb-4">Events</h2>
                         {events.length === 0 && <p>No events created.</p>}
-                        
 
                         {events.map(event => (
                             <div key={event.id} className="border-b py-4">
-                                
-
                                 <p className="text-sm text-gray-500">Required Players: {event.required_players}</p>
 
                                 {editingEventId === event.id ? (
@@ -142,7 +173,26 @@ export default function Dashboard({ auth, events = [] }) {
                                         <textarea value={editData.description} onChange={e => setEditData({ ...editData, description: e.target.value })} className="w-full border" />
                                         <input type="text" value={editData.coordinator_name} onChange={e => setEditData({ ...editData, coordinator_name: e.target.value })} className="w-full border" />
                                         <input type="date" value={editData.event_date} onChange={e => setEditData({ ...editData, event_date: e.target.value })} className="w-full border" />
-                                        <input type="file" onChange={e => setEditData({ ...editData, image: e.target.files[0] })} className="w-full" />
+                                        {editData.images.map((img, idx) => (
+                                            <input
+                                                key={idx}
+                                                type="file"
+                                                className="w-full border mt-1"
+                                                onChange={e => {
+                                                    const newImages = [...editData.images];
+                                                    newImages[idx] = e.target.files[0];
+                                                    setEditData({ ...editData, images: newImages });
+                                                }}
+                                            />
+                                        ))}
+                                        <button
+                                            type="button"
+                                            onClick={() => setEditData({ ...editData, images: [...editData.images, null] })}
+                                            className="text-blue-600 underline"
+                                        >
+                                            + Add another image
+                                        </button>
+
                                         <select
                                             className="w-full border"
                                             value={editData.required_players}
@@ -166,13 +216,12 @@ export default function Dashboard({ auth, events = [] }) {
                                             <h3 className="text-lg font-semibold">{event.title}</h3>
                                             <p>{event.description}</p>
                                             <p className="text-sm text-gray-500">By {event.coordinator_name} | {event.event_date}</p>
-                                            {event.image_path && (
-                                                <img src={`/storage/${event.image_path}`} className="w-32 mt-2" />
-                                            )}
+                                            {event.images_path?.map((imgPath, idx) => (
+                                                <img key={idx} src={`/storage/${imgPath}`} className="w-32 mt-2" />
+                                            ))}
                                             {event.is_done && <p className="text-green-600 font-bold">✓ Done</p>}
                                         </div>
                                         <div className="space-x-2">
-                                            
                                             <button onClick={() => startEdit(event)} className="bg-yellow-500 text-white px-3 py-1 rounded">Edit</button>
                                             <button onClick={() => handleDelete(event.id)} className="bg-red-500 text-white px-3 py-1 rounded">Delete</button>
                                         </div>
