@@ -8,6 +8,29 @@ use Inertia\Inertia;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\ProfileController;
 use App\Models\Event;
+use App\Http\Controllers\EventRegistrationController;
+
+//show registered
+Route::get('/events/{event}/registrations', [EventRegistrationController::class, 'showTeamRegistrations'])
+    ->name('events.registrations');
+
+
+
+
+
+
+// event registration submition
+Route::get('/events/{event}/register', [EventRegistrationController::class, 'create'])
+    ->name('events.register');
+
+Route::post('/events/{event}/register', [EventRegistrationController::class, 'store'])
+    ->name('eventregistrations.store');
+//
+
+
+
+
+
 
 // Public routes
 Route::get('/', function () {

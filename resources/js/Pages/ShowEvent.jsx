@@ -13,7 +13,6 @@ export default function ShowEvent({ event }) {
                         By {event.coordinator_name} | {event.event_date}
                     </p>
 
-                    {/* Display all images */}
                     {event.images && event.images.length > 0 && (
                         <div className="grid grid-cols-2 md:grid-cols-3 gap-2 mb-2 mt-2">
                             {event.images.map((img) => (
@@ -28,6 +27,22 @@ export default function ShowEvent({ event }) {
                     )}
 
                     {event.is_done && <p className="text-green-600 font-bold mt-2">✓ Done</p>}
+
+                    {/* Register Button */}
+                    <Link
+                        href={route('events.register', event.id)}
+                        className="mt-4 inline-block bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
+                    >
+                        Register for this Event
+                    </Link>
+
+                    {/* View Registered Teams Button */}
+                    <Link
+                        href={route('events.registrations', event.id)}
+                        className="mt-4 ml-4 inline-block bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition"
+                    >
+                        View Registered Teams
+                    </Link>
 
                     <Link href={route('home')} className="mt-6 block text-blue-600 hover:underline">
                         ← Back to Events

@@ -9,33 +9,23 @@ class Event extends Model
 {
     use HasFactory;
 
-    // ✅ Allow mass assignment
     protected $fillable = [
         'title',
         'description',
         'coordinator_name',
         'event_date',
-        'is_done',
         'required_players',
     ];
 
-    // ✅ Relationship: Event has many registrations
+    // Event images
+    public function images()
+    {
+        return $this->hasMany(EventImage::class);
+    }
+
+    // Event registrations
     public function registrations()
     {
-        return $this->hasMany(Registration::class);
+        return $this->hasMany(EventRegistration::class);
     }
-
-    // ✅ Relationship: Event has many attendees (many-to-many with users)
-    public function attendees()
-    {
-        return $this->belongsToMany(User::class, 'event_user'); // adjust pivot table if needed
-    }
-
-    // ✅ Relationship: Event has many images
-  public function images()
-{
-    return $this->hasMany(EventImage::class);
-}
-
-
 }

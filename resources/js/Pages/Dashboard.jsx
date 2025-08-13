@@ -95,6 +95,7 @@ export default function Dashboard({ auth, events = [] }) {
                 <div className="mx-auto max-w-7xl sm:px-6 lg:px-8 space-y-6">
 
                     {/* Create Event Form */}
+                    
                     <div className="bg-white p-6 rounded shadow">
                         <h2 className="text-lg font-semibold mb-4">Create Event</h2>
                         <form onSubmit={handleSubmit} encType="multipart/form-data">
