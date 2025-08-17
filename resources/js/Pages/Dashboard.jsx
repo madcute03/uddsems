@@ -94,8 +94,10 @@ export default function Dashboard({ auth, events = [] }) {
             <div className="py-12">
                 <div className="mx-auto max-w-7xl sm:px-6 lg:px-8 space-y-6">
 
+
                     {/* Create Event Form */}
-                    
+
+
                     <div className="bg-white p-6 rounded shadow">
                         <h2 className="text-lg font-semibold mb-4">Create Event</h2>
                         <form onSubmit={handleSubmit} encType="multipart/form-data">
@@ -115,7 +117,6 @@ export default function Dashboard({ auth, events = [] }) {
                                 <label>Event Date</label>
                                 <input type="date" className="w-full border" value={data.event_date} onChange={e => setData('event_date', e.target.value)} />
                             </div>
-
                             {/* Images */}
                             <div className="mb-2">
                                 <label>Image of the event</label>
@@ -221,6 +222,13 @@ export default function Dashboard({ auth, events = [] }) {
                                                 <img key={idx} src={`/storage/${imgPath}`} className="w-32 mt-2" />
                                             ))}
                                             {event.is_done && <p className="text-green-600 font-bold">✓ Done</p>}
+                                            {/* ✅ Moved View Registered Teams Button */}
+                                            <Link
+                                                href={route('events.registrations', event.id)}
+                                                className="mt-2 inline-block bg-green-600 text-white px-3 py-1 rounded hover:bg-green-700 transition"
+                                            >
+                                                View Registered Teams
+                                            </Link>
                                         </div>
                                         <div className="space-x-2">
                                             <button onClick={() => startEdit(event)} className="bg-yellow-500 text-white px-3 py-1 rounded">Edit</button>

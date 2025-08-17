@@ -1,6 +1,9 @@
-import { Head, Link } from '@inertiajs/react';
+import { useState } from "react";
+import { Head, Link } from "@inertiajs/react";
 
 export default function RegisteredTeams({ registrations }) {
+    const [selectedImage, setSelectedImage] = useState(null);
+
     return (
         <>
             <Head title="Registered Teams" />
@@ -38,21 +41,23 @@ export default function RegisteredTeams({ registrations }) {
                                                     <td className="border px-2 py-1">{player.student_id}</td>
                                                     <td className="border px-2 py-1">{player.department}</td>
                                                     <td className="border px-2 py-1">{player.age}</td>
-                                                    <td className="border px-2 py-1">
+                                                    <td className="border px-2 py-1 text-center">
                                                         {player.player_image && (
                                                             <img
                                                                 src={`/storage/${player.player_image}`}
                                                                 alt="Player"
-                                                                className="h-16 w-16 object-cover rounded"
+                                                                className="h-16 w-16 object-cover rounded cursor-pointer hover:scale-110 transition"
+                                                                onClick={() => setSelectedImage(`/storage/${player.player_image}`)}
                                                             />
                                                         )}
                                                     </td>
-                                                    <td className="border px-2 py-1">
+                                                    <td className="border px-2 py-1 text-center">
                                                         {player.whiteform_image && (
                                                             <img
                                                                 src={`/storage/${player.whiteform_image}`}
                                                                 alt="Whiteform"
-                                                                className="h-16 w-16 object-cover rounded"
+                                                                className="h-16 w-16 object-cover rounded cursor-pointer hover:scale-110 transition"
+                                                                onClick={() => setSelectedImage(`/storage/${player.whiteform_image}`)}
                                                             />
                                                         )}
                                                     </td>
@@ -70,6 +75,29 @@ export default function RegisteredTeams({ registrations }) {
                     </Link>
                 </div>
             </div>
+
+            {/* Modal with Button */}
+            {selectedImage && (
+                <div className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50">
+                    <div className="relative">
+                        <img
+                            src={selectedImage}
+                            alt="Preview"
+                            className="max-h-[90vh] max-w-[90vw] rounded shadow-lg"
+                        />
+                        {/* Buttons sa gilid */}
+                        <div className="absolute top-2 right-2 flex gap-2">
+                            <button
+                                className="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700"
+                                onClick={() => setSelectedImage(null)}
+                            >
+                                ✕ Close
+                            </button>
+                            
+                        </div>
+                    </div>
+                </div>
+            )}
         </>
     );
 }

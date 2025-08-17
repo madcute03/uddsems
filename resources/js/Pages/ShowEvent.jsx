@@ -36,13 +36,7 @@ export default function ShowEvent({ event }) {
                         Register for this Event
                     </Link>
 
-                    {/* View Registered Teams Button */}
-                    <Link
-                        href={route('events.registrations', event.id)}
-                        className="mt-4 ml-4 inline-block bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition"
-                    >
-                        View Registered Teams
-                    </Link>
+                
 
                     <Link href={route('home')} className="mt-6 block text-blue-600 hover:underline">
                         ← Back to Events
