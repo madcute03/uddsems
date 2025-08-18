@@ -1,4 +1,4 @@
-import '../css/app.css';
+import '../css/app.css'; // ✅ dito papasok si Tailwind
 import './bootstrap';
 
 import { createInertiaApp } from '@inertiajs/react';
@@ -12,12 +12,10 @@ createInertiaApp({
     resolve: (name) =>
         resolvePageComponent(
             `./Pages/${name}.jsx`,
-            import.meta.glob('./Pages/**/*.jsx'),
+            import.meta.glob('./Pages/**/*.jsx')
         ),
     setup({ el, App, props }) {
-        const root = createRoot(el);
-
-        root.render(<App {...props} />);
+        createRoot(el).render(<App {...props} />);
     },
     progress: {
         color: '#4B5563',

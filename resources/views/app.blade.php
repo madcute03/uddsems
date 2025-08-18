@@ -11,13 +11,17 @@
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
 
-        <!-- Scripts -->
+        <!-- Vite + React + Tailwind -->
         @routes
         @viteReactRefresh
-        @vite(['resources/js/app.jsx', "resources/js/Pages/{$page['component']}.jsx"])
+        @vite([
+            'resources/css/app.css',   {{-- ✅ dito naka-import TailwindCSS --}}
+            'resources/js/app.jsx', 
+            "resources/js/Pages/{$page['component']}.jsx"
+        ])
         @inertiaHead
     </head>
-    <body class="font-sans antialiased">
+    <body class="font-sans antialiased bg-gray-100 text-gray-900">
         @inertia
     </body>
 </html>

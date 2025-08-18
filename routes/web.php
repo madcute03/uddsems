@@ -10,6 +10,12 @@ use App\Http\Controllers\ProfileController;
 use App\Models\Event;
 use App\Http\Controllers\EventRegistrationController;
 
+
+// ✅ Route para sa Bracket Page
+Route::get('/bracket', function () {
+    return Inertia::render('Bracket');
+})->name('bracket.index');
+
 //show registered
 Route::get('/events/{event}/registrations', [EventRegistrationController::class, 'showTeamRegistrations'])
     ->name('events.registrations');
