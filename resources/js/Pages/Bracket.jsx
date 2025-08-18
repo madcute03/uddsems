@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 
 export default function DoubleEliminationBracket() {
     const boxW = 120;
@@ -11,14 +11,9 @@ export default function DoubleEliminationBracket() {
     const [teams, setTeams] = useState(Array(8).fill(""));
     const [upper, setUpper] = useState([]);
     const [lower, setLower] = useState([]);
-    const [grandFinal, setGrandFinal] = useState({
-        id: "gf",
-        team1: "TBD",
-        team2: "TBD",
-        winner: null,
-        loser: null,
-    });
+    const [grandFinal, setGrandFinal] = useState({ id: "gf", team1: "TBD", team2: "TBD", winner: null, loser: null });
     const [champion, setChampion] = useState(null);
+    const [lines, setLines] = useState([]);
 
     const handleTeamChange = (index, value) => {
         const updated = [...teams];
@@ -60,6 +55,7 @@ export default function DoubleEliminationBracket() {
         setLower(l);
         setGrandFinal({ id: "gf", team1: "TBD", team2: "TBD", winner: null, loser: null });
         setChampion(null);
+        setLines([]);
     };
 
     const handleUpperWin = (rIdx, mIdx, winner) => {
@@ -67,8 +63,6 @@ export default function DoubleEliminationBracket() {
         const match = u[rIdx][mIdx];
         match.winner = winner;
         match.loser = match.team1 === winner ? match.team2 : match.team1;
-
-        const loser = match.loser;
 
         if (rIdx < u.length - 1) {
             const next = u[rIdx + 1][Math.floor(mIdx / 2)];
@@ -78,7 +72,7 @@ export default function DoubleEliminationBracket() {
             setGrandFinal((prev) => ({ ...prev, team1: winner }));
         }
         setUpper(u);
-        sendToLower(loser, rIdx, mIdx);
+        sendToLower(match.loser, rIdx, mIdx);
     };
 
     const sendToLower = (loser, rIdx, mIdx) => {
@@ -120,25 +114,19 @@ export default function DoubleEliminationBracket() {
     };
 
     const handleGrandWin = (winner) => {
-        setGrandFinal((prev) => ({
-            ...prev,
-            winner,
-            loser: prev.team1 === winner ? prev.team2 : prev.team1,
-        }));
+        setGrandFinal((prev) => ({ ...prev, winner, loser: prev.team1 === winner ? prev.team2 : prev.team1 }));
         setChampion(winner);
     };
 
     const Box = ({ match, onWin, bracket, id }) => {
         const getBgColor = () => {
-            if (match.winner) return "#4fd1c5"; // winner green
-            if (bracket === "Upper") return "#63b3ed"; // upper blue
-            if (bracket === "Lower") return "#faf089"; // lower yellow
-            return "#fbb6ce"; // grand final pink
+            if (match.winner) return "#4fd1c5";
+            if (bracket === "Upper") return "#63b3ed";
+            if (bracket === "Lower") return "#faf089";
+            return "#fbb6ce";
         };
-
         return (
             <div style={{ position: "relative", marginBottom: 30, width: boxW }}>
-                {/* Box */}
                 <div
                     id={id || match.id}
                     className="box"
@@ -152,181 +140,69 @@ export default function DoubleEliminationBracket() {
                         flexDirection: "column",
                         justifyContent: "center",
                         alignItems: "center",
-                        padding: "5px",
-                        boxShadow: "0 4px 8px rgba(0,0,0,0.15)",
-                        transition: "transform 0.2s, box-shadow 0.2s",
+                        padding: 5,
                         textAlign: "center",
-                        overflowWrap: "break-word",
-                        wordBreak: "break-word",
-                        fontFamily: '"Segoe UI", Tahoma, Geneva, Verdana, sans-serif',
-                    }}
-                    onMouseEnter={(e) => {
-                        e.currentTarget.style.transform = "scale(1.03)";
-                        e.currentTarget.style.boxShadow = "0 8px 16px rgba(0,0,0,0.25)";
-                    }}
-                    onMouseLeave={(e) => {
-                        e.currentTarget.style.transform = "scale(1)";
-                        e.currentTarget.style.boxShadow = "0 4px 8px rgba(0,0,0,0.15)";
                     }}
                 >
-                    <div
-                        style={{
-                            fontWeight: "600",
-                            fontSize: 14,
-                            textDecoration: match.loser === match.team1 ? "line-through" : "none",
-                            color: "#1a202c",
-                            marginBottom: 2,
-                        }}
-                    >
-                        {match.team1}
-                    </div>
-
-                    <div style={{ fontSize: 12, color: "#2d3748", margin: "2px 0", fontWeight: "500" }}>
-                        vs
-                    </div>
-
-                    <div
-                        style={{
-                            fontWeight: "600",
-                            fontSize: 14,
-                            textDecoration: match.loser === match.team2 ? "line-through" : "none",
-                            color: "#1a202c",
-                            marginTop: 2,
-                        }}
-                    >
-                        {match.team2}
-                    </div>
+                    <div style={{ fontWeight: "600", fontSize: 14, textDecoration: match.loser === match.team1 ? "line-through" : "none" }}>{match.team1}</div>
+                    <div style={{ fontSize: 12, margin: "2px 0", fontWeight: 500 }}>vs</div>
+                    <div style={{ fontWeight: "600", fontSize: 14, textDecoration: match.loser === match.team2 ? "line-through" : "none" }}>{match.team2}</div>
                 </div>
 
-                {/* Horizontal Buttons */}
                 {!match.winner && match.team1 !== "TBD" && match.team2 !== "TBD" && (
-                    <div
-                        style={{
-                            position: "absolute",
-                            top: boxH + 10,
-                            left: "50%",
-                            transform: "translateX(-50%)",
-                            display: "flex",
-                            gap: 8, // horizontal spacing
-                        }}
-                    >
-                        <button
-                            onClick={() => onWin(match.team1)}
-                            style={{
-                                padding: "4px 8px",
-                                borderRadius: 8,
-                                border: "none",
-                                cursor: "pointer",
-                                backgroundColor: "#3182ce",
-                                color: "#fff",
-                                fontWeight: "bold",
-                                fontSize: 12,
-                                fontFamily: '"Segoe UI", Tahoma, Geneva, Verdana, sans-serif',
-                            }}
-                        >
-                            {match.team1} Wins
-                        </button>
-                        <button
-                            onClick={() => onWin(match.team2)}
-                            style={{
-                                padding: "4px 8px",
-                                borderRadius: 8,
-                                border: "none",
-                                cursor: "pointer",
-                                backgroundColor: "#3182ce",
-                                color: "#fff",
-                                fontWeight: "bold",
-                                fontSize: 12,
-                                fontFamily: '"Segoe UI", Tahoma, Geneva, Verdana, sans-serif',
-                            }}
-                        >
-                            {match.team2} Wins
-                        </button>
+                    <div style={{ position: "absolute", top: boxH + 10, left: "50%", transform: "translateX(-50%)", display: "flex", gap: 8 }}>
+                        <button onClick={() => onWin(match.team1)} style={{ padding: "4px 8px", borderRadius: 8, backgroundColor: "#3182ce", color: "#fff", fontWeight: "bold", fontSize: 12 }}>{match.team1} Wins</button>
+                        <button onClick={() => onWin(match.team2)} style={{ padding: "4px 8px", borderRadius: 8, backgroundColor: "#3182ce", color: "#fff", fontWeight: "bold", fontSize: 12 }}>{match.team2} Wins</button>
                     </div>
                 )}
             </div>
         );
     };
 
+    // Draw lines after DOM updates
+    useEffect(() => {
+        if (!containerRef.current) return;
 
+        const newLines = [];
+        const containerRect = containerRef.current.getBoundingClientRect();
 
-
-
-
-    const renderLines = () => {
-        const lines = [];
-        const containerRect = containerRef.current?.getBoundingClientRect();
-        if (!containerRect) return lines;
-
-        const drawY = (fromBox1, fromBox2, toBox) => {
-            if (!fromBox1 || !fromBox2 || !toBox) return;
-
-            const r1 = fromBox1.getBoundingClientRect();
-            const r2 = fromBox2.getBoundingClientRect();
-            const rTo = toBox.getBoundingClientRect();
-
+        const drawY = (from1, from2, to) => {
+            if (!from1 || !from2 || !to) return;
+            const r1 = from1.getBoundingClientRect();
+            const r2 = from2.getBoundingClientRect();
+            const rTo = to.getBoundingClientRect();
             const y1 = r1.top + r1.height / 2 - containerRect.top;
             const y2 = r2.top + r2.height / 2 - containerRect.top;
             const x1 = r1.right - containerRect.left;
             const x2 = r2.right - containerRect.left;
             const xTo = rTo.left - containerRect.left;
             const yTo = rTo.top + rTo.height / 2 - containerRect.top;
-
             const midX = xTo - 20;
 
-            lines.push(
-                <div
-                    key={`h1-${lines.length}`}
-                    style={{ position: "absolute", top: y1, left: x1, width: midX - x1, height: 2, background: "#000" }}
-                />
-            );
-            lines.push(
-                <div
-                    key={`h2-${lines.length}`}
-                    style={{ position: "absolute", top: y2, left: x2, width: midX - x2, height: 2, background: "#000" }}
-                />
-            );
-
+            newLines.push(<div key={`h1-${newLines.length}`} style={{ position: "absolute", top: y1, left: x1, width: midX - x1, height: 2, background: "#000" }} />);
+            newLines.push(<div key={`h2-${newLines.length}`} style={{ position: "absolute", top: y2, left: x2, width: midX - x2, height: 2, background: "#000" }} />);
             const yTop = Math.min(y1, y2);
             const yBottom = Math.max(y1, y2);
-            lines.push(
-                <div
-                    key={`v-${lines.length}`}
-                    style={{ position: "absolute", top: yTop, left: midX, width: 2, height: yBottom - yTop, background: "#000" }}
-                />
-            );
-
-            lines.push(
-                <div
-                    key={`h3-${lines.length}`}
-                    style={{ position: "absolute", top: yTo, left: midX, width: xTo - midX, height: 2, background: "#000" }}
-                />
-            );
+            newLines.push(<div key={`v-${newLines.length}`} style={{ position: "absolute", top: yTop, left: midX, width: 2, height: yBottom - yTop, background: "#000" }} />);
+            newLines.push(<div key={`h3-${newLines.length}`} style={{ position: "absolute", top: yTo, left: midX, width: xTo - midX, height: 2, background: "#000" }} />);
         };
 
-        const drawHorizontalOnly = (fromBox, toBox) => {
-            if (!fromBox || !toBox) return;
-            const r = fromBox.getBoundingClientRect();
-            const rTo = toBox.getBoundingClientRect();
-            const y = r.top + r.height / 2 - containerRect.top;
-            const xStart = r.right - containerRect.left;
+        const drawHorizontalOnly = (from, to) => {
+            if (!from || !to) return;
+            const rFrom = from.getBoundingClientRect();
+            const rTo = to.getBoundingClientRect();
+            const y = rFrom.top + rFrom.height / 2 - containerRect.top;
+            const xStart = rFrom.right - containerRect.left;
             const xEnd = rTo.left - containerRect.left;
-            lines.push(
-                <div
-                    key={`hline-${lines.length}`}
-                    style={{ position: "absolute", top: y, left: xStart, width: xEnd - xStart, height: 2, background: "#000" }}
-                />
-            );
+            newLines.push(<div key={`hline-${newLines.length}`} style={{ position: "absolute", top: y, left: xStart, width: xEnd - xStart, height: 2, background: "#000" }} />);
         };
 
         // Upper bracket lines
-        const upperCols = containerRef.current?.querySelectorAll(".upper > div");
-        if (upperCols) {
+        const upperCols = containerRef.current.querySelectorAll(".upper > div");
+        if (upperCols.length > 1) {
             for (let i = 0; i < upperCols.length - 1; i++) {
-                const currentCol = upperCols[i];
-                const nextCol = upperCols[i + 1];
-                const boxes = currentCol.querySelectorAll(".box");
-                const nextBoxes = nextCol.querySelectorAll(".box");
+                const boxes = upperCols[i].querySelectorAll(".box");
+                const nextBoxes = upperCols[i + 1].querySelectorAll(".box");
                 for (let j = 0; j < nextBoxes.length; j++) {
                     drawY(boxes[j * 2], boxes[j * 2 + 1], nextBoxes[j]);
                 }
@@ -334,7 +210,7 @@ export default function DoubleEliminationBracket() {
         }
 
         // Lower bracket lines
-        const lowerCols = containerRef.current?.querySelectorAll(".lower > div");
+        const lowerCols = containerRef.current.querySelectorAll(".lower > div");
         if (lowerCols) {
             for (let i = 0; i < lowerCols.length - 1; i++) {
                 const currentCol = lowerCols[i];
@@ -346,11 +222,11 @@ export default function DoubleEliminationBracket() {
                     const nextBox = nextBoxes[j];
                     if (!nextBox) continue;
 
-                    if (boxes.length === 1) {
+                    if (i === 0) {
+                        // Lower round 1 → round 2: horizontal only
+                        drawHorizontalOnly(boxes[j], nextBox);
+                    } else if (boxes.length === 1) {
                         drawHorizontalOnly(boxes[0], nextBox);
-                    } else if (i === 0) {
-                        drawHorizontalOnly(boxes[j * 2], nextBox);
-                        drawHorizontalOnly(boxes[j * 2 + 1], nextBox);
                     } else {
                         drawY(boxes[j * 2], boxes[j * 2 + 1], nextBox);
                     }
@@ -358,109 +234,55 @@ export default function DoubleEliminationBracket() {
             }
         }
 
-        // Connect Upper R3 and Lower L4 to Grand Final using Y-lining
-        const grandBox = containerRef.current?.querySelector("#GrandFinalBox");
+        // Connect to Grand Final
+        const grandBox = containerRef.current.querySelector("#GrandFinalBox");
         if (grandBox && upper[2] && upper[2][0] && lower[3] && lower[3][0]) {
             const upperBox = containerRef.current.querySelector(`#${upper[2][0].id}`);
             const lowerBox = containerRef.current.querySelector(`#${lower[3][0].id}`);
             drawY(upperBox, lowerBox, grandBox);
         }
 
-
-        return lines;
-    };
+        setLines(newLines);
+    }, [upper, lower, grandFinal]);
 
     return (
         <div style={{ padding: 20, position: "relative" }} ref={containerRef}>
-
-
-            {upper.length === 0 && (
+            {upper.length === 0 ? (
                 <div style={{ marginBottom: 20, textAlign: "center", display: "flex", flexDirection: "column", gap: 5 }}>
                     {teams.map((team, idx) => (
-                        <input
-                            key={idx}
-                            type="text"
-                            value={team}
-                            onChange={(e) => handleTeamChange(idx, e.target.value)}
-                            placeholder={`Team ${idx + 1}`}
-                            style={{ width: 200, alignSelf: "center" }}
-                        />
+                        <input key={idx} type="text" value={team} onChange={(e) => handleTeamChange(idx, e.target.value)} placeholder={`Team ${idx + 1}`} style={{ width: 200, alignSelf: "center" }} />
                     ))}
                     <button style={{ marginTop: 10 }} onClick={initializeBracket}>Start Bracket</button>
                 </div>
-            )}
-
-            {upper.length > 0 && (
+            ) : (
                 <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-                    {/* Upper Bracket Label */}
-                    <div style={{ marginBottom: 1, textAlign: "center", fontWeight: "bold", fontSize: 18 }}>
-                        Upper Bracket
-                    </div>
-
-                    {/* Upper Bracket */}
-                    <div className="upper" style={{ display: "flex", justifyContent: "flex-start", gap: hSpace }}>
+                    <div style={{ textAlign: "center", fontWeight: "bold", fontSize: 18 }}>Upper Bracket</div>
+                    <div className="upper" style={{ display: "flex", gap: hSpace }}>
                         {upper.map((round, rIdx) => (
                             <div key={rIdx} style={{ display: "flex", flexDirection: "column", justifyContent: "center", gap: rIdx === 1 ? 120 : vSpace }}>
-                                {round.map((m, idx) => (
-                                    <Box key={m.id} match={m} onWin={(w) => handleUpperWin(rIdx, idx, w)} bracket="Upper" />
-                                ))}
+                                {round.map((m, idx) => <Box key={m.id} match={m} onWin={(w) => handleUpperWin(rIdx, idx, w)} bracket="Upper" />)}
                             </div>
                         ))}
                     </div>
 
-                    {/* Lower Bracket Label */}
-                    <div style={{ margin: "20px 0 10px 0", textAlign: "center", fontWeight: "bold", fontSize: 18 }}>
-                        Lower Bracket
-                    </div>
-
-                    {/* Lower Bracket */}
-                    <div className="lower" style={{ display: "flex", justifyContent: "flex-start", gap: hSpace }}>
+                    <div style={{ margin: "20px 0 10px 0", textAlign: "center", fontWeight: "bold", fontSize: 18 }}>Lower Bracket</div>
+                    <div className="lower" style={{ display: "flex", gap: hSpace }}>
                         {lower.map((round, rIdx) => (
                             <div key={rIdx} style={{ display: "flex", flexDirection: "column", justifyContent: "center", gap: vSpace }}>
-                                {round.map((m, idx) => (
-                                    <Box key={m.id} match={m} onWin={(w) => handleLowerWin(rIdx, idx, w)} bracket="Lower" />
-                                ))}
+                                {round.map((m, idx) => <Box key={m.id} match={m} onWin={(w) => handleLowerWin(rIdx, idx, w)} bracket="Lower" />)}
                             </div>
                         ))}
                     </div>
 
-                    {/* Grand Final container */}
-                    <div
-                        style={{
-                            position: "absolute",
-                            left: "70%",
-                            top: "45%",
-                            transform: "translate(-50%, -50%)",
-                        }}
-                    >
+                    <div style={{ position: "absolute", left: "70%", top: "45%", transform: "translate(-50%, -50%)" }}>
                         <h4 style={{ textAlign: "center" }}>Grand Final</h4>
-
-                        <div style={{ position: "relative", display: "inline-block" }}>
-                            <Box match={grandFinal} onWin={handleGrandWin} bracket="GrandFinal" id="GrandFinalBox" />
-
-                            {champion && (
-                                <div
-                                    style={{
-                                        position: "absolute",
-                                        top: "50%",
-                                        left: "100%",
-                                        transform: "translate(10px, -50%)",
-                                        whiteSpace: "nowrap",
-                                        color: "#e53e3e",
-                                        fontWeight: "bold",
-                                    }}
-                                >
-                                    🏆 Champion: {champion} 🏆
-                                </div>
-                            )}
-                        </div>
+                        <Box match={grandFinal} onWin={handleGrandWin} bracket="GrandFinal" id="GrandFinalBox" />
+                        {champion && <div style={{ position: "absolute", top: "50%", left: "100%", transform: "translate(10px, -50%)", color: "#e53e3e", fontWeight: "bold", whiteSpace: "nowrap" }}>🏆 Champion: {champion} 🏆</div>}
                     </div>
 
-                    {/* Lines */}
-                    {renderLines()}
+                    {lines}
                 </div>
             )}
-
         </div>
     );
 }

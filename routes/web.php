@@ -16,6 +16,13 @@ Route::get('/bracket', function () {
     return Inertia::render('Bracket');
 })->name('bracket.index');
 
+Route::get('/bracket2', function () {
+    return Inertia::render('Bracket2');
+})->name('bracket2.index');
+
+
+
+
 //show registered
 Route::get('/events/{event}/registrations', [EventRegistrationController::class, 'showTeamRegistrations'])
     ->name('events.registrations');

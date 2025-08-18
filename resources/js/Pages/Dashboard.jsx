@@ -2,7 +2,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { useState } from 'react';
 import { Head, useForm, Link } from '@inertiajs/react';
 
-export default function Dashboard({ auth, events = [] }) {
+export default function CreateEvent({ auth, events = [] }) {
     const { data, setData, post, processing, reset } = useForm({
         title: '',
         description: '',

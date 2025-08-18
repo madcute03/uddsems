@@ -70,8 +70,8 @@ export default function RegisteredTeams({ registrations }) {
                         </div>
                     )}
 
-                    <Link href={route('home')} className="mt-6 block text-blue-600 hover:underline">
-                        ← Back to Events
+                    <Link href={route('dashboard')} className="mt-6 block text-blue-600 hover:underline">
+                        ← Back
                     </Link>
                 </div>
             </div>
@@ -93,7 +93,7 @@ export default function RegisteredTeams({ registrations }) {
                             >
                                 ✕ Close
                             </button>
-                            
+
                         </div>
                     </div>
                 </div>
