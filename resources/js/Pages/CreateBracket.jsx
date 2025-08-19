@@ -1,6 +1,7 @@
+import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import React, { useState, useRef, useEffect } from "react";
 
-export default function DoubleEliminationBracket() {
+export default function Bracket() {
     const boxW = 120;
     const boxH = 60;
     const hSpace = 70;
@@ -162,7 +163,6 @@ export default function DoubleEliminationBracket() {
     // Draw lines after DOM updates
     useEffect(() => {
         if (!containerRef.current) return;
-
         const newLines = [];
         const containerRect = containerRef.current.getBoundingClientRect();
 
@@ -246,43 +246,47 @@ export default function DoubleEliminationBracket() {
     }, [upper, lower, grandFinal]);
 
     return (
-        <div style={{ padding: 20, position: "relative" }} ref={containerRef}>
-            {upper.length === 0 ? (
-                <div style={{ marginBottom: 20, textAlign: "center", display: "flex", flexDirection: "column", gap: 5 }}>
-                    {teams.map((team, idx) => (
-                        <input key={idx} type="text" value={team} onChange={(e) => handleTeamChange(idx, e.target.value)} placeholder={`Team ${idx + 1}`} style={{ width: 200, alignSelf: "center" }} />
-                    ))}
-                    <button style={{ marginTop: 10 }} onClick={initializeBracket}>Start Bracket</button>
-                </div>
-            ) : (
-                <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-                    <div style={{ textAlign: "center", fontWeight: "bold", fontSize: 18 }}>Upper Bracket</div>
-                    <div className="upper" style={{ display: "flex", gap: hSpace }}>
-                        {upper.map((round, rIdx) => (
-                            <div key={rIdx} style={{ display: "flex", flexDirection: "column", justifyContent: "center", gap: rIdx === 1 ? 120 : vSpace }}>
-                                {round.map((m, idx) => <Box key={m.id} match={m} onWin={(w) => handleUpperWin(rIdx, idx, w)} bracket="Upper" />)}
+        <AuthenticatedLayout header={<h2 className="text-xl font-semibold">Create Bracket</h2>}>
+            <div className="p-6 text-gray-900">
+                <div style={{ padding: 20, position: "relative" }} ref={containerRef}>
+                    {upper.length === 0 ? (
+                        <div style={{ marginBottom: 20, textAlign: "center", display: "flex", flexDirection: "column", gap: 5 }}>
+                            {teams.map((team, idx) => (
+                                <input key={idx} type="text" value={team} onChange={(e) => handleTeamChange(idx, e.target.value)} placeholder={`Team ${idx + 1}`} style={{ width: 200, alignSelf: "center" }} />
+                            ))}
+                            <button style={{ marginTop: 10 }} onClick={initializeBracket}>Start Bracket</button>
+                        </div>
+                    ) : (
+                        <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+                            <div style={{ textAlign: "center", fontWeight: "bold", fontSize: 18 }}>Upper Bracket</div>
+                            <div className="upper" style={{ display: "flex", gap: hSpace }}>
+                                {upper.map((round, rIdx) => (
+                                    <div key={rIdx} style={{ display: "flex", flexDirection: "column", justifyContent: "center", gap: rIdx === 1 ? 120 : vSpace }}>
+                                        {round.map((m, idx) => <Box key={m.id} match={m} onWin={(w) => handleUpperWin(rIdx, idx, w)} bracket="Upper" />)}
+                                    </div>
+                                ))}
                             </div>
-                        ))}
-                    </div>
 
-                    <div style={{ margin: "20px 0 10px 0", textAlign: "center", fontWeight: "bold", fontSize: 18 }}>Lower Bracket</div>
-                    <div className="lower" style={{ display: "flex", gap: hSpace }}>
-                        {lower.map((round, rIdx) => (
-                            <div key={rIdx} style={{ display: "flex", flexDirection: "column", justifyContent: "center", gap: vSpace }}>
-                                {round.map((m, idx) => <Box key={m.id} match={m} onWin={(w) => handleLowerWin(rIdx, idx, w)} bracket="Lower" />)}
+                            <div style={{ margin: "20px 0 10px 0", textAlign: "center", fontWeight: "bold", fontSize: 18 }}>Lower Bracket</div>
+                            <div className="lower" style={{ display: "flex", gap: hSpace }}>
+                                {lower.map((round, rIdx) => (
+                                    <div key={rIdx} style={{ display: "flex", flexDirection: "column", justifyContent: "center", gap: vSpace }}>
+                                        {round.map((m, idx) => <Box key={m.id} match={m} onWin={(w) => handleLowerWin(rIdx, idx, w)} bracket="Lower" />)}
+                                    </div>
+                                ))}
                             </div>
-                        ))}
-                    </div>
 
-                    <div style={{ position: "absolute", left: "70%", top: "45%", transform: "translate(-50%, -50%)" }}>
-                        <h4 style={{ textAlign: "center" }}>Grand Final</h4>
-                        <Box match={grandFinal} onWin={handleGrandWin} bracket="GrandFinal" id="GrandFinalBox" />
-                        {champion && <div style={{ position: "absolute", top: "50%", left: "100%", transform: "translate(10px, -50%)", color: "#e53e3e", fontWeight: "bold", whiteSpace: "nowrap" }}>🏆 Champion: {champion} 🏆</div>}
-                    </div>
+                            <div style={{ position: "absolute", left: "70%", top: "45%", transform: "translate(-50%, -50%)" }}>
+                                <h4 style={{ textAlign: "center" }}>Grand Final</h4>
+                                <Box match={grandFinal} onWin={handleGrandWin} bracket="GrandFinal" id="GrandFinalBox" />
+                                {champion && <div style={{ position: "absolute", top: "50%", left: "100%", transform: "translate(10px, -50%)", color: "#e53e3e", fontWeight: "bold", whiteSpace: "nowrap" }}>🏆 Champion: {champion} 🏆</div>}
+                            </div>
 
-                    {lines}
+                            {lines}
+                        </div>
+                    )}
                 </div>
-            )}
-        </div>
+            </div>
+        </AuthenticatedLayout>
     );
 }
