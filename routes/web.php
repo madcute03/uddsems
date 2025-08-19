@@ -9,14 +9,13 @@ use App\Http\Controllers\EventController;
 use App\Http\Controllers\ProfileController;
 use App\Models\Event;
 use App\Http\Controllers\EventRegistrationController;
+use App\Http\Controllers\CreateBracketController;
 
 
-// ✅ Route para sa Bracket Page
 
 
-Route::get('/bracket2', function () {
-    return Inertia::render('Bracket2');
-})->name('bracket2.index');
+
+
 
 
 
@@ -65,7 +64,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::get('/dashboard', [EventController::class, 'dashboard'])->name('dashboard');
     Route::get('/dashboard/createevent', [EventController::class, 'index'])->name('dashboard.createevent');
-    Route::get('/dashboard/bracket', [EventController::class, 'bracket'])->name('bracket');
+    Route::get('/dashboard/bracket', [CreateBracketController::class, 'bracket'])
+    ->name('bracket');
+
 
     Route::post('/events', [EventController::class, 'store'])->name('events.store');
     Route::put('/events/{id}', [EventController::class, 'update'])->name('events.update');

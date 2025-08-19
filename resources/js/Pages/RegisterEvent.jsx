@@ -7,6 +7,7 @@ export default function RegisterEvent({ event, requiredPlayers }) {
         players: Array.from({ length: requiredPlayers }, () => ({
             student_id: '',
             name: '',
+            email: '',
             department: '',
             age: '',
             player_image: null,
@@ -18,6 +19,7 @@ export default function RegisterEvent({ event, requiredPlayers }) {
         setData('players', Array.from({ length: requiredPlayers }, () => ({
             student_id: '',
             name: '',
+            email: '',
             department: '',
             age: '',
             player_image: null,
@@ -34,12 +36,22 @@ export default function RegisterEvent({ event, requiredPlayers }) {
     const handleSubmit = (e) => {
         e.preventDefault();
 
+        // ✅ Strict email validation before submit
+        for (let i = 0; i < data.players.length; i++) {
+            const email = data.players[i].email.trim();
+            if (!email.endsWith('@cdd.edu.ph')) {
+                alert(`Player ${i + 1}: Email must end with @cdd.edu.ph`);
+                return; // Stop form submission
+            }
+        }
+
         const formData = new FormData();
         if (requiredPlayers > 1) formData.append('team_name', data.team_name);
 
         data.players.forEach((player, i) => {
             formData.append(`players[${i}][student_id]`, player.student_id);
             formData.append(`players[${i}][name]`, player.name);
+            formData.append(`players[${i}][email]`, player.email);
             formData.append(`players[${i}][department]`, player.department);
             formData.append(`players[${i}][age]`, player.age);
             formData.append(`players[${i}][player_image]`, player.player_image);
@@ -48,7 +60,7 @@ export default function RegisterEvent({ event, requiredPlayers }) {
 
         post(route('eventregistrations.store', event.id), formData, {
             forceFormData: true,
-            onFinish: () => reset(), // reset form after submit if needed
+            onFinish: () => reset(),
         });
     };
 
@@ -95,6 +107,18 @@ export default function RegisterEvent({ event, requiredPlayers }) {
                                     value={player.name}
                                     onChange={(e) => handlePlayerChange(index, 'name', e.target.value)}
                                     className="w-full border rounded px-3 py-2"
+                                    required
+                                />
+
+                                {/* ✅ Email restricted to @cdd.edu.ph */}
+                                <input
+                                    type="email"
+                                    placeholder="Email (must end with @cdd.edu.ph)"
+                                    value={player.email}
+                                    onChange={(e) => handlePlayerChange(index, 'email', e.target.value)}
+                                    className="w-full border rounded px-3 py-2"
+                                    pattern="^[a-zA-Z0-9._%+-]+@cdd\.edu\.ph$"
+                                    title="Email must be a valid @cdd.edu.ph address"
                                     required
                                 />
 
