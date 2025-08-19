@@ -15,6 +15,7 @@ return new class extends Migration
                   ->onDelete('cascade');
             $table->string('student_id');
             $table->string('name');
+            $table->string('email'); // ✅ Add this line
             $table->string('department');
             $table->integer('age');
             $table->string('player_image');

@@ -11,6 +11,7 @@ class RegisteredPlayer extends Model
         'event_registration_id',
         'student_id',
         'name',
+        'email',
         'department',
         'age',
         'player_image',
