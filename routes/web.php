@@ -9,16 +9,16 @@ use App\Http\Controllers\EventController;
 use App\Http\Controllers\ProfileController;
 use App\Models\Event;
 use App\Http\Controllers\EventRegistrationController;
+use App\Http\Controllers\CreateBracketController;
+use App\Http\Controllers\PlayerController;
 
 
-// ✅ Route para sa Bracket Page
-Route::get('/bracket', function () {
-    return Inertia::render('Bracket');
-})->name('bracket.index');
 
-Route::get('/bracket2', function () {
-    return Inertia::render('Bracket2');
-})->name('bracket2.index');
+
+
+
+
+
 
 
 
@@ -64,7 +64,12 @@ Route::get('/events/{event}', [EventController::class, 'show'])->name('events.sh
 // Admin & Authenticated Routes
 Route::middleware(['auth', 'verified'])->group(function () {
 
-    Route::get('/dashboard', [EventController::class, 'index'])->name('dashboard');
+
+    Route::get('/dashboard', [EventController::class, 'dashboard'])->name('dashboard');
+    Route::get('/dashboard/createevent', [EventController::class, 'index'])->name('dashboard.createevent');
+    Route::get('/dashboard/bracket', [CreateBracketController::class, 'bracket'])
+    ->name('bracket');
+
 
     Route::post('/events', [EventController::class, 'store'])->name('events.store');
     Route::put('/events/{id}', [EventController::class, 'update'])->name('events.update');
@@ -75,6 +80,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+Route::post('/player/update-status', [PlayerController::class, 'updateStatus'])
+    ->name('player.updateStatus');
+
+
+
 
     
     

@@ -1,10 +1,10 @@
+
 export default function ApplicationLogo(props) {
     return (
-        <svg
+        <img
             {...props}
-            viewBox="0 0 316 316"
-            xmlns="http://www.w3.org/2000/svg"
-        >
-        </svg>
+            src="/storage/image/logo.jpg"   // make sure the image exists in your public/images/ folder
+            alt="Application Logo"
+        />
     );
 }

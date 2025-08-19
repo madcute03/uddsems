@@ -13,6 +13,7 @@ class Player extends Model
         'registration_id',
         'student_id',
         'name',
+        'email',
         'department',
         'age',
         'player_image',

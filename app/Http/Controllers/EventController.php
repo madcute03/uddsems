@@ -10,11 +10,20 @@ use Inertia\Inertia;
 class EventController extends Controller
 {
     // ADMIN: Dashboard (list all events)
+    public function dashboard(){
+        return Inertia::render('Dashboard');
+    }
+
     public function index()
     {
-        return Inertia::render('Dashboard', [
+        return Inertia::render('CreateEvent', [
             'events' => Event::with('images')->orderBy('event_date')->get(),
         ]);
+
+    }
+
+    public function bracket(){
+        return Inertia::render('CreateBracket');
     }
 
     // PUBLIC: View a single event
