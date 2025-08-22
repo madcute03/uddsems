@@ -16,13 +16,6 @@ use App\Http\Controllers\PlayerController;
 
 
 
-
-
-
-
-
-
-
 //show registered
 Route::get('/events/{event}/registrations', [EventRegistrationController::class, 'showTeamRegistrations'])
     ->name('events.registrations');
@@ -41,7 +34,9 @@ Route::post('/events/{event}/register', [EventRegistrationController::class, 'st
 //
 
 
-
+Route::get('/bracket',function(){
+    return Inertia::render('Bracket8/Bracket');
+});
 
 
 
@@ -85,10 +80,6 @@ Route::post('/player/update-status', [PlayerController::class, 'updateStatus'])
     ->name('player.updateStatus');
 
 
-
-
-    
-    
 });
 
 require __DIR__ . '/auth.php';
