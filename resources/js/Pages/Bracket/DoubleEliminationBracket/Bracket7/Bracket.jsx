@@ -1,30 +1,55 @@
-import React, { useState, useRef, useLayoutEffect } from "react";
+import React, { useState, useRef, useLayoutEffect, useEffect } from "react";
+import { router } from "@inertiajs/react";
 
-export default function SevenTeamDoubleElimination() {
-    const [teamsInput, setTeamsInput] = useState(["", "", "", "", "", "", ""]);
-    const [matches, setMatches] = useState({
-        // Upper Bracket
+export default function SevenTeamDoubleElimination({ eventId, teamCount =7 }) {
+    const defaultMatches = {
         UB1: { p1: { name: "TBD", score: 0 }, p2: { name: "TBD", score: 0 }, winner: null, loser: null },
         UB2: { p1: { name: "TBD", score: 0 }, p2: { name: "TBD", score: 0 }, winner: null, loser: null },
         UB3: { p1: { name: "TBD", score: 0 }, p2: { name: "TBD", score: 0 }, winner: null, loser: null },
         UB5: { p1: { name: "TBD", score: 0 }, p2: { name: "TBD", score: 0 }, winner: null, loser: null },
         UB6: { p1: { name: "TBD", score: 0 }, p2: { name: "TBD", score: 0 }, winner: null, loser: null },
         UB7: { p1: { name: "TBD", score: 0 }, p2: { name: "TBD", score: 0 }, winner: null, loser: null },
-
-        // Lower Bracket
         LB1: { p1: { name: "TBD", score: 0 }, p2: { name: "TBD", score: 0 }, winner: null, loser: null },
         LB2: { p1: { name: "TBD", score: 0 }, p2: { name: "TBD", score: 0 }, winner: null, loser: null },
         LB3: { p1: { name: "TBD", score: 0 }, p2: { name: "TBD", score: 0 }, winner: null, loser: null },
         LB4: { p1: { name: "TBD", score: 0 }, p2: { name: "TBD", score: 0 }, winner: null, loser: null },
         LB5: { p1: { name: "TBD", score: 0 }, p2: { name: "TBD", score: 0 }, winner: null, loser: null },
-
-        // Grand Final
         GF: { p1: { name: "TBD", score: 0 }, p2: { name: "TBD", score: 0 }, winner: null, loser: null },
-    });
+    };
 
+    const [teamsInput, setTeamsInput] = useState(Array(teamCount).fill(""));
+    const [matches, setMatches] = useState(defaultMatches);
     const [champion, setChampion] = useState(null);
-    const boxRefs = useRef({});
     const [lines, setLines] = useState([]);
+    const [showPopup, setShowPopup] = useState(false);
+    const boxRefs = useRef({});
+    const [history, setHistory] = useState([]);
+
+    // Auto-load saved bracket
+    useEffect(() => {
+        if (!eventId) return;
+
+        fetch(route("double-elimination.show", { event: eventId }))
+            .then((res) => res.json())
+            .then((data) => {
+                if (data.matches) {
+                    setMatches({ ...defaultMatches, ...data.matches });
+                    setChampion(data.champion || null);
+
+                    const initialTeams = [
+                        data.matches.UB1?.p1?.name || "",
+                        data.matches.UB1?.p2?.name || "",
+                        data.matches.UB2?.p1?.name || "",
+                        data.matches.UB2?.p2?.name || "",
+                        data.matches.UB3?.p1?.name || "",
+                        data.matches.UB3?.p2?.name || "",
+                        data.matches.UB5?.p2?.name || "",
+                    ];
+                    setTeamsInput(initialTeams);
+                }
+            })
+            .catch((err) => console.error("Failed to load bracket:", err));
+    }, [eventId]);
 
     const handleTeamChange = (index, value) => {
         const newTeams = [...teamsInput];
@@ -40,13 +65,17 @@ export default function SevenTeamDoubleElimination() {
         updated.UB2.p2.name = teamsInput[3] || "TBD";
         updated.UB3.p1.name = teamsInput[4] || "TBD";
         updated.UB3.p2.name = teamsInput[5] || "TBD";
-        updated.UB5.p2.name = teamsInput[6] || "TBD"; // Team 7 direct bye
+        updated.UB5.p2.name = teamsInput[6] || "TBD"; // Team 7 bye
         setMatches(updated);
         setChampion(null);
     };
 
     const handleClick = (matchId, playerKey) => {
         const updated = { ...matches };
+        setHistory((prev) => [...prev, { matches: structuredClone(matches), champion }]);
+
+        if (!updated[matchId] || !updated[matchId][playerKey]) return;
+
         updated[matchId][playerKey].score += 1;
 
         const { p1, p2 } = updated[matchId];
@@ -83,8 +112,27 @@ export default function SevenTeamDoubleElimination() {
         setMatches(updated);
     };
 
+    const handleSave = () => {
+        if (!eventId) return;
+
+        router.post(
+            route("double-elimination.save"),
+            { event_id: eventId, matches, champion },
+            {
+                preserveState: true,
+                onSuccess: () => {
+                    setShowPopup(true);
+                    setTimeout(() => setShowPopup(false), 1500);
+                },
+                onError: (err) => console.error("Failed to save:", err),
+            }
+        );
+    };
+
     const renderMatch = (id) => {
         const m = matches[id];
+        if (!m) return null;
+
         return (
             <div
                 id={id}
@@ -96,13 +144,13 @@ export default function SevenTeamDoubleElimination() {
                     <button
                         key={key}
                         onClick={() => handleClick(id, key)}
-                        disabled={m[key].name === "TBD"}
-                        className={`flex justify-between items-center w-full px-2 py-1 mb-1 rounded text-left ${m.winner === m[key].name ? "bg-green-600" : "bg-gray-700 hover:bg-gray-600"
+                        disabled={!m[key] || m[key].name === "TBD"}
+                        className={`flex justify-between items-center w-full px-2 py-1 mb-1 rounded text-left ${m.winner === m[key]?.name ? "bg-green-600" : "bg-gray-700 hover:bg-gray-600"
                             }`}
                     >
-                        <span>{m[key].name}</span>
+                        <span>{m[key]?.name ?? "TBD"}</span>
                         <span className="ml-2 px-2 py-1 bg-gray-900 rounded border border-white w-8 text-center">
-                            {m[key].score}
+                            {m[key]?.score ?? 0}
                         </span>
                     </button>
                 ))}
@@ -125,25 +173,20 @@ export default function SevenTeamDoubleElimination() {
                 const from = boxRefs.current[fromId];
                 const to = boxRefs.current[toId];
                 if (from && to) {
-                    const fromBox = from.getBoundingClientRect();
-                    const toBox = to.getBoundingClientRect();
-                    const containerBox = container.getBoundingClientRect();
-
-                    const startX = fromBox.right - containerBox.left;
-                    const startY = fromBox.top + fromBox.height / 2 - containerBox.top;
-                    const endX = toBox.left - containerBox.left;
-                    const endY = toBox.top + toBox.height / 2 - containerBox.top;
-
+                    const f = from.getBoundingClientRect();
+                    const t = to.getBoundingClientRect();
+                    const c = container.getBoundingClientRect();
+                    const startX = f.right - c.left;
+                    const startY = f.top + f.height / 2 - c.top;
+                    const endX = t.left - c.left;
+                    const endY = t.top + t.height / 2 - c.top;
                     const midX = startX + 30;
-                    const midY = endY;
-                    const path = `M${startX},${startY} H${midX} V${midY} H${endX}`;
+                    const path = `M${startX},${startY} H${midX} V${endY} H${endX}`;
                     newLines.push(path);
                 }
             });
-
             setLines(newLines);
         };
-
         requestAnimationFrame(updateLines);
     }, [matches]);
 
@@ -151,7 +194,6 @@ export default function SevenTeamDoubleElimination() {
         <div className="bg-gray-900 min-h-screen p-4 text-white">
             <h1 className="text-2xl font-bold text-center mb-6">7-Team Double Elimination Bracket</h1>
 
-            {/* Team Inputs */}
             <div className="flex gap-4 justify-center mb-6">
                 {teamsInput.map((team, i) => (
                     <input
@@ -163,11 +205,21 @@ export default function SevenTeamDoubleElimination() {
                         className="px-2 py-1 rounded text-black"
                     />
                 ))}
-                <button
-                    onClick={applyTeams}
-                    className="px-4 py-1 bg-blue-600 rounded text-white font-bold"
-                >
+                <button onClick={applyTeams} className="px-4 py-1 bg-blue-600 rounded text-white font-bold">
                     Apply Teams
+                </button>
+                <button
+                    onClick={() => {
+                        setMatches(defaultMatches);
+                        setTeamsInput(Array(teamCount).fill(""));
+                        setChampion(null);
+                    }}
+                    className="px-4 py-1 bg-red-600 rounded text-white font-bold"
+                >
+                    Reset
+                </button>
+                <button onClick={handleSave} className="px-4 py-1 bg-green-600 rounded text-white font-bold">
+                    Save Bracket
                 </button>
             </div>
 
@@ -183,18 +235,15 @@ export default function SevenTeamDoubleElimination() {
                     <h2 className="font-bold mb-2">Upper Bracket</h2>
                     <div className="flex gap-12 mb-10">
                         <div>
-                            <h3 className="text-lg font-semibold mb-2 text-center">Round 1</h3>
                             {renderMatch("UB1")}
                             {renderMatch("UB2")}
                             {renderMatch("UB3")}
                         </div>
                         <div>
-                            <h3 className="text-lg font-semibold mb-2 text-center">Round 2</h3>
                             {renderMatch("UB5")}
                             {renderMatch("UB6")}
                         </div>
                         <div>
-                            <h3 className="text-lg font-semibold mb-2 text-center">Final</h3>
                             {renderMatch("UB7")}
                         </div>
                     </div>
@@ -204,42 +253,27 @@ export default function SevenTeamDoubleElimination() {
                 <div>
                     <h2 className="font-bold mb-2">Lower Bracket</h2>
                     <div className="flex gap-12 mb-10">
-                        <div>
-                            <h3 className="text-lg font-semibold mb-2 text-center">Round 1</h3>
-                            {renderMatch("LB1")}
-                        </div>
-                        <div>
-                            <h3 className="text-lg font-semibold mb-2 text-center">Round 2</h3>
-                            {renderMatch("LB2")}
-                            {renderMatch("LB3")}
-                        </div>
-                        <div>
-                            <h3 className="text-lg font-semibold mb-2 text-center">Round 3</h3>
-                            {renderMatch("LB4")}
-                        </div>
-                        <div>
-                            <h3 className="text-lg font-semibold mb-2 text-center">Semifinal</h3>
-                            {renderMatch("LB5")}
-                        </div>
+                        <div>{renderMatch("LB1")}</div>
+                        <div>{renderMatch("LB2")}{renderMatch("LB3")}</div>
+                        <div>{renderMatch("LB4")}</div>
+                        <div>{renderMatch("LB5")}</div>
                     </div>
                 </div>
 
                 {/* Grand Final */}
-                <div
-                    className="flex flex-col justify-center items-center"
-                    style={{ position: "absolute", left: "60%", top: "50%", transform: "translateY(-50%)" }}
-                >
-                    <h2 className="font-bold mb-2 text-center">Grand Final</h2>
+                <div className="absolute left-2/3 top-1/2 transform -translate-y-1/2">
                     {renderMatch("GF")}
+                    {champion && (
+                        <h2 className="text-3xl font-bold text-yellow-400 mt-4">
+                            🏆 Champion: {champion}
+                        </h2>
+                    )}
                 </div>
 
-                {/* Champion */}
-                {champion && (
-                    <div
-                        className="flex flex-col justify-center items-center"
-                        style={{ position: "absolute", left: "73%", top: "50%", transform: "translateY(-50%)" }}
-                    >
-                        <h2 className="text-3xl font-bold text-yellow-400">🏆 Champion: {champion}</h2>
+                {/* Popup */}
+                {showPopup && (
+                    <div className="fixed bottom-10 left-1/2 transform -translate-x-1/2 bg-green-600 px-4 py-2 rounded shadow-lg">
+                        Bracket Saved!
                     </div>
                 )}
             </div>

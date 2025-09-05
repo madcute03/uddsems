@@ -11,6 +11,64 @@ use App\Models\Event;
 use App\Http\Controllers\EventRegistrationController;
 use App\Http\Controllers\CreateBracketController;
 use App\Http\Controllers\PlayerController;
+use App\Http\Controllers\BracketController;
+// routes/web.php
+use App\Http\Controllers\DoubleEliminationController;
+
+Route::post('/events/{event}/bracket-settings', [BracketController::class, 'storeBracketSettings'])
+    ->name('bracket.storeSettings');
+
+
+Route::post('/double-elimination/save', [DoubleEliminationController::class, 'save'])->name('double-elimination.save');
+Route::get('/double-elimination/{event}', [DoubleEliminationController::class, 'show'])->name('double-elimination.show');
+
+
+
+Route::post('/brackets/save', [BracketController::class, 'save'])->name('bracket.save');
+Route::get('/bracket/{event}/show', [BracketController::class, 'show'])->name('bracket.show');
+
+
+// Single Elimination Bracket
+Route::get('/bracket/single/{teams}', function ($teams) {
+    $componentMap = [
+        2 => 'Bracket/SingleEliminationBracket/Bracket2',
+        3 => 'Bracket/SingleEliminationBracket/Bracket3',
+        4 => 'Bracket/SingleEliminationBracket/Bracket4',
+        5 => 'Bracket/SingleEliminationBracket/Bracket5',
+        6 => 'Bracket/SingleEliminationBracket/Bracket6',
+        7 => 'Bracket/SingleEliminationBracket/Bracket7',
+        8 => 'Bracket/SingleEliminationBracket/Bracket8',
+    ];
+
+    if (!isset($componentMap[$teams])) {
+        abort(404);
+    }
+
+    return Inertia::render($componentMap[$teams], [
+        'teams' => $teams
+    ]);
+})->name('bracket.single');
+
+// Double Elimination Bracket
+Route::get('/bracket/double/{teams}', function ($teams) {
+    $componentMap = [
+        3 => 'Bracket/DoubleEliminationBracket/Bracket3/Bracket',
+        4 => 'Bracket/DoubleEliminationBracket/Bracket4/Bracket',
+        5 => 'Bracket/DoubleEliminationBracket/Bracket5/Bracket',
+        6 => 'Bracket/DoubleEliminationBracket/Bracket6/Bracket',
+        7 => 'Bracket/DoubleEliminationBracket/Bracket7/Bracket',
+        8 => 'Bracket/DoubleEliminationBracket/Bracket8/Bracket',
+    ];
+
+    if (!isset($componentMap[$teams])) {
+        abort(404);
+    }
+
+    return Inertia::render($componentMap[$teams], [
+        'teams' => $teams
+    ]);
+})->name('bracket.double');
+
 
 
 
@@ -31,11 +89,14 @@ Route::get('/events/{event}/register', [EventRegistrationController::class, 'cre
 
 Route::post('/events/{event}/register', [EventRegistrationController::class, 'store'])
     ->name('eventregistrations.store');
-//
 
 
-Route::get('/bracket',function(){
-    return Inertia::render('Bracket8/Bracket');
+
+Route::get('/doublebracket',function(){
+    return Inertia::render('Bracket/DoubleEliminationBracket/Bracket3/Bracket');
+});
+Route::get('/singlebracket',function(){
+    return Inertia::render('Bracket/SingleEliminationBracket/Bracket2');
 });
 
 

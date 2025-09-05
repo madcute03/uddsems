@@ -38,8 +38,8 @@ export default function Welcome({ events = [] }) {
                                         ))}
                                     </div>
                                 )}
+                                
 
-                                {event.is_done && <p className="text-green-600 font-bold mt-2">✓ Done</p>}
                             </Link>
                         ))
                     )}

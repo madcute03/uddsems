@@ -3,59 +3,76 @@
 namespace App\Http\Controllers;
 
 use App\Models\Event;
-use App\Models\EventImage;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Illuminate\Support\Facades\Storage;
 
 class EventController extends Controller
 {
     // ADMIN: Dashboard (list all events)
-    public function dashboard(){
+    public function dashboard()
+    {
         return Inertia::render('Dashboard');
     }
 
+    // ADMIN: Show CreateEvent page
     public function index()
     {
+        $events = Event::select(
+                'id',
+                'title',
+                'description',
+                'coordinator_name',
+                'event_date',
+                'registration_end_date',
+                'required_players'
+            )
+            ->with('images')
+            ->orderBy('event_date')
+            ->get();
+
+        // Map image paths for frontend
+        $events->transform(function ($event) {
+            $event->images_path = $event->images->pluck('image_path');
+            return $event;
+        });
+
         return Inertia::render('CreateEvent', [
-            'events' => Event::with('images')->orderBy('event_date')->get(),
+            'events' => $events,
         ]);
-
-    }
-
-    public function bracket(){
-        return Inertia::render('CreateBracket');
     }
 
     // PUBLIC: View a single event
     public function show(Event $event)
-{
-    // ✅ Eager load images relation
-    $event->load('images');
+    {
+        $event->load('images');
+        $event->images_path = $event->images->pluck('image_path');
 
-    return Inertia::render('ShowEvent', [
-        'event' => $event,
-    ]);
-}
-
+        return Inertia::render('ShowEvent', [
+            'event' => $event,
+        ]);
+    }
 
     // ADMIN: Create a new event
     public function store(Request $request)
     {
         $data = $request->validate([
-            'title'            => 'required|string|max:255',
-            'description'      => 'required|string',
-            'coordinator_name' => 'required|string|max:255',
-            'event_date'       => 'required|date',
-            'images.*'         => 'nullable|image|max:2048',
-            'required_players' => 'required|integer|min:1|max:20',
+            'title'                 => 'required|string|max:255',
+            'description'           => 'required|string',
+            'coordinator_name'      => 'required|string|max:255',
+            'event_date'            => 'required|date',
+            'registration_end_date' => 'required|date|before_or_equal:event_date',
+            'images.*'              => 'nullable|image|max:2048',
+            'required_players'      => 'required|integer|min:1|max:20',
         ]);
 
         $event = Event::create([
-            'title' => $data['title'],
-            'description' => $data['description'],
-            'coordinator_name' => $data['coordinator_name'],
-            'event_date' => $data['event_date'],
-            'required_players' => $data['required_players'],
+            'title'                 => $data['title'],
+            'description'           => $data['description'],
+            'coordinator_name'      => $data['coordinator_name'],
+            'event_date'            => $data['event_date'],
+            'registration_end_date' => $data['registration_end_date'],
+            'required_players'      => $data['required_players'],
         ]);
 
         // Store multiple images
@@ -69,31 +86,40 @@ class EventController extends Controller
         return redirect()->back()->with('success', 'Event created successfully.');
     }
 
-    // ADMIN: Update an event
+    // ADMIN: Update an event with existing images support
     public function update(Request $request, $id)
     {
         $event = Event::findOrFail($id);
 
         $data = $request->validate([
-            'title'            => 'required|string|max:255',
-            'description'      => 'required|string',
-            'coordinator_name' => 'required|string|max:255',
-            'event_date'       => 'required|date',
-            'images.*'         => 'nullable|image|max:2048',
-            'required_players' => 'required|integer|min:1|max:20',
+            'title'                 => 'required|string|max:255',
+            'description'           => 'required|string',
+            'coordinator_name'      => 'required|string|max:255',
+            'event_date'            => 'required|date',
+            'registration_end_date' => 'required|date|before_or_equal:event_date',
+            'images.*'              => 'nullable|image|max:2048',
+            'existing_images.*'     => 'nullable|string', // paths of existing images
+            'required_players'      => 'required|integer|min:1|max:20',
         ]);
 
         $event->update([
-            'title' => $data['title'],
-            'description' => $data['description'],
-            'coordinator_name' => $data['coordinator_name'],
-            'event_date' => $data['event_date'],
-            'required_players' => $data['required_players'],
+            'title'                 => $data['title'],
+            'description'           => $data['description'],
+            'coordinator_name'      => $data['coordinator_name'],
+            'event_date'            => $data['event_date'],
+            'registration_end_date' => $data['registration_end_date'],
+            'required_players'      => $data['required_players'],
         ]);
 
-        // Update images: delete old then save new
+        // Remove deleted images
+        $existingImages = $request->input('existing_images', []);
+        $event->images()->whereNotIn('image_path', $existingImages)->each(function ($img) {
+            Storage::disk('public')->delete($img->image_path);
+            $img->delete();
+        });
+
+        // Add new uploaded images
         if ($request->hasFile('images')) {
-            $event->images()->delete();
             foreach ($request->file('images') as $file) {
                 $path = $file->store('events', 'public');
                 $event->images()->create(['image_path' => $path]);
@@ -107,21 +133,41 @@ class EventController extends Controller
     public function destroy($id)
     {
         $event = Event::findOrFail($id);
-        $event->delete(); // child images deleted automatically via cascade
+
+        // Delete all images from storage
+        $event->images()->each(function ($img) {
+            Storage::disk('public')->delete($img->image_path);
+            $img->delete();
+        });
+
+        $event->delete();
+
         return redirect()->back()->with('success', 'Event deleted successfully.');
     }
 
-    // PUBLIC: Welcome page
-   public function welcome()
-{
-    $events = Event::with('images')->orderBy('event_date')->get();
+    // PUBLIC: Welcome page (list all events)
+    public function welcome()
+    {
+        $events = Event::select(
+                'id',
+                'title',
+                'description',
+                'coordinator_name',
+                'event_date',
+                'registration_end_date',
+                'required_players'
+            )
+            ->with('images')
+            ->orderBy('event_date')
+            ->get();
 
-    return Inertia::render('Welcome', [
-        'events' => $events,
-    ]);
-}
+        $events->transform(function ($event) {
+            $event->images_path = $event->images->pluck('image_path');
+            return $event;
+        });
 
-
-
-
+        return Inertia::render('Welcome', [
+            'events' => $events,
+        ]);
+    }
 }

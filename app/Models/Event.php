@@ -14,7 +14,10 @@ class Event extends Model
         'description',
         'coordinator_name',
         'event_date',
+        'registration_end_date', // ✅ para masave
         'required_players',
+        'bracket_type',   // ✅ type ng bracket (SingleElimination, DoubleElimination, etc.)
+        'team_count',     // ✅ bilang ng teams
     ];
 
     // Event images
@@ -27,5 +30,11 @@ class Event extends Model
     public function registrations()
     {
         return $this->hasMany(EventRegistration::class);
+    }
+
+    // Event bracket
+    public function bracket()
+    {
+        return $this->hasOne(Bracket::class, 'event_id');
     }
 }
