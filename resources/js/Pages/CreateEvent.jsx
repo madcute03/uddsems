@@ -95,6 +95,25 @@ export default function CreateEvent({ auth, events = [] }) {
             }).then(() => window.location.reload());
         }
     };
+    const handleMarkDone = (id) => {
+        fetch(`/events/${id}/done`, {
+            method: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+            },
+        })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    window.location.reload();
+                } else {
+                    alert("Failed to mark event as done.");
+                }
+            });
+    };
+
+
+
 
     return (
         <AuthenticatedLayout user={auth.user}>
@@ -295,7 +314,7 @@ export default function CreateEvent({ auth, events = [] }) {
                                         </div>
                                     </form>
                                 ) : (
-                                    <div className="flex justify-between items-center">
+                                    <div className="flex justify-between items-center gap-3">
                                         <div>
                                             <h3 className="text-lg font-semibold">{event.title}</h3>
                                             <p>{event.description}</p>
@@ -304,10 +323,20 @@ export default function CreateEvent({ auth, events = [] }) {
                                             {event.images_path?.map((imgPath, idx) => (
                                                 <img key={idx} src={`/storage/${imgPath}`} className="w-32 mt-2" />
                                             ))}
-                                            {event.is_done && <p className="text-green-600 font-bold">✓ Done</p>}
+                                            {event.is_done ? (
+                                                <p className="text-green-600 font-bold gap-2">✓ Done</p>
+                                            ) : (
+                                                <button
+                                                    onClick={() => handleMarkDone(event.id)}
+                                                    className="bg-blue-600 text-white px-3 py-1 rounded hover:bg-pink-700 transition"
+                                                >
+                                                    Mark as Done
+                                                </button>
+                                            )}
+
                                             <Link
                                                 href={route('events.registrations', event.id)}
-                                                className="mt-2 inline-block bg-green-600 text-white px-3 py-1 rounded hover:bg-green-700 transition"
+                                                className="mt-2 inline-block bg-green-600 text-white px-3 py-1 rounded hover:bg-yellow-700 transition"
                                             >
                                                 View Registered Teams
                                             </Link>

@@ -4,8 +4,10 @@ import { useState } from 'react';
 export default function ShowEvent({ event }) {
     const today = new Date().toISOString().split("T")[0];
 
-    const isOngoing = event.event_date && today >= event.event_date;
-    const isUpcoming = !isOngoing;
+    // States ng event
+    const isUpcoming = today < event.event_date && !event.is_done;
+    const isOngoing = today >= event.event_date && !event.is_done;
+    const isDone = event.is_done === 1 || today > event.event_date;
 
     const isRegistrationClosed =
         event.registration_end_date && today > event.registration_end_date;
@@ -24,6 +26,16 @@ export default function ShowEvent({ event }) {
 
     const nextImage = () => {
         setCurrentImageIndex((prev) => (prev + 1) % totalImages);
+    };
+
+    // Bracket Modal state
+    const [showSoonModal, setShowSoonModal] = useState(false);
+
+    const handleViewBracket = (e) => {
+        if (!event.bracket_type || !event.teams) {
+            e.preventDefault(); // stop redirect
+            setShowSoonModal(true); // show modal
+        }
     };
 
     return (
@@ -49,46 +61,57 @@ export default function ShowEvent({ event }) {
                             <p className="text-lg sm:text-xl md:text-2xl text-white mb-2 drop-shadow">{event.description}</p>
                             <p className="text-md sm:text-lg md:text-lg text-white opacity-90 mb-2 drop-shadow">By {event.coordinator_name}</p>
 
-                            {isOngoing && (
-                                <p className="px-3 sm:px-4 py-1 sm:py-2 bg-yellow-400 text-yellow-900 font-bold rounded-full mb-2 text-sm sm:text-lg">
+                            {/* Status Labels */}
+                            {isOngoing && !isDone && (
+                                <p className="px-3 sm:px-4 py-1 bg-yellow-400 text-yellow-900 font-bold rounded-full mb-2 text-sm sm:text-lg">
                                     ⚡ Ongoing
                                 </p>
                             )}
                             {isUpcoming && (
-                                <p className="px-3 sm:px-4 py-1 sm:py-2 bg-blue-400 text-blue-900 font-bold rounded-full mb-2 text-sm sm:text-lg">
+                                <p className="px-3 sm:px-4 py-1 bg-blue-400 text-blue-900 font-bold rounded-full mb-2 text-sm sm:text-lg">
                                     ⏳ Starts On: {formatDate(event.event_date)}
                                 </p>
                             )}
-                            {event.registration_end_date && (
+                            {isDone && (
+                                <p className="px-3 sm:px-4 py-1 bg-red-500 text-white font-bold rounded-full mb-2 text-sm sm:text-lg">
+                                    ✅ Finished
+                                </p>
+                            )}
+                            {event.registration_end_date && !isDone && (
                                 <p className="text-sm sm:text-md text-white font-semibold mb-4 drop-shadow">
                                     Registration Until: {formatDate(event.registration_end_date)}
                                 </p>
                             )}
 
+                            {/* Buttons */}
                             <div className="flex flex-wrap gap-3 mt-4 justify-center">
                                 {/* Register Button */}
-                                {isRegistrationClosed ? (
-                                    <p className="inline-block bg-gray-400 text-white px-6 py-2 rounded-full font-semibold text-sm sm:text-lg">
-                                        Registration Closed
-                                    </p>
-                                ) : (
+                                {isUpcoming && !isRegistrationClosed ? (
                                     <Link
                                         href={route('events.register', event.id)}
                                         className="inline-block bg-gradient-to-r from-purple-600 to-pink-500 text-white px-6 py-2 rounded-full font-bold text-sm sm:text-lg shadow-lg hover:from-pink-500 hover:to-purple-600 transition"
                                     >
                                         Register
                                     </Link>
-                                )}
+                                ) : isUpcoming && isRegistrationClosed ? (
+                                    <p className="inline-block bg-gray-400 text-white px-6 py-2 rounded-full font-semibold text-sm sm:text-lg">
+                                        Registration Closed
+                                    </p>
+                                ) : null}
 
                                 {/* View Bracket Button */}
-                                <Link
-                                    href={route('bracket.show', { event: event.id })}
-                                    className="inline-block bg-blue-600 text-white px-6 py-2 rounded-full font-bold text-sm sm:text-lg shadow-lg hover:bg-blue-700 transition"
-                                >
-                                    View Bracket
-                                </Link>
+                                {(isOngoing || isDone) && (
+                                    <Link
+                                        href={route('bracket.show', { event: event.id })}
+                                        onClick={handleViewBracket}
+                                        className="inline-block bg-blue-600 text-white px-6 py-2 rounded-full font-bold text-sm sm:text-lg shadow-lg hover:bg-blue-700 transition"
+                                    >
+                                        View Bracket
+                                    </Link>
+                                )}
                             </div>
 
+                            {/* Back Link */}
                             <Link
                                 href={route('home')}
                                 className="mt-4 sm:mt-6 block text-white underline font-semibold text-sm sm:text-lg"
@@ -98,6 +121,7 @@ export default function ShowEvent({ event }) {
                         </div>
                     </div>
                 ) : (
+                    // Fallback if no images
                     <div className="p-6 sm:p-12 text-center">
                         <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold mb-4">{event.title}</h1>
                         <p className="text-lg sm:text-xl md:text-2xl mb-2">{event.description}</p>
@@ -105,26 +129,28 @@ export default function ShowEvent({ event }) {
                         <p className="text-lg sm:text-xl mb-4">⏳ Starts On: {formatDate(event.event_date)}</p>
 
                         <div className="flex flex-wrap gap-3 mt-4 justify-center">
-                            {isRegistrationClosed ? (
-                                <p className="inline-block bg-gray-400 text-white px-6 py-2 rounded-full font-semibold text-sm sm:text-lg">
-                                    Registration Closed
-                                </p>
-                            ) : (
+                            {isUpcoming && !isRegistrationClosed ? (
                                 <Link
                                     href={route('events.register', event.id)}
                                     className="inline-block bg-gradient-to-r from-purple-600 to-pink-500 text-white px-6 py-2 rounded-full font-bold text-sm sm:text-lg shadow-lg hover:from-pink-500 hover:to-purple-600 transition"
                                 >
                                     Register
                                 </Link>
-                            )}
+                            ) : isUpcoming && isRegistrationClosed ? (
+                                <p className="inline-block bg-gray-400 text-white px-6 py-2 rounded-full font-semibold text-sm sm:text-lg">
+                                    Registration Closed
+                                </p>
+                            ) : null}
 
-                            {/* View Bracket Button */}
-                            <Link
-                                href={route('bracket.show', { event: event.id })}
-                                className="inline-block bg-blue-600 text-white px-6 py-2 rounded-full font-bold text-sm sm:text-lg shadow-lg hover:bg-blue-700 transition"
-                            >
-                                View Bracket
-                            </Link>
+                            {(isOngoing || isDone) && (
+                                <Link
+                                    href={route('bracket.show', { event: event.id })}
+                                    onClick={handleViewBracket}
+                                    className="inline-block bg-blue-600 text-white px-6 py-2 rounded-full font-bold text-sm sm:text-lg shadow-lg hover:bg-blue-700 transition"
+                                >
+                                    View Bracket
+                                </Link>
+                            )}
                         </div>
 
                         <Link
@@ -133,6 +159,24 @@ export default function ShowEvent({ event }) {
                         >
                             ← Back to Events
                         </Link>
+                    </div>
+                )}
+
+                {/* Popup Modal kapag wala pang bracket settings */}
+                {showSoonModal && (
+                    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+                        <div className="bg-white p-6 rounded-lg shadow-lg w-80 text-center">
+                            <h2 className="text-xl font-bold mb-4">Coming Soon</h2>
+                            <p className="text-gray-700 mb-4">
+                                The bracket for <span className="font-semibold">{event.title}</span> is not yet available.
+                            </p>
+                            <button
+                                onClick={() => setShowSoonModal(false)}
+                                className="mt-2 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+                            >
+                                OK
+                            </button>
+                        </div>
                     </div>
                 )}
             </div>

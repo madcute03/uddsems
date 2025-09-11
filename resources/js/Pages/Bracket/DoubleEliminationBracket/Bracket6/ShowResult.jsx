@@ -1,6 +1,5 @@
 import React, { useEffect, useState, useRef, useLayoutEffect } from "react";
-import { Head } from "@inertiajs/react";
-import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
+import { Head, Link } from "@inertiajs/react";
 
 export default function ShowResult({ eventId, refreshTrigger }) {
     const boxRefs = useRef({});
@@ -110,7 +109,7 @@ export default function ShowResult({ eventId, refreshTrigger }) {
     }, [matches]);
 
     return (
-        <AuthenticatedLayout>
+        <>
             <div className="bg-gray-900 min-h-screen p-4 text-white">
                 <Head title="Bracket Results" />
                 <h1 className="text-2xl font-bold text-center mb-6">6-Team Double Elimination Bracket</h1>
@@ -121,7 +120,12 @@ export default function ShowResult({ eventId, refreshTrigger }) {
                             <path key={i} d={d} stroke="white" strokeWidth="2" fill="none" />
                         ))}
                     </svg>
-
+                    <Link
+                        href={route('home')}
+                        className="mt-4 sm:mt-6 block text-purple-700 underline font-semibold text-sm sm:text-lg"
+                    >
+                        ← Back to Events
+                    </Link>
                     {/* Upper Bracket */}
                     <div>
                         <h2 className="font-bold mb-2">Upper Bracket</h2>
@@ -183,6 +187,6 @@ export default function ShowResult({ eventId, refreshTrigger }) {
                     )}
                 </div>
             </div>
-        </AuthenticatedLayout>
+        </>
     );
 }

@@ -14,11 +14,11 @@ class Event extends Model
         'description',
         'coordinator_name',
         'event_date',
-        'registration_end_date', // ✅ para masave
+        'registration_end_date',
         'required_players',
-        'bracket_type',   // ✅ type ng bracket (SingleElimination, DoubleElimination, etc.)
-        'team_count',     // ✅ bilang ng teams
+        'is_done',
     ];
+
 
     // Event images
     public function images()

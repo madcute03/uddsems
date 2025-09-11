@@ -12,13 +12,13 @@ import DEBracket7 from "@/Pages/Bracket/DoubleEliminationBracket/Bracket7/Bracke
 import DEBracket8 from "@/Pages/Bracket/DoubleEliminationBracket/Bracket8/Bracket";
 
 // Single Elimination Brackets
-import SEBracket2 from "@/Pages/Bracket/SingleEliminationBracket/Bracket2";
-import SEBracket3 from "@/Pages/Bracket/SingleEliminationBracket/Bracket3";
-import SEBracket4 from "@/Pages/Bracket/SingleEliminationBracket/Bracket4";
-import SEBracket5 from "@/Pages/Bracket/SingleEliminationBracket/Bracket5";
-import SEBracket6 from "@/Pages/Bracket/SingleEliminationBracket/Bracket6";
-import SEBracket7 from "@/Pages/Bracket/SingleEliminationBracket/Bracket7";
-import SEBracket8 from "@/Pages/Bracket/SingleEliminationBracket/Bracket8";
+import SEBracket2 from "@/Pages/Bracket/SingleEliminationBracket/Bracket2/Bracket2";
+import SEBracket3 from "@/Pages/Bracket/SingleEliminationBracket/Bracket3/Bracket3";
+import SEBracket4 from "@/Pages/Bracket/SingleEliminationBracket/Bracket4/Bracket4";
+import SEBracket5 from "@/Pages/Bracket/SingleEliminationBracket/Bracket5/Bracket5";
+import SEBracket6 from "@/Pages/Bracket/SingleEliminationBracket/Bracket6/Bracket6";
+import SEBracket7 from "@/Pages/Bracket/SingleEliminationBracket/Bracket7/Bracket7";
+import SEBracket8 from "@/Pages/Bracket/SingleEliminationBracket/Bracket8/Bracket8";
 
 export default function CreateBracket({ events = [] }) {
     const [selectedEvent, setSelectedEvent] = useState(null);
@@ -59,22 +59,8 @@ export default function CreateBracket({ events = [] }) {
     return (
         <AuthenticatedLayout>
             <Head title="Create Bracket" />
-
-            {events.map((event) => (
-                <div key={event.id} className="mb-4">
-                    <h2 className="font-bold">{event.title}</h2>
-                    <Link
-                        href={route("bracket.show", { event: event.id })}
-                        className="text-blue-600 underline"
-                    >
-                        View Bracket
-                    </Link>
-                </div>
-            ))}
-
             <div className="p-6">
                 <h1 className="text-2xl font-bold mb-4">Select Event for Bracket</h1>
-
                 {events.length === 0 ? (
                     <p className="text-gray-600">No events available.</p>
                 ) : (
@@ -94,9 +80,26 @@ export default function CreateBracket({ events = [] }) {
                                         setBracketType(null);
                                         setTeamCount(null);
                                     }}
+                                    className="mt-2 inline-block bg-red-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+                                >
+                                    Create and Reset Bracket
+                                </button>
+                                <br />
+                                <button
+                                    onClick={() => {
+                                        if (event.bracket_type && event.teams) {
+                                            // Already has bracket → open it directly
+                                            setSelectedEvent(event);
+                                            setBracketType(event.bracket_type);
+                                            setTeamCount(event.teams);
+                                        } else {
+                                            // No bracket yet → show alert/modal
+                                            alert("You have not created a bracket yet for this event.");
+                                        }
+                                    }}
                                     className="mt-2 inline-block bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
                                 >
-                                    Create Bracket
+                                View Created Bracket
                                 </button>
                             </div>
                         ))}

@@ -1,7 +1,7 @@
 import React, { useState, useRef, useLayoutEffect, useEffect } from "react";
 import { router } from "@inertiajs/react";
 
-export default function SixTeamDoubleElimination({ eventId, teamCount = 6 }) {
+export default function SixTeamDoubleElimination({ eventId }) {
     const defaultMatches = {
         UB1: { p1: { name: "TBD", score: 0 }, p2: { name: "TBD", score: 0 }, winner: null, loser: null },
         UB2: { p1: { name: "TBD", score: 0 }, p2: { name: "TBD", score: 0 }, winner: null, loser: null },
@@ -15,35 +15,41 @@ export default function SixTeamDoubleElimination({ eventId, teamCount = 6 }) {
         GF: { p1: { name: "TBD", score: 0 }, p2: { name: "TBD", score: 0 }, winner: null, loser: null },
     };
 
-    const [teamsInput, setTeamsInput] = useState(Array(teamCount).fill(""));
+    const [teamsInput, setTeamsInput] = useState(Array(6).fill(""));
     const [matches, setMatches] = useState(structuredClone(defaultMatches));
     const [champion, setChampion] = useState(null);
     const [lines, setLines] = useState([]);
     const [showPopup, setShowPopup] = useState(false);
-    const [history, setHistory] = useState([]);
+    const [activeMatch, setActiveMatch] = useState(null);
+    const [scoreInputs, setScoreInputs] = useState({ p1: 0, p2: 0 });
+
     const boxRefs = useRef({});
 
     // Load saved bracket
     useEffect(() => {
         if (!eventId) return;
         fetch(route("double-elimination.show", { event: eventId }))
-            .then(res => res.json())
-            .then(data => {
-                if (data.matches) setMatches({ ...defaultMatches, ...data.matches });
-                if (data.champion) setChampion(data.champion);
+            .then((res) => res.json())
+            .then((data) => {
+                if (data.matches) {
+                    setMatches({ ...defaultMatches, ...data.matches });
+                    setChampion(data.champion || null);
 
-                const teamNames = [];
-                Object.values(data.matches || {}).forEach(match => {
-                    ["p1", "p2"].forEach(key => {
-                        if (match[key].name !== "TBD") teamNames.push(match[key].name);
-                    });
-                });
-                setTeamsInput(teamNames.slice(0, teamCount));
+                    const initialTeams = [
+                        data.matches.UB1?.p1?.name || "",
+                        data.matches.UB1?.p2?.name || "",
+                        data.matches.UB2?.p1?.name || "",
+                        data.matches.UB2?.p2?.name || "",
+                        data.matches.UB3?.p1?.name || "",
+                        data.matches.UB4?.p1?.name || "",
+                    ];
+                    setTeamsInput(initialTeams);
+                }
             })
-            .catch(err => console.error(err));
+            .catch((err) => console.error("Failed to load bracket:", err));
     }, [eventId]);
 
-    // Save bracket
+
     const handleSave = () => {
         if (!eventId) {
             alert("No event selected for this bracket!");
@@ -70,7 +76,7 @@ export default function SixTeamDoubleElimination({ eventId, teamCount = 6 }) {
     };
 
     const applyTeams = () => {
-        const updated = structuredClone(matches);
+        const updated = structuredClone(defaultMatches);
         updated.UB1.p1.name = teamsInput[0] || "TBD";
         updated.UB1.p2.name = teamsInput[1] || "TBD";
         updated.UB2.p1.name = teamsInput[2] || "TBD";
@@ -81,45 +87,51 @@ export default function SixTeamDoubleElimination({ eventId, teamCount = 6 }) {
         setChampion(null);
     };
 
-    const handleClick = (matchId, playerKey) => {
+    const handleSubmitScores = () => {
+        if (!activeMatch) return;
         const updated = structuredClone(matches);
-        setHistory([...history, { matches: structuredClone(matches), champion }]);
-        updated[matchId][playerKey].score += 1;
 
-        const { p1, p2 } = updated[matchId];
-        if (p1.name !== "TBD" && p2.name !== "TBD" && p1.score !== p2.score) {
-            const winnerKey = p1.score > p2.score ? "p1" : "p2";
-            const loserKey = winnerKey === "p1" ? "p2" : "p1";
-            const winnerName = updated[matchId][winnerKey].name;
-            const loserName = updated[matchId][loserKey].name;
+        updated[activeMatch].p1.score = parseInt(scoreInputs.p1) || 0;
+        updated[activeMatch].p2.score = parseInt(scoreInputs.p2) || 0;
 
-            updated[matchId].winner = winnerName;
-            updated[matchId].loser = loserName;
+        const { p1, p2 } = updated[activeMatch];
+        if (p1.name === "TBD" || p2.name === "TBD") return;
 
-            // Upper bracket propagation
-            switch (matchId) {
-                case "UB1": updated.UB3.p2.name = winnerName; updated.LB1.p1.name = loserName; break;
-                case "UB2": updated.UB4.p2.name = winnerName; updated.LB1.p2.name = loserName; break;
-                case "UB3": updated.UB5.p1.name = winnerName; updated.LB2.p1.name = loserName; break;
-                case "UB4": updated.UB5.p2.name = winnerName; updated.LB3.p2.name = loserName; break;
-                case "UB5": updated.GF.p1.name = winnerName; updated.LB4.p2.name = loserName; break;
-            }
+        const winnerKey = p1.score > p2.score ? "p1" : "p2";
+        const loserKey = winnerKey === "p1" ? "p2" : "p1";
 
-            // Lower bracket propagation
-            switch (matchId) {
-                case "LB1": updated.LB2.p2.name = winnerName; break;
-                case "LB2": updated.LB3.p1.name = winnerName; break;
-                case "LB3": updated.LB4.p1.name = winnerName; break;
-                case "LB4": updated.GF.p2.name = winnerName; break;
-                case "GF": setChampion(winnerName); break;
-            }
+        const winnerName = updated[activeMatch][winnerKey].name;
+        const loserName = updated[activeMatch][loserKey].name;
+
+        updated[activeMatch].winner = winnerName;
+        updated[activeMatch].loser = loserName;
+
+        // Upper bracket propagation
+        switch (activeMatch) {
+            case "UB1": updated.UB3.p2.name = winnerName; updated.LB1.p1.name = loserName; break;
+            case "UB2": updated.UB4.p2.name = winnerName; updated.LB1.p2.name = loserName; break;
+            case "UB3": updated.UB5.p1.name = winnerName; updated.LB2.p1.name = loserName; break;
+            case "UB4": updated.UB5.p2.name = winnerName; updated.LB3.p2.name = loserName; break;
+            case "UB5": updated.GF.p1.name = winnerName; updated.LB4.p2.name = loserName; break;
+        }
+
+        // Lower bracket propagation
+        switch (activeMatch) {
+            case "LB1": updated.LB2.p2.name = winnerName; break;
+            case "LB2": updated.LB3.p1.name = winnerName; break;
+            case "LB3": updated.LB4.p1.name = winnerName; break;
+            case "LB4": updated.GF.p2.name = winnerName; break;
+            case "GF": setChampion(winnerName); break;
         }
 
         setMatches(updated);
+        setActiveMatch(null);
     };
 
     const renderMatch = (id) => {
         const m = matches[id];
+        if (!m) return null;
+
         return (
             <div
                 id={id}
@@ -128,21 +140,30 @@ export default function SixTeamDoubleElimination({ eventId, teamCount = 6 }) {
             >
                 <p className="font-bold mb-1">{id}</p>
                 {["p1", "p2"].map((key) => (
-                    <button
-                        key={key}
-                        onClick={() => handleClick(id, key)}
-                        disabled={m[key].name === "TBD"}
-                        className={`flex justify-between items-center w-full px-2 py-1 mb-1 rounded text-left ${m.winner === m[key].name ? "bg-green-600" : "bg-gray-700 hover:bg-gray-600"}`}
-                    >
-                        <span>{m[key].name}</span>
-                        <span className="ml-2 px-2 py-1 bg-gray-900 rounded border border-white w-8 text-center">
-                            {m[key].score}
-                        </span>
-                    </button>
+                    <div key={key} className="flex justify-between mb-1">
+                        <span>{m[key]?.name || ""}</span>
+                        <span>{m[key]?.score > 0 ? m[key].score : ""}</span>
+                    </div>
                 ))}
+
+                {/* Only show Report Score if both teams exist and are not TBD */}
+                {m.p1.name && m.p2.name && m.p1.name !== "TBD" && m.p2.name !== "TBD" && (
+                    <button
+                        onClick={() => {
+                            setActiveMatch(id);
+                            setScoreInputs({ p1: m.p1.score, p2: m.p2.score });
+                        }}
+                        className="w-full mt-2 px-2 py-1 bg-blue-600 rounded text-white font-bold"
+                    >
+                        Report Score
+                    </button>
+                )}
+
+                {m.winner && <p className="text-green-400 text-sm mt-1">Winner: {m.winner}</p>}
             </div>
-        )
+        );
     };
+
 
     useLayoutEffect(() => {
         const updateLines = () => {
@@ -183,13 +204,13 @@ export default function SixTeamDoubleElimination({ eventId, teamCount = 6 }) {
         <div className="bg-gray-900 min-h-screen p-6 text-white">
             <h1 className="text-2xl font-bold text-center mb-6">6-Team Double Elimination Bracket</h1>
 
-            {/* Teams */}
-            <div className="flex gap-4 justify-center mb-6">
+            {/* Teams Input */}
+            <div className="flex gap-4 justify-center mb-6 flex-wrap">
                 {teamsInput.map((team, i) => (
                     <input key={i} type="text" value={team} onChange={e => handleTeamChange(i, e.target.value)} placeholder={`Team ${i + 1}`} className="px-2 py-1 rounded text-black" />
                 ))}
                 <button onClick={applyTeams} className="px-4 py-1 bg-blue-600 rounded text-white font-bold">Apply Teams</button>
-                <button onClick={() => { setMatches(structuredClone(defaultMatches)); setTeamsInput(Array(teamCount).fill("")); setChampion(null) }} className="px-4 py-1 bg-red-600 rounded text-white font-bold">Reset</button>
+                <button onClick={() => { setMatches(structuredClone(defaultMatches)); setTeamsInput(Array(6).fill("")); setChampion(null) }} className="px-4 py-1 bg-red-600 rounded text-white font-bold">Reset</button>
                 <button onClick={handleSave} className="px-4 py-1 bg-green-600 rounded text-white font-bold">Save Bracket</button>
             </div>
 
@@ -227,6 +248,27 @@ export default function SixTeamDoubleElimination({ eventId, teamCount = 6 }) {
                     <h2 className="absolute left-3/4 top-1/2 transform -translate-y-1/2 text-3xl font-bold text-yellow-400">🏆 Champion: {champion}</h2>
                 )}
             </div>
+
+            {/* Report Score Modal */}
+            {activeMatch && (
+                <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50">
+                    <div className="bg-gray-800 p-6 rounded-lg w-80">
+                        <h2 className="text-xl font-bold mb-4">Report Score: {activeMatch}</h2>
+                        <div className="mb-3">
+                            <label className="block mb-1">{matches[activeMatch].p1.name}</label>
+                            <input type="number" min="0" value={scoreInputs.p1} onChange={e => setScoreInputs({ ...scoreInputs, p1: e.target.value })} className="w-full p-1 text-black rounded" />
+                        </div>
+                        <div className="mb-3">
+                            <label className="block mb-1">{matches[activeMatch].p2.name}</label>
+                            <input type="number" min="0" value={scoreInputs.p2} onChange={e => setScoreInputs({ ...scoreInputs, p2: e.target.value })} className="w-full p-1 text-black rounded" />
+                        </div>
+                        <div className="flex justify-end gap-2 mt-4">
+                            <button onClick={() => setActiveMatch(null)} className="px-4 py-1 bg-red-600 rounded text-white font-bold">Cancel</button>
+                            <button onClick={handleSubmitScores} className="px-4 py-1 bg-green-600 rounded text-white font-bold">Submit</button>
+                        </div>
+                    </div>
+                </div>
+            )}
 
             {/* Popup */}
             {showPopup && <div className="fixed bottom-10 left-1/2 transform -translate-x-1/2 bg-green-600 px-4 py-2 rounded shadow-lg">Bracket Saved!</div>}

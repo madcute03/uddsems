@@ -1,48 +1,47 @@
-//Bracket.jsx
+// Bracket.jsx
 import React, { useState, useRef, useLayoutEffect, useEffect } from "react";
 import { router } from "@inertiajs/react";
 
-export default function EightTeamDoubleElimination({ eventId ,teamCount = 8 }) {
+export default function EightTeamDoubleElimination({ eventId, teamCount = 8 }) {
     const defaultMatches = {
-        UB1: { p1: { name: "TBD", score: 0 }, p2: { name: "TBD", score: 0 }, winner: null, loser: null },
-        UB2: { p1: { name: "TBD", score: 0 }, p2: { name: "TBD", score: 0 }, winner: null, loser: null },
-        UB3: { p1: { name: "TBD", score: 0 }, p2: { name: "TBD", score: 0 }, winner: null, loser: null },
-        UB4: { p1: { name: "TBD", score: 0 }, p2: { name: "TBD", score: 0 }, winner: null, loser: null },
-        UB5: { p1: { name: "TBD", score: 0 }, p2: { name: "TBD", score: 0 }, winner: null, loser: null },
-        UB6: { p1: { name: "TBD", score: 0 }, p2: { name: "TBD", score: 0 }, winner: null, loser: null },
-        UB7: { p1: { name: "TBD", score: 0 }, p2: { name: "TBD", score: 0 }, winner: null, loser: null },
-        LB1: { p1: { name: "TBD", score: 0 }, p2: { name: "TBD", score: 0 }, winner: null, loser: null },
-        LB2: { p1: { name: "TBD", score: 0 }, p2: { name: "TBD", score: 0 }, winner: null, loser: null },
-        LB3: { p1: { name: "TBD", score: 0 }, p2: { name: "TBD", score: 0 }, winner: null, loser: null },
-        LB4: { p1: { name: "TBD", score: 0 }, p2: { name: "TBD", score: 0 }, winner: null, loser: null },
-        LB5: { p1: { name: "TBD", score: 0 }, p2: { name: "TBD", score: 0 }, winner: null, loser: null },
-        LB6: { p1: { name: "TBD", score: 0 }, p2: { name: "TBD", score: 0 }, winner: null, loser: null },
-        GF: { p1: { name: "TBD", score: 0 }, p2: { name: "TBD", score: 0 }, winner: null, loser: null },
+        UB1: { p1: { name: "TBD", score: "" }, p2: { name: "TBD", score: "" }, winner: null, loser: null },
+        UB2: { p1: { name: "TBD", score: "" }, p2: { name: "TBD", score: "" }, winner: null, loser: null },
+        UB3: { p1: { name: "TBD", score: "" }, p2: { name: "TBD", score: "" }, winner: null, loser: null },
+        UB4: { p1: { name: "TBD", score: "" }, p2: { name: "TBD", score: "" }, winner: null, loser: null },
+        UB5: { p1: { name: "TBD", score: "" }, p2: { name: "TBD", score: "" }, winner: null, loser: null },
+        UB6: { p1: { name: "TBD", score: "" }, p2: { name: "TBD", score: "" }, winner: null, loser: null },
+        UB7: { p1: { name: "TBD", score: "" }, p2: { name: "TBD", score: "" }, winner: null, loser: null },
+        LB1: { p1: { name: "TBD", score: "" }, p2: { name: "TBD", score: "" }, winner: null, loser: null },
+        LB2: { p1: { name: "TBD", score: "" }, p2: { name: "TBD", score: "" }, winner: null, loser: null },
+        LB3: { p1: { name: "TBD", score: "" }, p2: { name: "TBD", score: "" }, winner: null, loser: null },
+        LB4: { p1: { name: "TBD", score: "" }, p2: { name: "TBD", score: "" }, winner: null, loser: null },
+        LB5: { p1: { name: "TBD", score: "" }, p2: { name: "TBD", score: "" }, winner: null, loser: null },
+        LB6: { p1: { name: "TBD", score: "" }, p2: { name: "TBD", score: "" }, winner: null, loser: null },
+        GF: { p1: { name: "TBD", score: "" }, p2: { name: "TBD", score: "" }, winner: null, loser: null },
     };
 
-    const [teamsInput, setTeamsInput] = useState(Array(8).fill(""));
+    const [teamsInput, setTeamsInput] = useState(Array(teamCount).fill(""));
     const [matches, setMatches] = useState(defaultMatches);
     const [champion, setChampion] = useState(null);
     const [lines, setLines] = useState([]);
-    const [history, setHistory] = useState([]);
     const [showPopup, setShowPopup] = useState(false);
+
+    // modal state
+    const [showModal, setShowModal] = useState(false);
+    const [currentMatch, setCurrentMatch] = useState(null);
+    const [scoreInput, setScoreInput] = useState({ p1: "", p2: "" });
+
     const boxRefs = useRef({});
 
-    // Auto-load saved bracket
+    // Load saved bracket
     useEffect(() => {
         if (!eventId) return;
-
         fetch(route("double-elimination.show", { event: eventId }))
             .then((res) => res.json())
             .then((data) => {
                 if (data.matches) {
-                    // merge DB data with defaults
-                    setMatches({
-                        ...defaultMatches,
-                        ...data.matches,
-                    });
+                    setMatches({ ...defaultMatches, ...data.matches });
                     setChampion(data.champion || null);
-
                     const initialTeams = [
                         data.matches.UB1?.p1?.name || "",
                         data.matches.UB1?.p2?.name || "",
@@ -59,14 +58,14 @@ export default function EightTeamDoubleElimination({ eventId ,teamCount = 8 }) {
             .catch((err) => console.error("Failed to load bracket:", err));
     }, [eventId]);
 
-    const handleTeamChange = (index, value) => {
-        const newTeams = [...teamsInput];
-        newTeams[index] = value;
-        setTeamsInput(newTeams);
+    const handleTeamChange = (i, val) => {
+        const arr = [...teamsInput];
+        arr[i] = val;
+        setTeamsInput(arr);
     };
 
     const applyTeams = () => {
-        const updated = { ...matches };
+        const updated = { ...defaultMatches };
         updated.UB1.p1.name = teamsInput[0] || "TBD";
         updated.UB1.p2.name = teamsInput[1] || "TBD";
         updated.UB2.p1.name = teamsInput[2] || "TBD";
@@ -79,27 +78,35 @@ export default function EightTeamDoubleElimination({ eventId ,teamCount = 8 }) {
         setChampion(null);
     };
 
-    const handleClick = (matchId, playerKey) => {
+    // open modal
+    const openReportScore = (id) => {
+        setCurrentMatch(id);
+        setScoreInput({
+            p1: matches[id].p1.score || "",
+            p2: matches[id].p2.score || "",
+        });
+        setShowModal(true);
+    };
+
+    // submit score
+    const submitScore = () => {
+        if (!currentMatch) return;
         const updated = { ...matches };
+        const m = updated[currentMatch];
+        m.p1.score = scoreInput.p1;
+        m.p2.score = scoreInput.p2;
 
-        setHistory((prev) => [...prev, { matches: structuredClone(matches), champion }]);
-
-        if (!updated[matchId] || !updated[matchId][playerKey]) return;
-
-        updated[matchId][playerKey].score += 1;
-        const { p1, p2 } = updated[matchId];
-
-        if (p1.name !== "TBD" && p2.name !== "TBD" && p1.score !== p2.score) {
-            const winnerKey = p1.score > p2.score ? "p1" : "p2";
+        if (m.p1.name !== "TBD" && m.p2.name !== "TBD" && m.p1.score !== m.p2.score) {
+            const winnerKey = parseInt(m.p1.score) > parseInt(m.p2.score) ? "p1" : "p2";
             const loserKey = winnerKey === "p1" ? "p2" : "p1";
-            const winnerName = updated[matchId][winnerKey].name;
-            const loserName = updated[matchId][loserKey].name;
+            const winnerName = m[winnerKey].name;
+            const loserName = m[loserKey].name;
 
-            updated[matchId].winner = winnerName;
-            updated[matchId].loser = loserName;
+            m.winner = winnerName;
+            m.loser = loserName;
 
-            // Upper Bracket propagation
-            switch (matchId) {
+            // upper propagation
+            switch (currentMatch) {
                 case "UB1": updated.UB5.p1.name = winnerName; updated.LB1.p1.name = loserName; break;
                 case "UB2": updated.UB5.p2.name = winnerName; updated.LB1.p2.name = loserName; break;
                 case "UB3": updated.UB6.p1.name = winnerName; updated.LB2.p1.name = loserName; break;
@@ -108,9 +115,8 @@ export default function EightTeamDoubleElimination({ eventId ,teamCount = 8 }) {
                 case "UB6": updated.UB7.p2.name = winnerName; updated.LB4.p1.name = loserName; break;
                 case "UB7": updated.GF.p1.name = winnerName; updated.LB6.p2.name = loserName; break;
             }
-
-            // Lower Bracket propagation
-            switch (matchId) {
+            // lower propagation
+            switch (currentMatch) {
                 case "LB1": updated.LB3.p2.name = winnerName; break;
                 case "LB2": updated.LB4.p2.name = winnerName; break;
                 case "LB3": updated.LB5.p1.name = winnerName; break;
@@ -122,6 +128,7 @@ export default function EightTeamDoubleElimination({ eventId ,teamCount = 8 }) {
         }
 
         setMatches(updated);
+        setShowModal(false);
     };
 
     const handleSave = () => {
@@ -135,7 +142,6 @@ export default function EightTeamDoubleElimination({ eventId ,teamCount = 8 }) {
                     setShowPopup(true);
                     setTimeout(() => setShowPopup(false), 1500);
                 },
-                onError: (err) => console.error("Failed to save:", err),
             }
         );
     };
@@ -148,38 +154,50 @@ export default function EightTeamDoubleElimination({ eventId ,teamCount = 8 }) {
             <div
                 id={id}
                 ref={(el) => (boxRefs.current[id] = el)}
-                className="p-3 border rounded-lg bg-gray-800 text-white mb-6 w-44 relative"
+                className="p-3 border rounded-lg bg-gray-800 text-white mb-6 w-56 relative"
             >
-                <p className="font-bold mb-1">{id}</p>
-                {["p1", "p2"].map((key) => (
-                    <button
-                        key={key}
-                        onClick={() => handleClick(id, key)}
-                        disabled={!m[key] || m[key].name === "TBD"}
-                        className={`flex justify-between items-center w-full px-2 py-1 mb-1 rounded text-left ${m.winner === m[key]?.name ? "bg-green-600" : "bg-gray-700 hover:bg-gray-600"
-                            }`}
+                <p className="font-bold mb-2">{id}</p>
+
+                {["p1", "p2"].map((k) => (
+                    <div
+                        key={k}
+                        className={`flex justify-between items-center mb-2 ${m.winner === m[k]?.name ? "bg-green-600" : "bg-gray-700"
+                            } px-2 py-1 rounded`}
                     >
-                        <span>{m[key]?.name ?? "TBD"}</span>
-                        <span className="ml-2 px-2 py-1 bg-gray-900 rounded border border-white w-8 text-center">
-                            {m[key]?.score ?? 0}
-                        </span>
-                    </button>
+                        <span>{m[k]?.name ?? "TBD"}</span>
+                        <span className="ml-2">{m[k]?.score || "-"}</span>
+                    </div>
                 ))}
+
+                {/* Show Report Score button only if both teams exist */}
+                {m.p1?.name !== "TBD" && m.p2?.name !== "TBD" && (
+                    <button
+                        onClick={() => openReportScore(id)}
+                        className="px-3 py-1 bg-blue-600 hover:bg-blue-500 rounded font-bold text-sm w-full mt-1"
+                    >
+                        Report Score
+                    </button>
+                )}
+
+                {/* Show Winner only if valid */}
+                {m.winner && m.winner !== "TBD" && (
+                    <p className="text-green-400 text-sm mt-1">Winner: {m.winner}</p>
+                )}
             </div>
         );
     };
 
+
+    // lines
     useLayoutEffect(() => {
         const updateLines = () => {
             const container = document.getElementById("bracket-container");
             if (!container) return;
-
             const connections = [
                 ["UB1", "UB5"], ["UB2", "UB5"], ["UB3", "UB6"], ["UB4", "UB6"],
                 ["UB5", "UB7"], ["UB6", "UB7"], ["UB7", "GF"],
                 ["LB1", "LB3"], ["LB2", "LB4"], ["LB3", "LB5"], ["LB4", "LB5"], ["LB5", "LB6"], ["LB6", "GF"],
             ];
-
             const newLines = [];
             connections.forEach(([fromId, toId]) => {
                 const from = boxRefs.current[fromId];
@@ -193,8 +211,7 @@ export default function EightTeamDoubleElimination({ eventId ,teamCount = 8 }) {
                     const endX = t.left - c.left;
                     const endY = t.top + t.height / 2 - c.top;
                     const midX = startX + 30;
-                    const path = `M${startX},${startY} H${midX} V${endY} H${endX}`;
-                    newLines.push(path);
+                    newLines.push(`M${startX},${startY} H${midX} V${endY} H${endX}`);
                 }
             });
             setLines(newLines);
@@ -204,9 +221,9 @@ export default function EightTeamDoubleElimination({ eventId ,teamCount = 8 }) {
 
     return (
         <div className="bg-gray-900 min-h-screen p-4 text-white">
-            <h1 className="text-2xl font-bold text-center mb-6">8-Team Double Elimination Bracket</h1>
+            <h1 className="text-2xl font-bold text-center mb-6">{teamCount}-Team Double Elimination Bracket</h1>
 
-            <div className="flex gap-4 justify-center mb-6">
+            <div className="flex gap-4 justify-center mb-6 flex-wrap">
                 {teamsInput.map((team, i) => (
                     <input
                         key={i}
@@ -217,47 +234,29 @@ export default function EightTeamDoubleElimination({ eventId ,teamCount = 8 }) {
                         className="px-2 py-1 rounded text-black"
                     />
                 ))}
-                <button onClick={applyTeams} className="px-4 py-1 bg-blue-600 rounded text-white font-bold">
-                    Apply Teams
-                </button>
+                <button onClick={applyTeams} className="px-4 py-1 bg-blue-600 rounded text-white font-bold">Apply Teams</button>
                 <button
-                    onClick={() => {
-                        setMatches(defaultMatches);
-                        setTeamsInput(Array(8).fill(""));
-                        setChampion(null);
-                    }}
+                    onClick={() => { setMatches(defaultMatches); setTeamsInput(Array(8).fill("")); setChampion(null); }}
                     className="px-4 py-1 bg-red-600 rounded text-white font-bold"
-                >
-                    Reset
-                </button>
-                
-                <button onClick={handleSave} className="px-4 py-1 bg-green-600 rounded text-white font-bold">
-                    Save Bracket
-                </button>
+                >Reset</button>
+                <button onClick={handleSave} className="px-4 py-1 bg-green-600 rounded text-white font-bold">Save Bracket</button>
             </div>
 
             <div id="bracket-container" className="relative">
                 <svg className="absolute top-0 left-0 w-full h-full pointer-events-none">
-                    {lines.map((d, i) => (
-                        <path key={i} d={d} stroke="white" strokeWidth="2" fill="none" />
-                    ))}
+                    {lines.map((d, i) => <path key={i} d={d} stroke="white" strokeWidth="2" fill="none" />)}
                 </svg>
 
                 <div className="flex flex-col gap-12">
-                    {/* Upper Bracket */}
                     <div className="mb-10">
                         <h2 className="font-bold mb-2">Upper Bracket</h2>
                         <div className="flex gap-12">
                             <div>{renderMatch("UB1")}{renderMatch("UB2")}{renderMatch("UB3")}{renderMatch("UB4")}</div>
-                            <div className="mt-12">
-                                {renderMatch("UB5")}
-                                {renderMatch("UB6")}
-                            </div>
+                            <div className="mt-12">{renderMatch("UB5")}{renderMatch("UB6")}</div>
                             <div className="mt-24">{renderMatch("UB7")}</div>
                         </div>
                     </div>
 
-                    {/* Lower Bracket */}
                     <div>
                         <h2 className="font-bold mb-2">Lower Bracket</h2>
                         <div className="flex gap-12 mb-10">
@@ -268,21 +267,32 @@ export default function EightTeamDoubleElimination({ eventId ,teamCount = 8 }) {
                         </div>
                     </div>
 
-                    {/* Grand Final */}
                     <div className="absolute left-2/3 top-1/2 transform -translate-y-1/2">
                         {renderMatch("GF")}
-                        {champion && (
-                            <h2 className="text-3xl font-bold text-yellow-400 mt-4">
-                                🏆 Champion: {champion}
-                            </h2>
-                        )}
+                        {champion && <h2 className="text-3xl font-bold text-yellow-400 mt-4">🏆 Champion: {champion}</h2>}
                     </div>
                 </div>
             </div>
 
-            {showPopup && (
-                <div className="fixed bottom-10 left-1/2 transform -translate-x-1/2 bg-green-600 px-4 py-2 rounded shadow-lg">
-                    Bracket Saved!
+            {showPopup && <div className="fixed bottom-10 left-1/2 transform -translate-x-1/2 bg-green-600 px-4 py-2 rounded shadow-lg">Bracket Saved!</div>}
+
+            {showModal && (
+                <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-60 z-50">
+                    <div className="bg-white text-black p-6 rounded-lg shadow-lg w-80">
+                        <h2 className="text-lg font-bold mb-4">Report Score ({currentMatch})</h2>
+                        <div className="mb-3">
+                            <label className="block text-sm font-semibold">{matches[currentMatch]?.p1?.name}</label>
+                            <input type="number" value={scoreInput.p1} onChange={(e) => setScoreInput({ ...scoreInput, p1: e.target.value })} className="w-full border px-2 py-1 rounded" />
+                        </div>
+                        <div className="mb-4">
+                            <label className="block text-sm font-semibold">{matches[currentMatch]?.p2?.name}</label>
+                            <input type="number" value={scoreInput.p2} onChange={(e) => setScoreInput({ ...scoreInput, p2: e.target.value })} className="w-full border px-2 py-1 rounded" />
+                        </div>
+                        <div className="flex justify-end gap-2">
+                            <button onClick={() => setShowModal(false)} className="px-3 py-1 rounded bg-gray-400 text-white">Cancel</button>
+                            <button onClick={submitScore} className="px-3 py-1 rounded bg-blue-600 text-white font-bold">Submit</button>
+                        </div>
+                    </div>
                 </div>
             )}
         </div>

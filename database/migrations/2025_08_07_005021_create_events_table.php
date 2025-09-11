@@ -39,7 +39,6 @@ return new class extends Migration
     {
         Schema::dropIfExists('event_images'); // drop child table first
         Schema::dropIfExists('events');       // then drop parent table
-                $table->dropColumn('registration_end_date');
 
     }
 };

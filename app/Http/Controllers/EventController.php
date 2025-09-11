@@ -19,14 +19,16 @@ class EventController extends Controller
     public function index()
     {
         $events = Event::select(
-                'id',
-                'title',
-                'description',
-                'coordinator_name',
-                'event_date',
-                'registration_end_date',
-                'required_players'
-            )
+            'id',
+            'title',
+            'description',
+            'coordinator_name',
+            'event_date',
+            'registration_end_date',
+            'required_players',
+            'is_done' // ✅ include this
+
+        )
             ->with('images')
             ->orderBy('event_date')
             ->get();
@@ -149,14 +151,14 @@ class EventController extends Controller
     public function welcome()
     {
         $events = Event::select(
-                'id',
-                'title',
-                'description',
-                'coordinator_name',
-                'event_date',
-                'registration_end_date',
-                'required_players'
-            )
+            'id',
+            'title',
+            'description',
+            'coordinator_name',
+            'event_date',
+            'registration_end_date',
+            'required_players'
+        )
             ->with('images')
             ->orderBy('event_date')
             ->get();
@@ -168,6 +170,17 @@ class EventController extends Controller
 
         return Inertia::render('Welcome', [
             'events' => $events,
+        ]);
+    }
+    public function markDone($id)
+    {
+        $event = Event::findOrFail($id);
+        $event->is_done = 1; // ✅ mark as done
+        $event->save();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Event marked as done!',
         ]);
     }
 }

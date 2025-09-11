@@ -14,6 +14,7 @@ use App\Http\Controllers\PlayerController;
 use App\Http\Controllers\BracketController;
 // routes/web.php
 use App\Http\Controllers\DoubleEliminationController;
+use App\Http\Controllers\SingleEliminationController;
 
 Route::post('/events/{event}/bracket-settings', [BracketController::class, 'storeBracketSettings'])
     ->name('bracket.storeSettings');
@@ -21,6 +22,8 @@ Route::post('/events/{event}/bracket-settings', [BracketController::class, 'stor
 
 Route::post('/double-elimination/save', [DoubleEliminationController::class, 'save'])->name('double-elimination.save');
 Route::get('/double-elimination/{event}', [DoubleEliminationController::class, 'show'])->name('double-elimination.show');
+Route::post('/single-elimination/save', [SingleEliminationController::class, 'save'])->name('single-elimination.save');
+Route::get('/single-elimination/{event}', [SingleEliminationController::class, 'show'])->name('single-elimination.show');
 
 
 
@@ -130,7 +133,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/events', [EventController::class, 'store'])->name('events.store');
     Route::put('/events/{id}', [EventController::class, 'update'])->name('events.update');
     Route::delete('/events/{id}', [EventController::class, 'destroy'])->name('events.destroy');
-    Route::post('/events/{id}/done', [EventController::class, 'markDone'])->name('events.markDone');
+    Route::post('/events/{events}/done', [EventController::class, 'markDone'])->name('events.done');
 
     // User profile
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
