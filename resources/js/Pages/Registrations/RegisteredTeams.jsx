@@ -17,17 +17,15 @@ export default function RegisteredTeams({ registrations: initialRegistrations })
             email: modal.playerEmail
         }, {
             onSuccess: () => {
-                const updatedRegistrations = registrations.map(reg => {
-                    return {
-                        ...reg,
-                        players: reg.players.map(player => {
-                            if (player.id === modal.playerId) {
-                                return { ...player, status: modal.action };
-                            }
-                            return player;
-                        }),
-                    };
-                });
+                const updatedRegistrations = registrations.map(reg => ({
+                    ...reg,
+                    players: reg.players.map(player => {
+                        if (player.id === modal.playerId) {
+                            return { ...player, status: modal.action };
+                        }
+                        return player;
+                    }),
+                }));
                 setRegistrations(updatedRegistrations);
                 closeModal();
             },
@@ -93,41 +91,42 @@ export default function RegisteredTeams({ registrations: initialRegistrations })
                                                     <td className="border px-2 py-1 text-center">
                                                         {player.player_image && (
                                                             <img
-                                                                src={`/storage/${player.player_image}`}
+                                                                src={`data:image/*;base64,${player.player_image}`}
                                                                 alt="Player"
                                                                 className="h-16 w-16 object-cover rounded cursor-pointer hover:scale-110 transition"
-                                                                onClick={() => setSelectedImage(`/storage/${player.player_image}`)}
+                                                                onClick={() => setSelectedImage(`data:image/jpeg;base64,${player.player_image}`)}
                                                             />
                                                         )}
                                                     </td>
                                                     <td className="border px-2 py-1 text-center">
                                                         {player.whiteform_image && (
                                                             <img
-                                                                src={`/storage/${player.whiteform_image}`}
+                                                                src={`data:image/*;base64,${player.whiteform_image}`}
                                                                 alt="Whiteform"
                                                                 className="h-16 w-16 object-cover rounded cursor-pointer hover:scale-110 transition"
-                                                                onClick={() => setSelectedImage(`/storage/${player.whiteform_image}`)}
+                                                                onClick={() => setSelectedImage(`data:image/jpeg;base64,${player.whiteform_image}`)}
                                                             />
                                                         )}
                                                     </td>
-                                                    <td className="border px-2 py-1 text-center">{player.status || 'Pending'}</td>
+                                                    <td className="border px-2 py-1 text-center">
+                                                        {player.status || 'Pending'}
+                                                    </td>
                                                     <td className="border px-2 py-1 text-center space-x-2">
                                                         <button
                                                             className="bg-green-600 text-white px-2 py-1 rounded hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed"
                                                             onClick={() => openModal(player.id, player.email, 'approved')}
-                                                            disabled={player.status && player.status !== 'Pending'} // disable if status is not Pending
+                                                            disabled={player.status && player.status !== 'Pending'}
                                                         >
                                                             Approve
                                                         </button>
                                                         <button
                                                             className="bg-red-600 text-white px-2 py-1 rounded hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed"
                                                             onClick={() => openModal(player.id, player.email, 'disapproved')}
-                                                            disabled={player.status && player.status !== 'Pending'} // disable if status is not Pending
+                                                            disabled={player.status && player.status !== 'Pending'}
                                                         >
                                                             Disapprove
                                                         </button>
                                                     </td>
-
                                                 </tr>
                                             ))}
                                         </tbody>
@@ -143,6 +142,7 @@ export default function RegisteredTeams({ registrations: initialRegistrations })
                 </div>
             </div>
 
+            {/* Image Preview Modal */}
             {selectedImage && (
                 <div className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50">
                     <div className="relative">
@@ -163,7 +163,7 @@ export default function RegisteredTeams({ registrations: initialRegistrations })
                 </div>
             )}
 
-            {/* Modal */}
+            {/* Status Confirmation Modal */}
             {modal.isOpen && (
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
                     <div className="bg-white p-6 rounded shadow max-w-sm w-full text-center">

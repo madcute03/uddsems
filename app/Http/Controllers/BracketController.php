@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Bracket;
 use App\Models\Event;   // <-- add this
+use Illuminate\Support\Str; // ✅ Import this
 use Inertia\Inertia;
 
 class BracketController extends Controller
@@ -59,7 +60,7 @@ class BracketController extends Controller
     }
 
 
-    public function show($eventId)
+    public function ShowBracket($eventId)
     {
         $event = Event::with('bracket')->findOrFail($eventId);
 
@@ -78,9 +79,7 @@ class BracketController extends Controller
         $bracketFolder = $bracketMap[$normalizedType] ?? 'SingleElimination';
 
         // Build correct path
-        $pagePath = "Bracket/{$bracketFolder}Bracket/Bracket{$teamCount}/ShowResult";
-        $pagePath = "Bracket/{$bracketFolder}Bracket/Bracket{$teamCount}/ShowStanding";
-
+        $pagePath = "Bracket/{$bracketFolder}Bracket/Bracket{$teamCount}/ShowBracket";
 
         $bracket = $event->bracket;
 
@@ -92,6 +91,40 @@ class BracketController extends Controller
             'bracketType' => $bracketFolder,
         ]);
     }
+
+    public function ShowStanding($eventId)
+    {
+        $event = Event::with('bracket')->findOrFail($eventId);
+
+        // Get team count and bracket type
+        $teamCount   = $event->teams ?? 8;
+        $bracketType = $event->bracket_type ?? 'DoubleElimination';
+
+        // Normalize and map folder names
+        $bracketMap = [
+            'single' => 'SingleElimination',
+            'double' => 'DoubleElimination',
+        ];
+
+        $normalizedType = strtolower($bracketType);
+        $bracketFolder = $bracketMap[$normalizedType] ?? 'DoubleElimination';
+        $bracketFolder = $bracketMap[$normalizedType] ?? 'SingleElimination';
+
+        // Build correct path
+        $pagePath = "Bracket/{$bracketFolder}Bracket/Bracket{$teamCount}/ShowStanding";
+
+        $bracket = $event->bracket;
+
+        return Inertia::render($pagePath, [
+            'eventId'     => $eventId,
+            'teamCount'   => $teamCount,
+            'matches'     => $bracket?->matches ?? [],
+            'champion'    => $bracket?->champion ?? null,
+            'bracketType' => $bracketFolder,
+        ]);
+    }
+
+
 
 
 

@@ -28,7 +28,8 @@ Route::get('/single-elimination/{event}', [SingleEliminationController::class, '
 
 
 Route::post('/brackets/save', [BracketController::class, 'save'])->name('bracket.save');
-Route::get('/bracket/{event}/show', [BracketController::class, 'show'])->name('bracket.show');
+Route::get('/bracket/{event}/show', [BracketController::class, 'ShowBracket'])->name('bracket.show');
+Route::get('/standing/{event}/show', [BracketController::class, 'ShowStanding'])->name('standing.show');
 
 
 // Single Elimination Bracket
@@ -95,10 +96,10 @@ Route::post('/events/{event}/register', [EventRegistrationController::class, 'st
 
 
 
-Route::get('/doublebracket',function(){
+Route::get('/doublebracket', function () {
     return Inertia::render('Bracket/DoubleEliminationBracket/Bracket3/Bracket');
 });
-Route::get('/singlebracket',function(){
+Route::get('/singlebracket', function () {
     return Inertia::render('Bracket/SingleEliminationBracket/Bracket2');
 });
 
@@ -127,7 +128,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', [EventController::class, 'dashboard'])->name('dashboard');
     Route::get('/dashboard/createevent', [EventController::class, 'index'])->name('dashboard.createevent');
     Route::get('/dashboard/bracket', [CreateBracketController::class, 'bracket'])
-    ->name('bracket');
+        ->name('bracket');
 
 
     Route::post('/events', [EventController::class, 'store'])->name('events.store');
@@ -140,10 +141,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-Route::post('/player/update-status', [PlayerController::class, 'updateStatus'])
-    ->name('player.updateStatus');
-
-
+    Route::post('/player/update-status', [PlayerController::class, 'updateStatus'])
+        ->name('player.updateStatus');
 });
 
 require __DIR__ . '/auth.php';

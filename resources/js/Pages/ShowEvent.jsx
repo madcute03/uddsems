@@ -108,10 +108,18 @@ export default function ShowEvent({ event }) {
                                     >
                                         View Bracket
                                     </Link>
-                                    
-                                    
                                 )}
-                                
+
+                                {/* View Standing Button */}
+                                {(isOngoing || isDone) && (
+                                    <Link
+                                        href={route('standing.show', { event: event.id })}
+                                        onClick={handleViewBracket}
+                                        className="inline-block bg-green-600 text-white px-6 py-2 rounded-full font-bold text-sm sm:text-lg shadow-lg hover:bg-green-700 transition"
+                                    >
+                                        View Standing
+                                    </Link>
+                                )}
                             </div>
 
                             {/* Back Link */}
@@ -146,14 +154,23 @@ export default function ShowEvent({ event }) {
                             ) : null}
 
                             {(isOngoing || isDone) && (
-                                <Link
-                                    href={route('bracket.show', { event: event.id })}
-                                    onClick={handleViewBracket}
-                                    className="inline-block bg-blue-600 text-white px-6 py-2 rounded-full font-bold text-sm sm:text-lg shadow-lg hover:bg-blue-700 transition"
-                                >
-                                    View Bracket
-                                </Link>
-                                
+                                <>
+                                    <Link
+                                        href={route('bracket.show', { event: event.id })}
+                                        onClick={handleViewBracket}
+                                        className="inline-block bg-blue-600 text-white px-6 py-2 rounded-full font-bold text-sm sm:text-lg shadow-lg hover:bg-blue-700 transition"
+                                    >
+                                        View Bracket
+                                    </Link>
+
+                                    <Link
+                                        href={route('standing.show', { event: event.id })}
+                                        onClick={handleViewBracket}
+                                        className="inline-block bg-green-600 text-white px-6 py-2 rounded-full font-bold text-sm sm:text-lg shadow-lg hover:bg-green-700 transition"
+                                    >
+                                        View Standing
+                                    </Link>
+                                </>
                             )}
                         </div>
 

@@ -40,19 +40,23 @@ class EventRegistrationController extends Controller
         ]);
 
         foreach ($validated['players'] as $player) {
+            $playerImageBase64 = base64_encode(file_get_contents($player['player_image']));
+            $whiteformImageBase64 = base64_encode(file_get_contents($player['whiteform_image']));
+
             $registration->players()->create([
                 'student_id' => $player['student_id'],
                 'name' => $player['name'],
                 'email' => $player['email'],
                 'department' => $player['department'],
                 'age' => $player['age'],
-                'player_image' => $player['player_image']->store('player_images', 'public'),
-                'whiteform_image' => $player['whiteform_image']->store('whiteform_images', 'public'),
+                'player_image' => $playerImageBase64, // ✅ save base64 to DB
+                'whiteform_image' => $whiteformImageBase64, // ✅ save base64 to DB
             ]);
         }
 
+
         return redirect()->route('events.show', $event->id)
-                         ->with('success', 'Registration successful!');
+            ->with('success', 'Registration successful!');
     }
 
     // Show registered teams and players

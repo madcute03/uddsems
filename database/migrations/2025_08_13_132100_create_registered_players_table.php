@@ -15,8 +15,8 @@ return new class extends Migration
             $table->string('name');
             $table->string('department');
             $table->integer('age');
-            $table->string('player_image');
-            $table->string('whiteform_image');
+            $table->longText('player_image');
+            $table->longText('whiteform_image');
             $table->timestamps();
         });
     }
