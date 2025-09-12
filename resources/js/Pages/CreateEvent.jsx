@@ -133,6 +133,8 @@ export default function CreateEvent({ auth, events = [] }) {
 
                     {/* Create Event Form */}
                     <div className="bg-white p-6 rounded shadow">
+                        
+
                         <h2 className="text-lg font-semibold mb-4">Create Event</h2>
                         <form onSubmit={handleSubmit} encType="multipart/form-data">
                             <div className="mb-2">
