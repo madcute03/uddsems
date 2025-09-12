@@ -108,7 +108,10 @@ export default function ShowEvent({ event }) {
                                     >
                                         View Bracket
                                     </Link>
+                                    
+                                    
                                 )}
+                                
                             </div>
 
                             {/* Back Link */}
@@ -150,6 +153,7 @@ export default function ShowEvent({ event }) {
                                 >
                                     View Bracket
                                 </Link>
+                                
                             )}
                         </div>
 

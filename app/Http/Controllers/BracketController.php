@@ -1,9 +1,10 @@
 <?php
+
 namespace App\Http\Controllers;
+
 use Illuminate\Http\Request;
 use App\Models\Bracket;
 use App\Models\Event;   // <-- add this
-use Illuminate\Support\Str; // ✅ Import this
 use Inertia\Inertia;
 
 class BracketController extends Controller
@@ -30,17 +31,17 @@ class BracketController extends Controller
         ]);
     }
     public function create()
-{
-    return Inertia::render('Bracket/CreateBracket', [
-        'events' => Event::all(),
-    ]);
-}
+    {
+        return Inertia::render('Bracket/CreateBracket', [
+            'events' => Event::all(),
+        ]);
+    }
 
 
 
 
 
- public function save(Request $request)
+    public function save(Request $request)
     {
         $request->validate([
             'event_id' => 'required|exists:events,id',
@@ -59,46 +60,48 @@ class BracketController extends Controller
 
 
     public function show($eventId)
-{
-    $event = Event::with('bracket')->findOrFail($eventId);
+    {
+        $event = Event::with('bracket')->findOrFail($eventId);
 
-    // Get team count and bracket type
-    $teamCount   = $event->teams ?? 8;
-    $bracketType = $event->bracket_type ?? 'DoubleElimination';
+        // Get team count and bracket type
+        $teamCount   = $event->teams ?? 8;
+        $bracketType = $event->bracket_type ?? 'DoubleElimination';
 
-    // Normalize and map folder names
-    $bracketMap = [
-        'single' => 'SingleElimination',
-        'double' => 'DoubleElimination',
-    ];
+        // Normalize and map folder names
+        $bracketMap = [
+            'single' => 'SingleElimination',
+            'double' => 'DoubleElimination',
+        ];
 
-    $normalizedType = strtolower($bracketType);
-    $bracketFolder = $bracketMap[$normalizedType] ?? 'DoubleElimination';
-    $bracketFolder = $bracketMap[$normalizedType] ?? 'SingleElimination';
+        $normalizedType = strtolower($bracketType);
+        $bracketFolder = $bracketMap[$normalizedType] ?? 'DoubleElimination';
+        $bracketFolder = $bracketMap[$normalizedType] ?? 'SingleElimination';
 
-    // Build correct path
-    $pagePath = "Bracket/{$bracketFolder}Bracket/Bracket{$teamCount}/ShowResult";
-    
-    $bracket = $event->bracket;
-
-    return Inertia::render($pagePath, [
-        'eventId'     => $eventId,
-        'teamCount'   => $teamCount,
-        'matches'     => $bracket?->matches ?? [],
-        'champion'    => $bracket?->champion ?? null,
-        'bracketType' => $bracketFolder,
-    ]);
-}
+        // Build correct path
+        $pagePath = "Bracket/{$bracketFolder}Bracket/Bracket{$teamCount}/ShowResult";
+        $pagePath = "Bracket/{$bracketFolder}Bracket/Bracket{$teamCount}/ShowStanding";
 
 
+        $bracket = $event->bracket;
 
-
+        return Inertia::render($pagePath, [
+            'eventId'     => $eventId,
+            'teamCount'   => $teamCount,
+            'matches'     => $bracket?->matches ?? [],
+            'champion'    => $bracket?->champion ?? null,
+            'bracketType' => $bracketFolder,
+        ]);
+    }
 
 
 
 
 
-public function storeBracketSettings(Request $request, $eventId)
+
+
+
+
+    public function storeBracketSettings(Request $request, $eventId)
     {
         $event = Event::findOrFail($eventId);
 
@@ -108,6 +111,4 @@ public function storeBracketSettings(Request $request, $eventId)
 
         return back()->with('success', 'Bracket settings saved!');
     }
-
-
 }

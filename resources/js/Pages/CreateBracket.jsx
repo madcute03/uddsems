@@ -99,7 +99,7 @@ export default function CreateBracket({ events = [] }) {
                                     }}
                                     className="mt-2 inline-block bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
                                 >
-                                View Created Bracket
+                                    View Created Bracket
                                 </button>
                             </div>
                         ))}
@@ -155,15 +155,19 @@ export default function CreateBracket({ events = [] }) {
                                         <button
                                             key={count}
                                             onClick={() => {
-                                                Inertia.post(
-                                                    route("bracket.storeSettings", {
-                                                        event: selectedEvent.id,
-                                                    }),
-                                                    {
-                                                        bracket_type: bracketType,
-                                                        teams: count,
+                                                Inertia.post(`/events/${selectedEvent.id}/bracket-settings`, {
+                                                    bracket_type: bracketType,
+                                                    teams: count,
+                                                }, {
+                                                    onSuccess: () => {
+                                                        setTeamCount(count);
+                                                    },
+                                                    onError: (errors) => {
+                                                        console.error(errors);
+                                                        alert("Failed to save bracket settings.");
                                                     }
-                                                );
+                                                });
+
                                                 setTeamCount(count);
                                             }}
                                             className="block bg-green-600 text-white px-4 py-2 rounded text-center hover:bg-green-700"
