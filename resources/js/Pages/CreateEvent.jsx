@@ -1,6 +1,7 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { useState } from 'react';
 import { Head, useForm, Link } from '@inertiajs/react';
+import { Inertia } from '@inertiajs/inertia';
 
 export default function CreateEvent({ auth, events = [] }) {
     const { data, setData, post, processing, reset } = useForm({
@@ -100,17 +101,25 @@ export default function CreateEvent({ auth, events = [] }) {
             method: 'POST',
             headers: {
                 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                'Accept': 'application/json',   // ✅ important
+                'Content-Type': 'application/json',
             },
+            body: JSON.stringify({}),
         })
-            .then(res => res.json())
+            .then(async res => {
+                if (!res.ok) throw new Error("Failed request");
+                return res.json();
+            })
             .then(data => {
                 if (data.success) {
                     window.location.reload();
                 } else {
                     alert("Failed to mark event as done.");
                 }
-            });
+            })
+            .catch(err => console.error(err));
     };
+
 
 
 
