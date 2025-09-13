@@ -190,8 +190,13 @@ export default function FourTeamDoubleElim() {
 
                     {/* Champion */}
                     {champion && (
-                        <div className="p-6 bg-green-300 text-center font-bold rounded-xl shadow-md text-xl">
-                            🏆 Champion: {champion}
+                        <div className="mt-12 flex justify-center">
+                            <div className="flex items-center gap-4 bg-slate-900/60 border border-slate-800 px-6 py-4 rounded-xl shadow-lg shadow-blue-950/30">
+                                <img src="/images/champ.jpg" alt="Trophy" className="h-12 w-12 object-cover rounded-full ring-2 ring-yellow-400" />
+                                <div className="text-xl font-bold text-slate-100">
+                                    Champion: <span className="text-yellow-300">{champion}</span>
+                                </div>
+                            </div>
                         </div>
                     )}
                 </>
@@ -368,8 +373,13 @@ export default function FourTeamDoubleElim() {
 
                     {/* Champion */}
                     {champion && (
-                        <div className="p-6 bg-green-300 text-center font-bold rounded-xl shadow-md text-xl">
-                            🏆 Champion: {champion}
+                        <div className="mt-12 flex justify-center">
+                            <div className="flex items-center gap-4 bg-slate-900/60 border border-slate-800 px-6 py-4 rounded-xl shadow-lg shadow-blue-950/30">
+                                <img src="/images/champ.jpg" alt="Trophy" className="h-12 w-12 object-cover rounded-full ring-2 ring-yellow-400" />
+                                <div className="text-xl font-bold text-slate-100">
+                                    Champion: <span className="text-yellow-300">{champion}</span>
+                                </div>
+                            </div>
                         </div>
                     )}
                 </>

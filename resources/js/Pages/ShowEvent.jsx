@@ -41,7 +41,7 @@ export default function ShowEvent({ event }) {
     return (
         <>
             <Head title={event.title} />
-            <div className="min-h-screen bg-gray-100">
+            <div className="min-h-screen bg-gradient-to-br from-slate-950 via-blue-950 to-black text-slate-100">
 
                 {/* Image Carousel */}
                 {totalImages > 0 ? (
@@ -94,7 +94,7 @@ export default function ShowEvent({ event }) {
                                         Register
                                     </Link>
                                 ) : isUpcoming && isRegistrationClosed ? (
-                                    <p className="inline-block bg-gray-400 text-white px-6 py-2 rounded-full font-semibold text-sm sm:text-lg">
+                                    <p className="inline-block bg-slate-700 text-slate-200 px-6 py-2 rounded-full font-semibold text-sm sm:text-lg">
                                         Registration Closed
                                     </p>
                                 ) : null}
@@ -104,7 +104,25 @@ export default function ShowEvent({ event }) {
                                     <Link
                                         href={route('bracket.show', { event: event.id })}
                                         onClick={handleViewBracket}
-                                        className="inline-block bg-blue-600 text-white px-6 py-2 rounded-full font-bold text-sm sm:text-lg shadow-lg hover:bg-blue-700 transition"
+                                        className="flex items-center
+    h-10 px-4
+    rounded-lg border-0
+    bg-white text-blue-600
+    font-bold font-[Montserrat]
+    cursor-pointer
+    transition ease-in-out duration-150
+    shadow-[0_0.7px_0.7px_-0.625px_#00000026,
+            0_1.8px_1.8px_-1.25px_#00000025,
+            0_3.6px_3.6px_-1.875px_#00000023,
+            0_6.9px_6.9px_-2.5px_#00000020,
+            0_13.6px_13.6px_-3.125px_#0000001b,
+            0_30px_30px_-3.75px_#0000000d]
+    active:scale-95
+    active:bg-blue-600 active:text-white
+    active:shadow-[0_0.64px_1.15px_-1.125px_rgba(0,0,0,0.26),
+                  0_1.93px_3.48px_-2.25px_rgba(0,0,0,0.24),
+                  0_5.1px_9.19px_-3.375px_rgba(0,0,0,0.192),
+                  0_16px_28.8px_-4.5px_rgba(0,0,0,0.03)]"
                                     >
                                         View Bracket
                                     </Link>
@@ -115,7 +133,7 @@ export default function ShowEvent({ event }) {
                                     <Link
                                         href={route('standing.show', { event: event.id })}
                                         onClick={handleViewBracket}
-                                        className="inline-block bg-green-600 text-white px-6 py-2 rounded-full font-bold text-sm sm:text-lg shadow-lg hover:bg-green-700 transition"
+                                        className="relative px-10 py-2.5 text-white text-lg font-medium rounded-md border-2 border-transparent cursor-pointer transition-all duration-300 [text-shadow:1px_1px_1px_#00000040] shadow-[8px_8px_20px_0px_#45090059] bg-[linear-gradient(140.14deg,#ec540e_15.05%,#d6361f_114.99%)] before:absolute before:inset-0 before:rounded-md before:p-[2px] before:bg-[linear-gradient(142.51deg,#ff9465_8.65%,#af1905_88.82%)] before:-z-10 before:content-[''] before:bg-clip-border hover:opacity-80 hover:shadow-none"
                                     >
                                         View Standing
                                     </Link>
@@ -125,7 +143,7 @@ export default function ShowEvent({ event }) {
                             {/* Back Link */}
                             <Link
                                 href={route('home')}
-                                className="mt-4 sm:mt-6 block text-white underline font-semibold text-sm sm:text-lg"
+                                className="mt-4 sm:mt-6 block text-blue-300 underline font-semibold text-sm sm:text-lg hover:text-blue-200"
                             >
                                 ← Back to Events
                             </Link>
@@ -134,10 +152,12 @@ export default function ShowEvent({ event }) {
                 ) : (
                     // Fallback if no images
                     <div className="p-6 sm:p-12 text-center">
-                        <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold mb-4">{event.title}</h1>
-                        <p className="text-lg sm:text-xl md:text-2xl mb-2">{event.description}</p>
-                        <p className="text-md sm:text-lg md:text-lg opacity-90 mb-2">By {event.coordinator_name}</p>
-                        <p className="text-lg sm:text-xl mb-4">⏳ Starts On: {formatDate(event.event_date)}</p>
+                        <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold mb-4">
+                            <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-400 via-sky-400 to-cyan-300">{event.title}</span>
+                        </h1>
+                        <p className="text-lg sm:text-xl md:text-2xl mb-2 text-slate-200">{event.description}</p>
+                        <p className="text-md sm:text-lg md:text-lg text-slate-300 mb-2">By {event.coordinator_name}</p>
+                        <p className="text-lg sm:text-xl mb-4 text-slate-300">⏳ Starts On: {formatDate(event.event_date)}</p>
 
                         <div className="flex flex-wrap gap-3 mt-4 justify-center">
                             {isUpcoming && !isRegistrationClosed ? (
@@ -148,7 +168,7 @@ export default function ShowEvent({ event }) {
                                     Register
                                 </Link>
                             ) : isUpcoming && isRegistrationClosed ? (
-                                <p className="inline-block bg-gray-400 text-white px-6 py-2 rounded-full font-semibold text-sm sm:text-lg">
+                                <p className="inline-block bg-slate-700 text-slate-200 px-6 py-2 rounded-full font-semibold text-sm sm:text-lg">
                                     Registration Closed
                                 </p>
                             ) : null}
@@ -158,7 +178,7 @@ export default function ShowEvent({ event }) {
                                     <Link
                                         href={route('bracket.show', { event: event.id })}
                                         onClick={handleViewBracket}
-                                        className="inline-block bg-blue-600 text-white px-6 py-2 rounded-full font-bold text-sm sm:text-lg shadow-lg hover:bg-blue-700 transition"
+                                        className="inline-block bg-blue-600 hover:bg-blue-500 text-white px-6 py-2 rounded-full font-bold text-sm sm:text-lg shadow-lg transition"
                                     >
                                         View Bracket
                                     </Link>
@@ -166,7 +186,7 @@ export default function ShowEvent({ event }) {
                                     <Link
                                         href={route('standing.show', { event: event.id })}
                                         onClick={handleViewBracket}
-                                        className="inline-block bg-green-600 text-white px-6 py-2 rounded-full font-bold text-sm sm:text-lg shadow-lg hover:bg-green-700 transition"
+                                        className="inline-block bg-green-600 hover:bg-green-500 text-white px-6 py-2 rounded-full font-bold text-sm sm:text-lg shadow-lg transition"
                                     >
                                         View Standing
                                     </Link>
@@ -176,7 +196,7 @@ export default function ShowEvent({ event }) {
 
                         <Link
                             href={route('home')}
-                            className="mt-4 sm:mt-6 block text-purple-700 underline font-semibold text-sm sm:text-lg"
+                            className="mt-4 sm:mt-6 block text-blue-300 underline font-semibold text-sm sm:text-lg hover:text-blue-200"
                         >
                             ← Back to Events
                         </Link>
@@ -185,15 +205,15 @@ export default function ShowEvent({ event }) {
 
                 {/* Popup Modal kapag wala pang bracket settings */}
                 {showSoonModal && (
-                    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-                        <div className="bg-white p-6 rounded-lg shadow-lg w-80 text-center">
+                    <div className="fixed inset-0 flex items-center justify-center bg-black/70 z-50">
+                        <div className="bg-slate-900/90 border border-slate-800 p-6 rounded-lg shadow-lg w-80 text-center text-slate-100">
                             <h2 className="text-xl font-bold mb-4">Coming Soon</h2>
-                            <p className="text-gray-700 mb-4">
+                            <p className="text-slate-300 mb-4">
                                 The bracket for <span className="font-semibold">{event.title}</span> is not yet available.
                             </p>
                             <button
                                 onClick={() => setShowSoonModal(false)}
-                                className="mt-2 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+                                className="mt-2 bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded"
                             >
                                 OK
                             </button>

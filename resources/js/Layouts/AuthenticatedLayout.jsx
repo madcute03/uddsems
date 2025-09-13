@@ -1,4 +1,3 @@
-import ApplicationLogo from '@/Components/ApplicationLogo';
 import Dropdown from '@/Components/Dropdown';
 import NavLink from '@/Components/NavLink';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink';
@@ -12,14 +11,14 @@ export default function AuthenticatedLayout({ header, children }) {
         useState(false);
 
     return (
-        <div className="min-h-screen bg-gray-100">
-            <nav className="border-b border-gray-100 bg-white">
+        <div className="min-h-screen bg-gradient-to-br from-slate-950 via-blue-950 to-black text-slate-100">
+            <nav className="sticky top-0 z-40 border-b border-slate-800/50 bg-slate-900/70 backdrop-blur supports-[backdrop-filter]:bg-slate-900/60 shadow-lg shadow-blue-950/20 rounded-b-xl">
                 <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                     <div className="flex h-16 justify-between">
                         <div className="flex">
                             <div className="flex shrink-0 items-center">
                                 <Link href="/dashboard">
-                                    <ApplicationLogo className="block h-9 w-auto fill-current text-gray-800" />
+                                    <p className="text-3xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 via-sky-400 to-cyan-300 tracking-wide">SCAEMS</p>
                                 </Link>
                             </div>
 
@@ -28,13 +27,13 @@ export default function AuthenticatedLayout({ header, children }) {
                                     href={route('dashboard.createevent')}
                                     active={route().current('dashboard.createevent')}
                                 >
-                                    CreateEvent
+                                    Create Event
                                 </NavLink>
                                 <NavLink
                                     href={route('bracket')}
                                     active={route().current('bracket')}
                                 >
-                                    createbracket
+                                    Create Bracket
                                 </NavLink>
                             </div>
                         </div>
@@ -46,7 +45,7 @@ export default function AuthenticatedLayout({ header, children }) {
                                         <span className="inline-flex rounded-md">
                                             <button
                                                 type="button"
-                                                className="inline-flex items-center rounded-md border border-transparent bg-white px-3 py-2 text-sm font-medium leading-4 text-gray-500 transition duration-150 ease-in-out hover:text-gray-700 focus:outline-none"
+                                                className="inline-flex items-center rounded-md border border-transparent bg-slate-800/50 px-3 py-2 text-sm font-medium leading-4 text-slate-200 transition duration-150 ease-in-out hover:text-white hover:bg-slate-800/70 focus:outline-none focus:ring-2 focus:ring-blue-600/50"
                                             >
                                                 {user.name}
                                                 <svg
@@ -90,7 +89,7 @@ export default function AuthenticatedLayout({ header, children }) {
                                         (previousState) => !previousState,
                                     )
                                 }
-                                className="inline-flex items-center justify-center rounded-md p-2 text-gray-400 transition duration-150 ease-in-out hover:bg-gray-100 hover:text-gray-500 focus:bg-gray-100 focus:text-gray-500 focus:outline-none"
+                                className="inline-flex items-center justify-center rounded-md p-2 text-slate-300 transition duration-150 ease-in-out hover:bg-slate-800/50 hover:text-white focus:bg-slate-800/50 focus:text-white focus:outline-none"
                             >
                                 <svg
                                     className="h-6 w-6"
@@ -129,10 +128,10 @@ export default function AuthenticatedLayout({ header, children }) {
                 <div
                     className={
                         (showingNavigationDropdown ? 'block' : 'hidden') +
-                        ' sm:hidden'
+                        ' sm:hidden bg-slate-900/70 backdrop-blur supports-[backdrop-filter]:bg-slate-900/60 border-t border-slate-800/50 rounded-b-xl shadow-lg shadow-blue-950/20'
                     }
                 >
-                    <div className="space-y-1 pb-3 pt-2">
+                    <div className="space-y-1 pb-3 pt-2 px-4">
                         <ResponsiveNavLink
                             href={route('dashboard')}
                             active={route().current('dashboard')}
@@ -141,12 +140,12 @@ export default function AuthenticatedLayout({ header, children }) {
                         </ResponsiveNavLink>
                     </div>
 
-                    <div className="border-t border-gray-200 pb-1 pt-4">
+                    <div className="border-t border-slate-800/50 pb-1 pt-4">
                         <div className="px-4">
-                            <div className="text-base font-medium text-gray-800">
+                            <div className="text-base font-medium text-slate-100">
                                 {user.name}
                             </div>
-                            <div className="text-sm font-medium text-gray-500">
+                            <div className="text-sm font-medium text-slate-400">
                                 {user.email}
                             </div>
                         </div>
@@ -168,7 +167,7 @@ export default function AuthenticatedLayout({ header, children }) {
             </nav>
 
             {header && (
-                <header className="bg-white shadow">
+                <header className="bg-slate-900/60 backdrop-blur border-b border-slate-800/50 shadow-lg shadow-blue-950/20">
                     <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
                         {header}
                     </div>

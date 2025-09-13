@@ -12,7 +12,29 @@ class EventController extends Controller
     // ADMIN: Dashboard (list all events)
     public function dashboard()
     {
-        return Inertia::render('Dashboard');
+        $events = Event::select(
+            'id',
+            'title',
+            'description',
+            'coordinator_name',
+            'event_date',
+            'registration_end_date',
+            'required_players',
+            'is_done'
+        )
+            ->with('images')
+            ->orderBy('event_date')
+            ->get();
+
+        // Map image paths for frontend convenience
+        $events->transform(function ($event) {
+            $event->images_path = $event->images->pluck('image_path');
+            return $event;
+        });
+
+        return Inertia::render('Dashboard', [
+            'events' => $events,
+        ]);
     }
 
     // ADMIN: Show CreateEvent page
@@ -26,7 +48,7 @@ class EventController extends Controller
             'event_date',
             'registration_end_date',
             'required_players',
-            'is_done' // ✅ include this
+            'is_done' // include this
 
         )
             ->with('images')
@@ -85,7 +107,8 @@ class EventController extends Controller
             }
         }
 
-        return redirect()->back()->with('success', 'Event created successfully.');
+        // Redirect to dashboard so the new event appears immediately
+        return redirect()->route('dashboard')->with('success', 'Event created successfully.');
     }
 
     // ADMIN: Update an event with existing images support
@@ -175,7 +198,7 @@ class EventController extends Controller
     public function markDone($id)
     {
         $event = Event::findOrFail($id);
-        $event->is_done = 1; // ✅ mark as done
+        $event->is_done = 1; // mark as done
         $event->save();
 
         return response()->json([

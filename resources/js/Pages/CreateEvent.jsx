@@ -9,7 +9,7 @@ export default function CreateEvent({ auth, events = [] }) {
         description: '',
         coordinator_name: '',
         event_date: '',
-        registration_end_date: '', // ✅ Added field
+        registration_end_date: '', // 
         images: [],
         required_players: '',
     });
@@ -20,7 +20,7 @@ export default function CreateEvent({ auth, events = [] }) {
         description: '',
         coordinator_name: '',
         event_date: '',
-        registration_end_date: '', // ✅ Added field
+        registration_end_date: '', // 
         images: [],
         required_players: '',
     });
@@ -101,7 +101,7 @@ export default function CreateEvent({ auth, events = [] }) {
             method: 'POST',
             headers: {
                 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-                'Accept': 'application/json',   // ✅ important
+                'Accept': 'application/json',   
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({}),
@@ -132,51 +132,51 @@ export default function CreateEvent({ auth, events = [] }) {
                 <div className="mx-auto max-w-7xl sm:px-6 lg:px-8 space-y-6">
 
                     {/* Create Event Form */}
-                    <div className="bg-white p-6 rounded shadow">
+                    <div className="bg-slate-900/60 border border-slate-800 p-6 rounded-xl shadow-lg shadow-blue-950/30">
                         
 
                         <h2 className="text-lg font-semibold mb-4">Create Event</h2>
                         <form onSubmit={handleSubmit} encType="multipart/form-data">
                             <div className="mb-2">
-                                <label>Event Title</label>
+                                <label className="block mb-1 text-slate-300">Event Title</label>
                                 <input
                                     type="text"
-                                    className="w-full border"
+                                    className="w-full bg-slate-800/60 border border-slate-700 text-slate-100 placeholder-slate-400 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-600/50"
                                     value={data.title}
                                     onChange={e => setData('title', e.target.value)}
                                 />
                             </div>
                             <div className="mb-2">
-                                <label>Description</label>
+                                <label className="block mb-1 text-slate-300">Description</label>
                                 <textarea
-                                    className="w-full border"
+                                    className="w-full bg-slate-800/60 border border-slate-700 text-slate-100 placeholder-slate-400 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-600/50"
                                     value={data.description}
                                     onChange={e => setData('description', e.target.value)}
                                 />
                             </div>
                             <div className="mb-2">
-                                <label>Coordinator</label>
+                                <label className="block mb-1 text-slate-300">Coordinator</label>
                                 <input
                                     type="text"
-                                    className="w-full border"
+                                    className="w-full bg-slate-800/60 border border-slate-700 text-slate-100 placeholder-slate-400 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-600/50"
                                     value={data.coordinator_name}
                                     onChange={e => setData('coordinator_name', e.target.value)}
                                 />
                             </div>
                             <div className="mb-2">
-                                <label>Event Start Date</label>
+                                <label className="block mb-1 text-slate-300">Event Start Date</label>
                                 <input
                                     type="date"
-                                    className="w-full border"
+                                    className="w-full bg-slate-800/60 border border-slate-700 text-slate-100 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-600/50"
                                     value={data.event_date}
                                     onChange={e => setData('event_date', e.target.value)}
                                 />
                             </div>
                             <div className="mb-2">
-                                <label>Registration End Date</label>
+                                <label className="block mb-1 text-slate-300">Registration End Date</label>
                                 <input
                                     type="date"
-                                    className="w-full border"
+                                    className="w-full bg-slate-800/60 border border-slate-700 text-slate-100 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-600/50"
                                     value={data.registration_end_date}
                                     onChange={e => setData('registration_end_date', e.target.value)}
                                 />
@@ -184,12 +184,12 @@ export default function CreateEvent({ auth, events = [] }) {
 
                             {/* Images */}
                             <div className="mb-2">
-                                <label>Image of the event</label>
+                                <label className="block mb-1 text-slate-300">Image of the event</label>
                                 {data.images.map((img, idx) => (
                                     <input
                                         key={idx}
                                         type="file"
-                                        className="w-full border mt-1"
+                                        className="w-full bg-slate-800/60 border border-slate-700 text-slate-100 rounded-md mt-1 file:mr-3 file:py-2 file:px-3 file:rounded-md file:border-0 file:bg-slate-700 file:text-slate-100 hover:file:bg-slate-600"
                                         onChange={e => {
                                             const newImages = [...data.images];
                                             newImages[idx] = e.target.files[0];
@@ -200,16 +200,16 @@ export default function CreateEvent({ auth, events = [] }) {
                                 <button
                                     type="button"
                                     onClick={() => setData('images', [...data.images, null])}
-                                    className="mt-2 text-blue-600 underline"
+                                    className="mt-2 text-blue-300 hover:text-blue-200 underline"
                                 >
                                     + Add image
                                 </button>
                             </div>
 
                             <div className="mb-2">
-                                <label>Required Player for this Event</label>
+                                <label className="block mb-1 text-slate-300">Required Player for this Event</label>
                                 <select
-                                    className="w-full border"
+                                    className="w-full bg-slate-800/60 border border-slate-700 text-slate-100 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-600/50"
                                     value={data.required_players || ''}
                                     onChange={e => setData('required_players', e.target.value)}
                                     required
@@ -221,152 +221,33 @@ export default function CreateEvent({ auth, events = [] }) {
                                 </select>
                             </div>
 
-                            <button type="submit" className="mt-2 px-4 py-2 bg-blue-600 text-white rounded">
+                            <button type="submit" className="flex items-center
+                                                    h-10 px-4
+                                                    rounded-lg border-0
+                                                    bg-white text-blue-600
+                                                    font-bold
+                                                    cursor-pointer
+                                                    transition ease-in-out duration-150
+                                                    shadow-[0_0.7px_0.7px_-0.625px_#00000026,
+                                                    0_1.8px_1.8px_-1.25px_#00000025,
+                                                    0_3.6px_3.6px_-1.875px_#00000023,
+                                                    0_6.9px_6.9px_-2.5px_#00000020,
+                                                    0_13.6px_13.6px_-3.125px_#0000001b,
+                                                    0_30px_30px_-3.75px_#0000000d]
+                                                    active:scale-95
+                                                    active:bg-blue-600 active:text-white
+                                                    active:shadow-[0_0.64px_1.15px_-1.125px_rgba(0,0,0,0.26),
+                                                    0_1.93px_3.48px_-2.25px_rgba(0,0,0,0.24),
+                                                    0_5.1px_9.19px_-3.375px_rgba(0,0,0,0.192),
+                                                    0_16px_28.8px_-4.5px_rgba(0,0,0,0.03)]">
                                 Create Event
                             </button>
                         </form>
                     </div>
 
-                    {/* Event List */}
-                    <div className="bg-white p-6 rounded shadow">
-                        <h2 className="text-lg font-semibold mb-4">Events</h2>
-                        {events.length === 0 && <p>No events created.</p>}
-
-                        {events.map(event => (
-                            <div key={event.id} className="border-b py-4">
-                                <p className="text-sm text-gray-500">Required Players: {event.required_players}</p>
-
-                                {editingEventId === event.id ? (
-                                    <form onSubmit={handleEditSubmit} encType="multipart/form-data" className="space-y-2">
-                                        <input
-                                            type="text"
-                                            value={editData.title}
-                                            onChange={e => setEditData({ ...editData, title: e.target.value })}
-                                            className="w-full border"
-                                        />
-                                        <textarea
-                                            value={editData.description}
-                                            onChange={e => setEditData({ ...editData, description: e.target.value })}
-                                            className="w-full border"
-                                        />
-                                        <input
-                                            type="text"
-                                            value={editData.coordinator_name}
-                                            onChange={e => setEditData({ ...editData, coordinator_name: e.target.value })}
-                                            className="w-full border"
-                                        />
-                                        <input
-                                            type="date"
-                                            value={editData.event_date}
-                                            onChange={e => setEditData({ ...editData, event_date: e.target.value })}
-                                            className="w-full border"
-                                        />
-                                        <input
-                                            type="date"
-                                            value={editData.registration_end_date}
-                                            onChange={e => setEditData({ ...editData, registration_end_date: e.target.value })}
-                                            className="w-full border"
-                                        />
-
-                                        {editData.images.map((img, idx) => (
-                                            <input
-                                                key={idx}
-                                                type="file"
-                                                className="w-full border mt-1"
-                                                onChange={e => {
-                                                    const newImages = [...editData.images];
-                                                    newImages[idx] = e.target.files[0];
-                                                    setEditData({ ...editData, images: newImages });
-                                                }}
-                                            />
-                                        ))}
-                                        <button
-                                            type="button"
-                                            onClick={() => setEditData({ ...editData, images: [...editData.images, null] })}
-                                            className="text-blue-600 underline"
-                                        >
-                                            + Add image
-                                        </button>
-                                        <div className="flex flex-wrap gap-2 mb-2">
-                                            {editData.existingImages?.map((imgPath, idx) => (
-                                                <div key={idx} className="relative">
-                                                    <img src={`/storage/${imgPath}`} className="w-24 h-24 object-cover rounded" />
-                                                    <button
-                                                        type="button"
-                                                        onClick={() => {
-                                                            const newImagesPath = [...editData.existingImages];
-                                                            newImagesPath.splice(idx, 1);
-                                                            setEditData({ ...editData, existingImages: newImagesPath });
-                                                        }}
-                                                        className="absolute top-0 right-0 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm"
-                                                    >
-                                                        ×
-                                                    </button>
-                                                </div>
-                                            ))}
-                                        </div>
-
-
-                                        <select
-                                            className="w-full border"
-                                            value={editData.required_players || ''}
-                                            onChange={e => setEditData({ ...editData, required_players: e.target.value })}
-                                            required
-                                        >
-                                            <option value="">Select number of players</option>
-                                            {[...Array(20)].map((_, i) => (
-                                                <option key={i + 1} value={i + 1}>{i + 1}</option>
-                                            ))}
-                                        </select>
-
-                                        <div className="flex gap-2">
-                                            <button type="submit" className="px-3 py-1 bg-blue-500 text-white rounded">Save</button>
-                                            <button type="button" onClick={() => setEditingEventId(null)} className="px-3 py-1 bg-gray-300 rounded">Cancel</button>
-                                        </div>
-                                    </form>
-                                ) : (
-                                    <div className="flex justify-between items-center gap-3">
-                                        <div>
-                                            <h3 className="text-lg font-semibold">{event.title}</h3>
-                                            <p>{event.description}</p>
-                                            <p className="text-sm text-gray-500">By {event.coordinator_name} | {event.event_date}</p>
-                                            <p className="text-sm text-red-500">Registration Until: {event.registration_end_date}</p>
-                                            {event.images_path?.map((imgPath, idx) => (
-                                                <img key={idx} src={`/storage/${imgPath}`} className="w-32 mt-2" />
-                                            ))}
-                                            {event.is_done ? (
-                                                <p className="text-green-600 font-bold gap-2">✓ Done</p>
-                                            ) : (
-                                                <button
-                                                    onClick={() => handleMarkDone(event.id)}
-                                                    className="bg-blue-600 text-white px-3 py-1 rounded hover:bg-pink-700 transition"
-                                                >
-                                                    Mark as Done
-                                                </button>
-                                            )}
-
-                                            <Link
-                                                href={route('events.registrations', event.id)}
-                                                className="mt-2 inline-block bg-green-600 text-white px-3 py-1 rounded hover:bg-yellow-700 transition"
-                                            >
-                                                View Registered Teams
-                                            </Link>
-
-
-
-
-                                        </div>
-                                        <div className="space-x-2">
-                                            <button onClick={() => startEdit(event)} className="bg-yellow-500 text-white px-3 py-1 rounded">Edit</button>
-                                            <button onClick={() => handleDelete(event.id)} className="bg-red-500 text-white px-3 py-1 rounded">Delete</button>
-                                        </div>
-                                    </div>
-                                )}
-                            </div>
-                        ))}
-                    </div>
-                </div>
-            </div>
-        </AuthenticatedLayout>
-    );
-}
+                    {/* Event List moved to Dashboard */}
+                 </div>
+             </div>
+         </AuthenticatedLayout>
+     );
+ }
