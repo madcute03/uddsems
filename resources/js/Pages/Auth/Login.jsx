@@ -41,7 +41,7 @@ export default function Login({ status, canResetPassword }) {
                         <h2 className="text-2xl font-semibold text-center">Welcome</h2>
                         <p className="text-lg text-slate-300 text-center">Sign in to continue</p>
 
-                        
+
 
                         {status && (
                             <div className="mt-4 text-sm font-medium text-green-300 text-center">
@@ -49,7 +49,14 @@ export default function Login({ status, canResetPassword }) {
                             </div>
                         )}
 
-                        <form onSubmit={submit} className="mt-4">
+                        <form
+                            onSubmit={submit}
+                            autoComplete="off"
+                            name="login-form"
+                            id="login-form"
+                            className="mt-4"
+                        >
+
                             <div className="mt-4">
                                 <InputLabel htmlFor="email" value="Email Address" className="text-slate-200" />
                                 <TextInput
@@ -58,7 +65,7 @@ export default function Login({ status, canResetPassword }) {
                                     name="email"
                                     value={data.email}
                                     className="mt-1 block w-full bg-white/10 border border-white/20 text-slate-100 placeholder-slate-300 focus:ring-2 focus:ring-blue-500/40"
-                                    autoComplete="username"
+                                    autoComplete="off"
                                     isFocused={true}
                                     onChange={(e) => setData('email', e.target.value)}
                                 />
@@ -66,17 +73,7 @@ export default function Login({ status, canResetPassword }) {
                             </div>
 
                             <div className="mt-4">
-                                <div className="flex justify-between items-center">
-                                    <InputLabel htmlFor="password" value="Password" className="text-slate-200" />
-                                    {canResetPassword && (
-                                        <Link
-                                            href={route('password.request')}
-                                            className="text-xs text-slate-300 hover:text-white hover:underline"
-                                        >
-                                            Forgot Password?
-                                        </Link>
-                                    )}
-                                </div>
+
                                 <div className="relative">
                                     <TextInput
                                         id="password"
@@ -84,9 +81,20 @@ export default function Login({ status, canResetPassword }) {
                                         name="password"
                                         value={data.password}
                                         className="mt-1 block w-full bg-white/10 border border-white/20 text-slate-100 placeholder-slate-300 focus:ring-2 focus:ring-blue-500/40 pr-10"
-                                        autoComplete="current-password"
+                                        autoComplete="new-password"
                                         onChange={(e) => setData('password', e.target.value)}
                                     />
+                                    <div className="flex justify-between items-center">
+                                        <InputLabel htmlFor="password" value="Password" className="text-slate-200" />
+                                        {canResetPassword && (
+                                            <Link
+                                                href={route('password.request')}
+                                                className="text-xs text-slate-300 hover:text-white hover:underline"
+                                            >
+                                                Forgot Password?
+                                            </Link>
+                                        )}
+                                    </div>
                                     <button
                                         type="button"
                                         aria-label={showPassword ? 'Hide password' : 'Show password'}

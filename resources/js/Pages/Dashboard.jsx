@@ -87,7 +87,6 @@ function Dashboard() {
         }).then(() => window.location.reload());
     };
 
-
     return (
         <AuthenticatedLayout>
             <div className="min-h-screen bg-gradient-to-br from-slate-950 via-blue-950 to-black text-slate-100">
@@ -113,60 +112,82 @@ function Dashboard() {
 
                             {editingEventId === event.id ? (
                                 <form onSubmit={handleEditSubmit} encType="multipart/form-data" className="space-y-2">
-                                    <input
-                                        type="text"
-                                        value={editData.title}
-                                        onChange={e => setEditData({ ...editData, title: e.target.value })}
-                                        className="w-full border"
-                                    />
-                                    <textarea
-                                        value={editData.description}
-                                        onChange={e => setEditData({ ...editData, description: e.target.value })}
-                                        className="w-full border"
-                                    />
-                                    <input
-                                        type="text"
-                                        value={editData.coordinator_name}
-                                        onChange={e => setEditData({ ...editData, coordinator_name: e.target.value })}
-                                        className="w-full border"
-                                    />
-                                    <input
-                                        type="date"
-                                        value={editData.event_date}
-                                        onChange={e => setEditData({ ...editData, event_date: e.target.value })}
-                                        className="w-full border"
-                                    />
-                                    <input
-                                        type="date"
-                                        value={editData.registration_end_date}
-                                        onChange={e => setEditData({ ...editData, registration_end_date: e.target.value })}
-                                        className="w-full border"
-                                    />
-
-                                    {editData.images.map((img, idx) => (
+                                    <div>
+                                        <label className="block text-sm">Title</label>
                                         <input
-                                            key={idx}
-                                            type="file"
-                                            className="w-full border mt-1"
-                                            onChange={e => {
-                                                const newImages = [...editData.images];
-                                                newImages[idx] = e.target.files[0];
-                                                setEditData({ ...editData, images: newImages });
-                                            }}
+                                            type="text"
+                                            value={editData.title}
+                                            onChange={e => setEditData({ ...editData, title: e.target.value })}
+                                            className="w-full border text-black px-2 py-1 rounded"
                                         />
-                                    ))}
-                                    <button
-                                        type="button"
-                                        onClick={() => setEditData({ ...editData, images: [...editData.images, null] })}
-                                        className="text-blue-600 underline"
-                                    >
-                                        + Add image
-                                    </button>
+                                    </div>
 
-                                    <div className="flex flex-wrap gap-2 mb-2">
+                                    <div>
+                                        <label className="block text-sm">Description</label>
+                                        <textarea
+                                            value={editData.description}
+                                            onChange={e => setEditData({ ...editData, description: e.target.value })}
+                                            className="w-full border text-black px-2 py-1 rounded"
+                                        />
+                                    </div>
+
+                                    <div>
+                                        <label className="block text-sm">Coordinator Name</label>
+                                        <input
+                                            type="text"
+                                            value={editData.coordinator_name}
+                                            onChange={e => setEditData({ ...editData, coordinator_name: e.target.value })}
+                                            className="w-full border text-black px-2 py-1 rounded"
+                                        />
+                                    </div>
+
+                                    <div>
+                                        <label className="block text-sm">Event Date</label>
+                                        <input
+                                            type="date"
+                                            value={editData.event_date}
+                                            onChange={e => setEditData({ ...editData, event_date: e.target.value })}
+                                            className="w-full border text-black px-2 py-1 rounded"
+                                        />
+                                    </div>
+
+                                    <div>
+                                        <label className="block text-sm">Registration End Date</label>
+                                        <input
+                                            type="date"
+                                            value={editData.registration_end_date}
+                                            onChange={e => setEditData({ ...editData, registration_end_date: e.target.value })}
+                                            className="w-full border text-black px-2 py-1 rounded"
+                                        />
+                                    </div>
+
+                                    <div>
+                                        <label className="block text-sm">Images</label>
+                                        {editData.images.map((img, idx) => (
+                                            <input
+                                                key={idx}
+                                                type="file"
+                                                className="w-full border mt-1 text-white"
+                                                onChange={e => {
+                                                    const newImages = [...editData.images];
+                                                    newImages[idx] = e.target.files[0];
+                                                    setEditData({ ...editData, images: newImages });
+                                                }}
+                                            />
+                                        ))}
+                                        <button
+                                            type="button"
+                                            onClick={() => setEditData({ ...editData, images: [...editData.images, null] })}
+                                            className="text-blue-400 underline mt-2"
+                                        >
+                                            + Add image
+                                        </button>
+                                    </div>
+
+                                    <div className="flex flex-wrap gap-2">
                                         {editData.existingImages?.map((imgPath, idx) => (
                                             <div key={idx} className="relative">
-                                                <img src={`/storage/${imgPath}`} alt="Existing event image" className="w-24 h-24 object-cover rounded" />
+                                                <img src={`/storage/${imgPath}`} alt="Existing event" className="w-24 h-24 object-cover rounded" />
                                                 <button
                                                     type="button"
                                                     onClick={() => {
@@ -182,63 +203,67 @@ function Dashboard() {
                                         ))}
                                     </div>
 
-                                    <select
-                                        className="w-full border"
-                                        value={editData.required_players || ''}
-                                        onChange={e => setEditData({ ...editData, required_players: e.target.value })}
-                                        required
-                                    >
-                                        <option value="">Select number of players</option>
-                                        {[...Array(20)].map((_, i) => (
-                                            <option key={i + 1} value={i + 1}>{i + 1}</option>
-                                        ))}
-                                    </select>
+                                    <div>
+                                        <label className="block text-sm">Required Players</label>
+                                        <select
+                                            className="w-full border text-black px-2 py-1 rounded"
+                                            value={editData.required_players || ''}
+                                            onChange={e => setEditData({ ...editData, required_players: e.target.value })}
+                                            required
+                                        >
+                                            <option value="">Select number of players</option>
+                                            {[...Array(20)].map((_, i) => (
+                                                <option key={i + 1} value={i + 1}>{i + 1}</option>
+                                            ))}
+                                        </select>
+                                    </div>
 
-                                    <div className="flex gap-2">
+                                    <div className="flex gap-2 mt-2">
                                         <button type="submit" className="px-3 py-1 bg-blue-500 text-white rounded">Save</button>
-                                        <button type="button" onClick={() => setEditingEventId(null)} className="px-3 py-1 bg-gray-300 rounded">Cancel</button>
+                                        <button type="button" onClick={() => setEditingEventId(null)} className="px-3 py-1 bg-gray-300 text-black rounded">Cancel</button>
                                     </div>
                                 </form>
                             ) : (
-                                <div className="flex justify-between items-center gap-3">
+                                <div className="flex justify-between items-start gap-3 flex-col md:flex-row">
                                     <div>
                                         <h3 className="text-lg font-semibold">{event.title}</h3>
                                         <p>{event.description}</p>
                                         <p className="text-sm text-gray-500">By {event.coordinator_name} | {event.event_date}</p>
                                         <p className="text-sm text-red-500">Registration Until: {event.registration_end_date}</p>
                                         {event.images_path?.map((imgPath, idx) => (
-                                            <img key={idx} src={`/storage/${imgPath}`} alt="Event image" className="w-32 mt-2" />
+                                            <img key={idx} src={`/storage/${imgPath}`} alt="Event" className="w-32 mt-2 rounded" />
                                         ))}
 
-                                        {event.is_done ? (
-                                            <div className="flex items-center gap-2">
-                                                <p className="text-green-500 font-semibold">✓ Done</p>
+                                        <div className="mt-2 flex items-center gap-2 flex-wrap">
+                                            {event.is_done ? (
+                                                <>
+                                                    <span className="text-green-500 font-semibold">✓ Done</span>
+                                                    <button
+                                                        onClick={() => handleMarkUndone(event.id)}
+                                                        className="bg-slate-800 text-white px-3 py-1 rounded hover:bg-slate-700 transition"
+                                                    >
+                                                        Mark as Undone
+                                                    </button>
+                                                </>
+                                            ) : (
                                                 <button
-                                                    onClick={() => handleMarkUndone(event.id)}
-                                                    className="bg-slate-800 text-white px-3 py-1 rounded hover:bg-slate-700 transition"
+                                                    onClick={() => handleMarkDone(event.id)}
+                                                    className="bg-blue-900 text-white px-3 py-1 rounded hover:bg-blue-800 transition"
                                                 >
-                                                    Mark as Undone
+                                                    Mark as Done
                                                 </button>
-                                            </div>
-                                        ) : (
-                                            <button
-                                                onClick={() => handleMarkDone(event.id)}
-                                                className="bg-blue-900 text-white px-3 py-1 rounded hover:bg-blue-800 transition"
+                                            )}
+
+                                            <Link
+                                                href={route('events.registrations', event.id)}
+                                                className="bg-green-600 text-white px-3 py-1 rounded hover:bg-yellow-700 transition"
                                             >
-                                                Mark as Done
-                                            </button>
-                                        )}
-
-
-                                        <Link
-                                            href={route('events.registrations', event.id)}
-                                            className="mt-2 inline-block bg-green-600 text-white px-3 py-1 rounded hover:bg-yellow-700 transition"
-                                        >
-                                            View Registered Teams
-                                        </Link>
+                                                View Registered Teams
+                                            </Link>
+                                        </div>
                                     </div>
 
-                                    <div className="space-x-2">
+                                    <div className="flex gap-2 mt-3 md:mt-0">
                                         <button onClick={() => startEdit(event)} className="bg-yellow-500 text-white px-3 py-1 rounded">Edit</button>
                                         <button onClick={() => handleDelete(event.id)} className="bg-red-500 text-white px-3 py-1 rounded">Delete</button>
                                     </div>
