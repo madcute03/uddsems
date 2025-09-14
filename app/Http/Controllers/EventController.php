@@ -206,4 +206,12 @@ class EventController extends Controller
             'message' => 'Event marked as done!',
         ]);
     }
+    public function markUndone($id)
+    {
+        $event = Event::findOrFail($id);
+        $event->is_done = false;
+        $event->save();
+
+        return response()->json(['message' => 'Event marked as undone']);
+    }
 }

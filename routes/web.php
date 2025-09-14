@@ -134,7 +134,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/events', [EventController::class, 'store'])->name('events.store');
     Route::put('/events/{id}', [EventController::class, 'update'])->name('events.update');
     Route::delete('/events/{id}', [EventController::class, 'destroy'])->name('events.destroy');
-    Route::post('/events/{events}/done', [EventController::class, 'markDone'])->name('events.done');
+    Route::post('/events/{id}/mark-done', [EventController::class, 'markDone'])->name('events.markDone');
+    Route::post('/events/{id}/mark-undone', [EventController::class, 'markUndone'])->name('events.markUndone');
 
     // User profile
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

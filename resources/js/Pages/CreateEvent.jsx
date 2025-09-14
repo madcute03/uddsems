@@ -101,7 +101,7 @@ export default function CreateEvent({ auth, events = [] }) {
             method: 'POST',
             headers: {
                 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-                'Accept': 'application/json',   
+                'Accept': 'application/json',
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({}),
@@ -133,7 +133,7 @@ export default function CreateEvent({ auth, events = [] }) {
 
                     {/* Create Event Form */}
                     <div className="bg-slate-900/60 border border-slate-800 p-6 rounded-xl shadow-lg shadow-blue-950/30">
-                        
+
 
                         <h2 className="text-lg font-semibold mb-4">Create Event</h2>
                         <form onSubmit={handleSubmit} encType="multipart/form-data">
@@ -246,8 +246,8 @@ export default function CreateEvent({ auth, events = [] }) {
                     </div>
 
                     {/* Event List moved to Dashboard */}
-                 </div>
-             </div>
-         </AuthenticatedLayout>
-     );
- }
+                </div>
+            </div>
+        </AuthenticatedLayout>
+    );
+}
