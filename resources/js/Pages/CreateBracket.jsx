@@ -51,16 +51,18 @@ export default function CreateBracket({ events = [] }) {
                 ? doubleEliminationBrackets[teamCount]
                 : null
             : bracketType === "single"
-                ? teamCount
-                    ? singleEliminationBrackets[teamCount]
-                    : null
-                : null;
+            ? teamCount
+                ? singleEliminationBrackets[teamCount]
+                : null
+            : null;
 
     return (
         <AuthenticatedLayout>
             <Head title="Create Bracket" />
             <div className="p-6">
-                <h1 className="text-2xl font-bold mb-4">Select Event for Bracket</h1>
+                <h1 className="text-2xl font-bold mb-4">
+                    Select Event for Bracket
+                </h1>
                 {events.length === 0 ? (
                     <p className="text-gray-600">No events available.</p>
                 ) : (
@@ -70,9 +72,15 @@ export default function CreateBracket({ events = [] }) {
                                 key={event.id}
                                 className="border rounded-lg p-4 shadow-sm hover:shadow-md transition"
                             >
-                                <h2 className="text-lg font-semibold">{event.title}</h2>
-                                <p className="text-gray-700">{event.description}</p>
-                                <p className="text-sm text-gray-500">Date: {event.event_date}</p>
+                                <h2 className="py-2 text-lg font-semibold">
+                                    {event.title}
+                                </h2>
+                                <p className="py-2 text-gray-700">
+                                    {event.description}
+                                </p>
+                                <p className="py-2 text-sm text-gray-500">
+                                    Date: {event.event_date}
+                                </p>
 
                                 <button
                                     onClick={() => {
@@ -80,7 +88,12 @@ export default function CreateBracket({ events = [] }) {
                                         setBracketType(null);
                                         setTeamCount(null);
                                     }}
-                                    className="mt-2 inline-block bg-red-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+                                    className="py-2 w-[200px] h-[45px] rounded-[15px] cursor-pointer 
+                                                               transition duration-300 ease-in-out 
+                                                               bg-gradient-to-br from-[#2e8eff] to-[#2e8eff]/0 
+                                                               bg-[#2e8eff]/20 flex items-center justify-center 
+                                                               hover:bg-[#2e8eff]/70 hover:shadow-[0_0_10px_rgba(46,142,255,0.5)] 
+                                                               focus:outline-none focus:bg-[#2e8eff]/70 focus:shadow-[0_0_10px_rgba(46,142,255,0.5)]"
                                 >
                                     Create and Reset Bracket
                                 </button>
@@ -88,18 +101,37 @@ export default function CreateBracket({ events = [] }) {
                                 <button
                                     onClick={() => {
                                         if (event.bracket_type && event.teams) {
-                                            // Already has bracket → open it directly
-                                            setSelectedEvent(event);
-                                            setBracketType(event.bracket_type);
-                                            setTeamCount(event.teams);
+                                            if (
+                                                selectedEvent?.id === event.id
+                                            ) {
+                                                // If already open → close it
+                                                setSelectedEvent(null);
+                                                setBracketType(null);
+                                                setTeamCount(null);
+                                            } else {
+                                                // Open this event's bracket
+                                                setSelectedEvent(event);
+                                                setBracketType(
+                                                    event.bracket_type
+                                                );
+                                                setTeamCount(event.teams);
+                                            }
                                         } else {
-                                            // No bracket yet → show alert/modal
-                                            alert("You have not created a bracket yet for this event.");
+                                            alert(
+                                                "You have not created a bracket yet for this event."
+                                            );
                                         }
                                     }}
-                                    className="mt-2 inline-block bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+                                    className="w-[200px] h-[45px] rounded-[15px] cursor-pointer 
+                                                               transition duration-300 ease-in-out 
+                                                               bg-gradient-to-br from-[#2e8eff] to-[#2e8eff]/0 
+                                                               bg-[#2e8eff]/20 flex items-center justify-center 
+                                                               hover:bg-[#2e8eff]/70 hover:shadow-[0_0_10px_rgba(46,142,255,0.5)] 
+                                                               focus:outline-none focus:bg-[#2e8eff]/70 focus:shadow-[0_0_10px_rgba(46,142,255,0.5)]"
                                 >
-                                    View Created Bracket
+                                    {selectedEvent?.id === event.id
+                                        ? "Hide Bracket"
+                                        : "View Created Bracket"}
                                 </button>
                             </div>
                         ))}
@@ -110,7 +142,7 @@ export default function CreateBracket({ events = [] }) {
                 {selectedEvent && !bracketType && (
                     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
                         <div className="bg-white rounded-lg p-6 w-96 shadow-lg">
-                            <h2 className="text-xl font-bold mb-4">
+                            <h2 className="text-xl text-black   font-bold mb-4">
                                 Choose Bracket Type for {selectedEvent.title}
                             </h2>
 
@@ -146,55 +178,71 @@ export default function CreateBracket({ events = [] }) {
                         <div className="bg-white rounded-lg p-6 w-96 shadow-lg">
                             <h2 className="text-xl font-bold mb-4">
                                 Select Number of Teams (
-                                {bracketType === "single" ? "Single" : "Double"} Elimination)
+                                {bracketType === "single" ? "Single" : "Double"}{" "}
+                                Elimination)
                             </h2>
 
                             <div className="grid grid-cols-2 gap-3">
                                 {bracketType === "single"
                                     ? [2, 3, 4, 5, 6, 7, 8].map((count) => (
-                                        <button
-                                            key={count}
-                                            onClick={() => {
-                                                Inertia.post(`/events/${selectedEvent.id}/bracket-settings`, {
-                                                    bracket_type: bracketType,
-                                                    teams: count,
-                                                }, {
-                                                    onSuccess: () => {
-                                                        setTeamCount(count);
-                                                    },
-                                                    onError: (errors) => {
-                                                        console.error(errors);
-                                                        alert("Failed to save bracket settings.");
-                                                    }
-                                                });
+                                          <button
+                                              key={count}
+                                              onClick={() => {
+                                                  Inertia.post(
+                                                      `/events/${selectedEvent.id}/bracket-settings`,
+                                                      {
+                                                          bracket_type:
+                                                              bracketType,
+                                                          teams: count,
+                                                      },
+                                                      {
+                                                          onSuccess: () => {
+                                                              setTeamCount(
+                                                                  count
+                                                              );
+                                                          },
+                                                          onError: (errors) => {
+                                                              console.error(
+                                                                  errors
+                                                              );
+                                                              alert(
+                                                                  "Failed to save bracket settings."
+                                                              );
+                                                          },
+                                                      }
+                                                  );
 
-                                                setTeamCount(count);
-                                            }}
-                                            className="block bg-green-600 text-white px-4 py-2 rounded text-center hover:bg-green-700"
-                                        >
-                                            {count} Teams
-                                        </button>
-                                    ))
+                                                  setTeamCount(count);
+                                              }}
+                                              className="block bg-green-600 text-white px-4 py-2 rounded text-center hover:bg-green-700"
+                                          >
+                                              {count} Teams
+                                          </button>
+                                      ))
                                     : [3, 4, 5, 6, 7, 8].map((count) => (
-                                        <button
-                                            key={count}
-                                            onClick={() => {
-                                                Inertia.post(
-                                                    route("bracket.storeSettings", {
-                                                        event: selectedEvent.id,
-                                                    }),
-                                                    {
-                                                        bracket_type: bracketType,
-                                                        teams: count,
-                                                    }
-                                                );
-                                                setTeamCount(count);
-                                            }}
-                                            className="block bg-purple-600 text-white px-4 py-2 rounded text-center hover:bg-purple-700"
-                                        >
-                                            {count} Teams
-                                        </button>
-                                    ))}
+                                          <button
+                                              key={count}
+                                              onClick={() => {
+                                                  Inertia.post(
+                                                      route(
+                                                          "bracket.storeSettings",
+                                                          {
+                                                              event: selectedEvent.id,
+                                                          }
+                                                      ),
+                                                      {
+                                                          bracket_type:
+                                                              bracketType,
+                                                          teams: count,
+                                                      }
+                                                  );
+                                                  setTeamCount(count);
+                                              }}
+                                              className="block bg-purple-600 text-white px-4 py-2 rounded text-center hover:bg-purple-700"
+                                          >
+                                              {count} Teams
+                                          </button>
+                                      ))}
                             </div>
 
                             <button
@@ -209,7 +257,10 @@ export default function CreateBracket({ events = [] }) {
 
                 {/* Render the selected bracket component */}
                 {SelectedBracket && selectedEvent && (
-                    <SelectedBracket eventId={selectedEvent.id} teamCount={teamCount} />
+                    <SelectedBracket
+                        eventId={selectedEvent.id}
+                        teamCount={teamCount}
+                    />
                 )}
             </div>
         </AuthenticatedLayout>

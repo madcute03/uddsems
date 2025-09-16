@@ -1,21 +1,23 @@
-import { Head } from '@inertiajs/react';
-import EventTabs from '@/Components/EventTabs';
-import PublicLayout from '@/Layouts/PublicLayout';
+import { Head } from "@inertiajs/react";
+import EventTabs from "@/Components/EventTabs";
+import PublicLayout from "@/Layouts/PublicLayout";
 
-export default function Welcome({ events = [] }) {
+export default function Welcome({ events = [], news = [] }) {
+    const formatDateTime = (dt) => (dt ? new Date(dt).toLocaleString() : "");
+
     return (
         <PublicLayout>
             <Head title="Welcome" />
 
-            <div className="space-y-6">
+            <div className="space-y-10">
                 <h1 className="text-4xl md:text-5xl font-extrabold text-center py-8">
-                    <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-400 via-sky-400 to-cyan-300">
-                        Featured Programs and Events
+                    <span className="text-semi-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 via-sky-400 to-cyan-300">
+                        FEATURED PROGRAMS AND EVENTS
                     </span>
                 </h1>
 
                 {/* Full wide container */}
-                <div className="w-full bg-slate-900/60 border border-slate-800 rounded-none shadow-lg shadow-blue-950/30 p-4 md:p-6">
+                <div>
                     <EventTabs events={events} />
                 </div>
             </div>

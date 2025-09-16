@@ -221,25 +221,12 @@ export default function CreateEvent({ auth, events = [] }) {
                                 </select>
                             </div>
 
-                            <button type="submit" className="flex items-center
-                                                    h-10 px-4
-                                                    rounded-lg border-0
-                                                    bg-white text-blue-600
-                                                    font-bold
-                                                    cursor-pointer
-                                                    transition ease-in-out duration-150
-                                                    shadow-[0_0.7px_0.7px_-0.625px_#00000026,
-                                                    0_1.8px_1.8px_-1.25px_#00000025,
-                                                    0_3.6px_3.6px_-1.875px_#00000023,
-                                                    0_6.9px_6.9px_-2.5px_#00000020,
-                                                    0_13.6px_13.6px_-3.125px_#0000001b,
-                                                    0_30px_30px_-3.75px_#0000000d]
-                                                    active:scale-95
-                                                    active:bg-blue-600 active:text-white
-                                                    active:shadow-[0_0.64px_1.15px_-1.125px_rgba(0,0,0,0.26),
-                                                    0_1.93px_3.48px_-2.25px_rgba(0,0,0,0.24),
-                                                    0_5.1px_9.19px_-3.375px_rgba(0,0,0,0.192),
-                                                    0_16px_28.8px_-4.5px_rgba(0,0,0,0.03)]">
+                            <button type="submit" className="w-[131px] h-[45px] rounded-[15px] cursor-pointer 
+                                                               transition duration-300 ease-in-out 
+                                                               bg-gradient-to-br from-[#2e8eff] to-[#2e8eff]/0 
+                                                               bg-[#2e8eff]/20 flex items-center justify-center 
+                                                               hover:bg-[#2e8eff]/70 hover:shadow-[0_0_10px_rgba(46,142,255,0.5)] 
+                                                               focus:outline-none focus:bg-[#2e8eff]/70 focus:shadow-[0_0_10px_rgba(46,142,255,0.5)]">
                                 Create Event
                             </button>
                         </form>

@@ -1,5 +1,5 @@
-import { Head, Link } from '@inertiajs/react';
-import { useState } from 'react';
+import { Head, Link } from "@inertiajs/react";
+import { useState } from "react";
 
 export default function ShowEvent({ event }) {
     const today = new Date().toISOString().split("T")[0];
@@ -13,10 +13,10 @@ export default function ShowEvent({ event }) {
         event.registration_end_date && today > event.registration_end_date;
 
     const formatDate = (dateString) => {
-        return new Date(dateString).toLocaleDateString('en-US', {
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric',
+        return new Date(dateString).toLocaleDateString("en-US", {
+            year: "numeric",
+            month: "long",
+            day: "numeric",
         });
     };
 
@@ -42,12 +42,11 @@ export default function ShowEvent({ event }) {
         <>
             <Head title={event.title} />
             <div className="min-h-screen bg-gradient-to-br from-slate-950 via-blue-950 to-black text-slate-100">
-
                 {/* Image Carousel */}
                 {totalImages > 0 ? (
                     <div
-                        className="relative w-full h-screen overflow-hidden cursor-pointer"
-                        onClick={nextImage}
+                        className="relative w-full h-screen overflow-hidden"
+
                     >
                         <img
                             src={`/storage/${event.images[currentImageIndex].image_path}`}
@@ -57,9 +56,15 @@ export default function ShowEvent({ event }) {
 
                         {/* Overlay */}
                         <div className="absolute inset-0 bg-black bg-opacity-40 flex flex-col justify-center items-center text-center px-4 sm:px-6 md:px-12">
-                            <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-white mb-3 drop-shadow-lg">{event.title}</h1>
-                            <p className="text-lg sm:text-xl md:text-2xl text-white mb-2 drop-shadow">{event.description}</p>
-                            <p className="text-md sm:text-lg md:text-lg text-white opacity-90 mb-2 drop-shadow">By {event.coordinator_name}</p>
+                            <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-white mb-3 drop-shadow-lg">
+                                {event.title}
+                            </h1>
+                            <p className="text-lg sm:text-xl md:text-2xl text-white mb-2 drop-shadow">
+                                {event.description}
+                            </p>
+                            <p className="text-md sm:text-lg md:text-lg text-white opacity-90 mb-2 drop-shadow">
+                                By {event.coordinator_name}
+                            </p>
 
                             {/* Status Labels */}
                             {isOngoing && !isDone && (
@@ -69,7 +74,7 @@ export default function ShowEvent({ event }) {
                             )}
                             {isUpcoming && (
                                 <p className="px-3 sm:px-4 py-1 bg-blue-400 text-blue-900 font-bold rounded-full mb-2 text-sm sm:text-lg">
-                                    ⏳ Starts On: {formatDate(event.event_date)}
+                                    Starts On: {formatDate(event.event_date)}
                                 </p>
                             )}
                             {isDone && (
@@ -79,7 +84,8 @@ export default function ShowEvent({ event }) {
                             )}
                             {event.registration_end_date && !isDone && (
                                 <p className="text-sm sm:text-md text-white font-semibold mb-4 drop-shadow">
-                                    Registration Until: {formatDate(event.registration_end_date)}
+                                    Registration Until:{" "}
+                                    {formatDate(event.registration_end_date)}
                                 </p>
                             )}
 
@@ -88,8 +94,16 @@ export default function ShowEvent({ event }) {
                                 {/* Register Button */}
                                 {isUpcoming && !isRegistrationClosed ? (
                                     <Link
-                                        href={route('events.register', event.id)}
-                                        className="inline-block bg-gradient-to-r from-purple-600 to-pink-500 text-white px-6 py-2 rounded-full font-bold text-sm sm:text-lg shadow-lg hover:from-pink-500 hover:to-purple-600 transition"
+                                        href={route(
+                                            "events.register",
+                                            event.id
+                                        )}
+                                        className="w-[140px] h-[48px] rounded-[15px] cursor-pointer 
+                                                   transition duration-300 ease-in-out 
+                                                   bg-gradient-to-br from-[#2e8eff] to-[#2e8eff]/0 
+                                                   bg-[#2e8eff]/20 flex items-center justify-center 
+                                                   hover:bg-[#2e8eff]/70 hover:shadow-[0_0_10px_rgba(46,142,255,0.5)] 
+                                                   focus:outline-none focus:bg-[#2e8eff]/70 focus:shadow-[0_0_10px_rgba(46,142,255,0.5)]"
                                     >
                                         Register
                                     </Link>
@@ -102,27 +116,11 @@ export default function ShowEvent({ event }) {
                                 {/* View Bracket Button */}
                                 {(isOngoing || isDone) && (
                                     <Link
-                                        href={route('bracket.show', { event: event.id })}
+                                        href={route("bracket.show", {
+                                            event: event.id,
+                                        })}
                                         onClick={handleViewBracket}
-                                        className="flex items-center
-    h-10 px-4
-    rounded-lg border-0
-    bg-white text-blue-600
-    font-bold font-[Montserrat]
-    cursor-pointer
-    transition ease-in-out duration-150
-    shadow-[0_0.7px_0.7px_-0.625px_#00000026,
-            0_1.8px_1.8px_-1.25px_#00000025,
-            0_3.6px_3.6px_-1.875px_#00000023,
-            0_6.9px_6.9px_-2.5px_#00000020,
-            0_13.6px_13.6px_-3.125px_#0000001b,
-            0_30px_30px_-3.75px_#0000000d]
-    active:scale-95
-    active:bg-blue-600 active:text-white
-    active:shadow-[0_0.64px_1.15px_-1.125px_rgba(0,0,0,0.26),
-                  0_1.93px_3.48px_-2.25px_rgba(0,0,0,0.24),
-                  0_5.1px_9.19px_-3.375px_rgba(0,0,0,0.192),
-                  0_16px_28.8px_-4.5px_rgba(0,0,0,0.03)]"
+                                        className="btn-blue-glow"
                                     >
                                         View Bracket
                                     </Link>
@@ -131,9 +129,11 @@ export default function ShowEvent({ event }) {
                                 {/* View Standing Button */}
                                 {(isOngoing || isDone) && (
                                     <Link
-                                        href={route('standing.show', { event: event.id })}
+                                        href={route("standing.show", {
+                                            event: event.id,
+                                        })}
                                         onClick={handleViewBracket}
-                                        className="relative px-10 py-2.5 text-white text-lg font-medium rounded-md border-2 border-transparent cursor-pointer transition-all duration-300 [text-shadow:1px_1px_1px_#00000040] shadow-[8px_8px_20px_0px_#45090059] bg-[linear-gradient(140.14deg,#ec540e_15.05%,#d6361f_114.99%)] before:absolute before:inset-0 before:rounded-md before:p-[2px] before:bg-[linear-gradient(142.51deg,#ff9465_8.65%,#af1905_88.82%)] before:-z-10 before:content-[''] before:bg-clip-border hover:opacity-80 hover:shadow-none"
+                                        className="btn-blue-glow"
                                     >
                                         View Standing
                                     </Link>
@@ -142,8 +142,19 @@ export default function ShowEvent({ event }) {
 
                             {/* Back Link */}
                             <Link
-                                href={route('home')}
-                                className="mt-4 sm:mt-6 block text-blue-300 underline font-semibold text-sm sm:text-lg hover:text-blue-200"
+                                href={route("home")}
+                                className="relative
+                                            text-[18px] font-extrabold font-inherit uppercase
+                                            text-[#e1e1e1]
+                                            cursor-pointer bg-none border-0
+                                            transition-colors duration-400 [transition-timing-function:cubic-bezier(0.25,0.8,0.25,1)]
+                                            hover:text-white focus:text-white
+                                            after:content-[''] after:absolute after:bottom-[-2px] after:left-1/2
+                                            after:w-0 after:h-[2px] after:bg-white
+                                            after:transition-[width,left] after:duration-400 [after:transition-timing-function:cubic-bezier(0.25,0.8,0.25,1)]
+                                            hover:after:w-full hover:after:left-0
+                                            focus:after:w-full focus:after:left-0
+                                            h-10 px-4 mt-10"
                             >
                                 ← Back to Events
                             </Link>
@@ -153,17 +164,25 @@ export default function ShowEvent({ event }) {
                     // Fallback if no images
                     <div className="p-6 sm:p-12 text-center">
                         <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold mb-4">
-                            <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-400 via-sky-400 to-cyan-300">{event.title}</span>
+                            <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-400 via-sky-400 to-cyan-300">
+                                {event.title}
+                            </span>
                         </h1>
-                        <p className="text-lg sm:text-xl md:text-2xl mb-2 text-slate-200">{event.description}</p>
-                        <p className="text-md sm:text-lg md:text-lg text-slate-300 mb-2">By {event.coordinator_name}</p>
-                        <p className="text-lg sm:text-xl mb-4 text-slate-300">⏳ Starts On: {formatDate(event.event_date)}</p>
+                        <p className="text-lg sm:text-xl md:text-2xl mb-2 text-slate-200">
+                            {event.description}
+                        </p>
+                        <p className="text-md sm:text-lg md:text-lg text-slate-300 mb-2">
+                            By {event.coordinator_name}
+                        </p>
+                        <p className="text-lg sm:text-xl mb-4 text-slate-300">
+                            ⏳ Starts On: {formatDate(event.event_date)}
+                        </p>
 
                         <div className="flex flex-wrap gap-3 mt-4 justify-center">
                             {isUpcoming && !isRegistrationClosed ? (
                                 <Link
-                                    href={route('events.register', event.id)}
-                                    className="inline-block bg-gradient-to-r from-purple-600 to-pink-500 text-white px-6 py-2 rounded-full font-bold text-sm sm:text-lg shadow-lg hover:from-pink-500 hover:to-purple-600 transition"
+                                    href={route("events.register", event.id)}
+                                    className="inline-block btn-blue-glow"
                                 >
                                     Register
                                 </Link>
@@ -176,17 +195,21 @@ export default function ShowEvent({ event }) {
                             {(isOngoing || isDone) && (
                                 <>
                                     <Link
-                                        href={route('bracket.show', { event: event.id })}
+                                        href={route("bracket.show", {
+                                            event: event.id,
+                                        })}
                                         onClick={handleViewBracket}
-                                        className="inline-block bg-blue-600 hover:bg-blue-500 text-white px-6 py-2 rounded-full font-bold text-sm sm:text-lg shadow-lg transition"
+                                        className="inline-block btn-blue-glow"
                                     >
                                         View Bracket
                                     </Link>
 
                                     <Link
-                                        href={route('standing.show', { event: event.id })}
+                                        href={route("standing.show", {
+                                            event: event.id,
+                                        })}
                                         onClick={handleViewBracket}
-                                        className="inline-block bg-green-600 hover:bg-green-500 text-white px-6 py-2 rounded-full font-bold text-sm sm:text-lg shadow-lg transition"
+                                        className="inline-block btn-blue-glow"
                                     >
                                         View Standing
                                     </Link>
@@ -195,7 +218,7 @@ export default function ShowEvent({ event }) {
                         </div>
 
                         <Link
-                            href={route('home')}
+                            href={route("home")}
                             className="mt-4 sm:mt-6 block text-blue-300 underline font-semibold text-sm sm:text-lg hover:text-blue-200"
                         >
                             ← Back to Events
@@ -207,13 +230,19 @@ export default function ShowEvent({ event }) {
                 {showSoonModal && (
                     <div className="fixed inset-0 flex items-center justify-center bg-black/70 z-50">
                         <div className="bg-slate-900/90 border border-slate-800 p-6 rounded-lg shadow-lg w-80 text-center text-slate-100">
-                            <h2 className="text-xl font-bold mb-4">Coming Soon</h2>
+                            <h2 className="text-xl font-bold mb-4">
+                                Coming Soon
+                            </h2>
                             <p className="text-slate-300 mb-4">
-                                The bracket for <span className="font-semibold">{event.title}</span> is not yet available.
+                                The bracket for{" "}
+                                <span className="font-semibold">
+                                    {event.title}
+                                </span>{" "}
+                                is not yet available.
                             </p>
                             <button
                                 onClick={() => setShowSoonModal(false)}
-                                className="mt-2 bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded"
+                                className="mt-2 btn-blue-glow"
                             >
                                 OK
                             </button>

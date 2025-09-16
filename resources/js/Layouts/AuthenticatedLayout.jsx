@@ -35,6 +35,12 @@ export default function AuthenticatedLayout({ header, children }) {
                                 >
                                     Create Bracket
                                 </NavLink>
+                                <NavLink
+                                    href={route('dashboard.createnews')}
+                                    active={route().current('dashboard.createnews')}
+                                >
+                                    Create News
+                                </NavLink>
                             </div>
                         </div>
 
@@ -137,6 +143,24 @@ export default function AuthenticatedLayout({ header, children }) {
                             active={route().current('dashboard')}
                         >
                             Dashboard
+                        </ResponsiveNavLink>
+                        <ResponsiveNavLink
+                            href={route('dashboard.createevent')}
+                            active={route().current('dashboard.createevent')}
+                        >
+                            Create Event
+                        </ResponsiveNavLink>
+                        <ResponsiveNavLink
+                            href={route('bracket')}
+                            active={route().current('bracket')}
+                        >
+                            Create Bracket
+                        </ResponsiveNavLink>
+                        <ResponsiveNavLink
+                            href={route('dashboard.createnews')}
+                            active={route().current('dashboard.createnews')}
+                        >
+                            Create News
                         </ResponsiveNavLink>
                     </div>
 

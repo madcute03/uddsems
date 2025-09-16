@@ -194,8 +194,20 @@ export default function SevenTeamBracket({ eventId }) {
                         className="px-2 py-1 rounded text-black"
                     />
                 ))}
-                <button onClick={applyTeams} className="px-4 py-1 bg-blue-600 rounded text-white font-bold">Apply Teams</button>
-                <button onClick={handleSave} className="px-4 py-1 bg-green-600 rounded text-white font-bold">Save Bracket</button>
+                 <button onClick={applyTeams} className="w-[200px] h-[45px] rounded-[15px] cursor-pointer 
+                                                               transition duration-300 ease-in-out 
+                                                               bg-gradient-to-br from-[#2e8eff] to-[#2e8eff]/0 
+                                                               bg-[#2e8eff]/20 flex items-center justify-center 
+                                                               hover:bg-[#2e8eff]/70 hover:shadow-[0_0_10px_rgba(46,142,255,0.5)] 
+                                                               focus:outline-none focus:bg-[#2e8eff]/70 focus:shadow-[0_0_10px_rgba(46,142,255,0.5)]">Apply Teams</button>
+                <button onClick={handleSave} className="w-[131px] h-[45px] rounded-[15px] cursor-pointer 
+                                                               transition duration-300 ease-in-out 
+                                                               bg-gradient-to-br from-[#00ff00] to-[#00ff00]/0 
+                                                               bg-[#00ff00]/20 flex items-center justify-center 
+                                                               hover:bg-[#00ff00]/70 hover:shadow-[0_0_10px_rgba(0,255,0,0.5)] 
+                                                               focus:outline-none focus:bg-[#00ff00]/70 focus:shadow-[0_0_10px_rgba(0,255,0,0.5)]
+">Save Bracket</button>
+                
                 <button
                     onClick={() => {
                         setTeamsInput(Array(7).fill(""));

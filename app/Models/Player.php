@@ -21,8 +21,8 @@ class Player extends Model
     ];
 
     public function registration()
-{
-    return $this->belongsTo(EventRegistration::class, 'event_registration_id');
-}
+    {
+        return $this->belongsTo(EventRegistration::class, 'event_registration_id');
+    }
 
 }

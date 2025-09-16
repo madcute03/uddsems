@@ -89,7 +89,7 @@ function Dashboard() {
 
     return (
         <AuthenticatedLayout>
-            <div className="min-h-screen bg-gradient-to-br from-slate-950 via-blue-950 to-black text-slate-100">
+            <div className="mx-auto max-w-7xl sm:px-6 lg:px-8 space-y-6  text-slate-100">
                 <div className="flex items-center justify-center py-10">
                     <div className="flex items-center gap-10 flex-col md:flex-row">
                         <img src="/images/sems.png" alt="Logo" className="h-40 w-40 rounded-full object-cover ring-4 ring-blue-500/60 shadow-2xl shadow-blue-900/40" />
@@ -98,11 +98,12 @@ function Dashboard() {
                                 <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-400 via-sky-400 to-cyan-300">Welcome!</span>
                                 <span className="block md:inline md:ml-3 text-blue-300">{user.name}</span>
                             </h1>
+                           
                         </div>
                     </div>
                 </div>
 
-                <div className="bg-slate-900 p-6 rounded shadow text-white">
+                <div className="bg-slate-900/60 border border-slate-800 p-6 rounded-xl shadow-lg shadow-blue-950/30">
                     <h2 className="text-lg font-semibold mb-4">Events</h2>
                     {events.length === 0 && <p>No events created.</p>}
 
@@ -219,19 +220,29 @@ function Dashboard() {
                                     </div>
 
                                     <div className="flex gap-2 mt-2">
-                                        <button type="submit" className="px-3 py-1 bg-blue-500 text-white rounded">Save</button>
-                                        <button type="button" onClick={() => setEditingEventId(null)} className="px-3 py-1 bg-gray-300 text-black rounded">Cancel</button>
+                                        <button type="submit" className="w-[131px] h-[40px] rounded-[15px] cursor-pointer 
+                                                               transition duration-300 ease-in-out 
+                                                               bg-gradient-to-br from-[#2e8eff] to-[#2e8eff]/0 
+                                                               bg-[#2e8eff]/20 flex items-center justify-center 
+                                                               hover:bg-[#2e8eff]/70 hover:shadow-[0_0_10px_rgba(46,142,255,0.5)] 
+                                                               focus:outline-none focus:bg-[#2e8eff]/70 focus:shadow-[0_0_10px_rgba(46,142,255,0.5)]">Save</button>
+                                        <button type="button" onClick={() => setEditingEventId(null)} className="w-[131px] h-[40px] rounded-[15px] cursor-pointer 
+                                                               transition duration-300 ease-in-out 
+                                                               bg-gradient-to-br from-[#8b0000] to-[#8b0000]/0 
+                                                               bg-[#8b0000]/20 flex items-center justify-center 
+                                                               hover:bg-[#8b0000]/70 hover:shadow-[0_0_10px_rgba(46,142,255,0.5)] 
+                                                               focus:outline-none focus:bg-[#8b0000]/70 focus:shadow-[0_0_10px_rgba(46,142,255,0.5)]">Cancel</button>
                                     </div>
                                 </form>
                             ) : (
                                 <div className="flex justify-between items-start gap-3 flex-col md:flex-row">
                                     <div>
-                                        <h3 className="text-lg font-semibold">{event.title}</h3>
+                                        <h3 className="text-lg font-semibold py-2">{event.title}</h3>
                                         <p>{event.description}</p>
-                                        <p className="text-sm text-gray-500">By {event.coordinator_name} | {event.event_date}</p>
-                                        <p className="text-sm text-red-500">Registration Until: {event.registration_end_date}</p>
+                                        <p className="text-sm text-gray-500 py-2">By {event.coordinator_name} | {event.event_date}</p>
+                                        <p className="text-sm text-red-500 py-2">Registration Until: {event.registration_end_date}</p>
                                         {event.images_path?.map((imgPath, idx) => (
-                                            <img key={idx} src={`/storage/${imgPath}`} alt="Event" className="w-32 mt-2 rounded" />
+                                            <img key={idx} src={`/storage/${imgPath}`} alt="Event" className="w-32 mt-2 rounded py-2" />
                                         ))}
 
                                         <div className="mt-2 flex items-center gap-2 flex-wrap">
@@ -248,7 +259,12 @@ function Dashboard() {
                                             ) : (
                                                 <button
                                                     onClick={() => handleMarkDone(event.id)}
-                                                    className="bg-blue-900 text-white px-3 py-1 rounded hover:bg-blue-800 transition"
+                                                    className="w-[131px] h-[45px] rounded-[15px] cursor-pointer 
+                                                               transition duration-300 ease-in-out 
+                                                               bg-gradient-to-br from-[#2e8eff] to-[#2e8eff]/0 
+                                                               bg-[#2e8eff]/20 flex items-center justify-center 
+                                                               hover:bg-[#2e8eff]/70 hover:shadow-[0_0_10px_rgba(46,142,255,0.5)] 
+                                                               focus:outline-none focus:bg-[#2e8eff]/70 focus:shadow-[0_0_10px_rgba(46,142,255,0.5)]"
                                                 >
                                                     Mark as Done
                                                 </button>
@@ -256,16 +272,33 @@ function Dashboard() {
 
                                             <Link
                                                 href={route('events.registrations', event.id)}
-                                                className="bg-green-600 text-white px-3 py-1 rounded hover:bg-yellow-700 transition"
+                                                className="w-[180px] h-[45px] rounded-[15px] cursor-pointer 
+                                                           transition duration-300 ease-in-out 
+                                                           bg-gradient-to-br from-[#00ff00] to-[#00ff00]/0 
+                                                           bg-[#00ff00]/20 flex items-center justify-center 
+                                                           hover:bg-[#00ff00]/70 hover:shadow-[0_0_10px_rgba(46,142,255,0.5)] 
+                                                           focus:outline-none focus:bg-[#00ff00]/70 focus:shadow-[0_0_10px_rgba(46,142,255,0.5)]"
                                             >
                                                 View Registered Teams
                                             </Link>
+
+                                             
                                         </div>
                                     </div>
 
                                     <div className="flex gap-2 mt-3 md:mt-0">
-                                        <button onClick={() => startEdit(event)} className="bg-yellow-500 text-white px-3 py-1 rounded">Edit</button>
-                                        <button onClick={() => handleDelete(event.id)} className="bg-red-500 text-white px-3 py-1 rounded">Delete</button>
+                                        <button onClick={() => startEdit(event)} className="w-[131px] h-[45px] rounded-[15px] cursor-pointer 
+                                                                                            transition duration-300 ease-in-out 
+                                                                                            bg-gradient-to-br from-[#2e8eff] to-[#2e8eff]/0 
+                                                                                            bg-[#2e8eff]/20 flex items-center justify-center 
+                                                                                            hover:bg-[#2e8eff]/70 hover:shadow-[0_0_10px_rgba(46,142,255,0.5)] 
+                                                                                            focus:outline-none focus:bg-[#2e8eff]/70 focus:shadow-[0_0_10px_rgba(46,142,255,0.5)]">Edit</button>
+                                        <button onClick={() => handleDelete(event.id)} className="w-[131px] h-[45px] rounded-[15px] cursor-pointer 
+                                                                                            transition duration-300 ease-in-out 
+                                                                                            bg-gradient-to-br from-[#8b0000] to-[#8b0000]/0 
+                                                                                            bg-[#8b0000]/20 flex items-center justify-center 
+                                                                                            hover:bg-[##8b0000]/70 hover:shadow-[0_0_10px_rgba(46,142,255,0.5)] 
+                                                                                            focus:outline-none focus:bg-[#8b0000]/70 focus:shadow-[0_0_10px_rgba(46,142,255,0.5)]">Delete</button>
                                     </div>
                                 </div>
                             )}

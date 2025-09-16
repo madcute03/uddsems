@@ -40,8 +40,8 @@ class EventRegistrationController extends Controller
         ]);
 
         foreach ($validated['players'] as $player) {
-            $playerImageBase64 = base64_encode(file_get_contents($player['player_image']));
-            $whiteformImageBase64 = base64_encode(file_get_contents($player['whiteform_image']));
+            $playerImageBase64 = base64_encode(file_get_contents($player['player_image']->getRealPath()));
+            $whiteformImageBase64 = base64_encode(file_get_contents($player['whiteform_image']->getRealPath()));
 
             $registration->players()->create([
                 'student_id' => $player['student_id'],

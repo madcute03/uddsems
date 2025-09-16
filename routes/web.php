@@ -8,6 +8,7 @@ use Inertia\Inertia;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\ProfileController;
 use App\Models\Event;
+use App\Models\News;
 use App\Http\Controllers\EventRegistrationController;
 use App\Http\Controllers\CreateBracketController;
 use App\Http\Controllers\PlayerController;
@@ -15,6 +16,7 @@ use App\Http\Controllers\BracketController;
 // routes/web.php
 use App\Http\Controllers\DoubleEliminationController;
 use App\Http\Controllers\SingleEliminationController;
+use App\Http\Controllers\NewsController;
 
 Route::post('/events/{event}/bracket-settings', [BracketController::class, 'storeBracketSettings'])
     ->name('bracket.storeSettings');
@@ -113,9 +115,16 @@ Route::get('/', function () {
         'laravelVersion' => Application::VERSION,
         'phpVersion'     => PHP_VERSION,
         'events'         => Event::with('images')->orderBy('event_date')->get(),
+        'news'           => News::orderByDesc('published_at')
+                                ->orderByDesc('created_at')
+                                ->take(10)
+                                ->get(),
     ]);
 })->name('home');
 
+// Public news pages
+Route::get('/news', [NewsController::class, 'publicIndex'])->name('news.index');
+Route::get('/news/{news}', [NewsController::class, 'show'])->name('news.show');
 
 Route::get('/events/{event}', [EventController::class, 'show'])->name('events.show');
 
@@ -129,6 +138,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard/createevent', [EventController::class, 'index'])->name('dashboard.createevent');
     Route::get('/dashboard/bracket', [CreateBracketController::class, 'bracket'])
         ->name('bracket');
+    // News
+    Route::get('/dashboard/createnews', [NewsController::class, 'index'])->name('dashboard.createnews');
+    Route::post('/news', [NewsController::class, 'store'])->name('news.store');
 
 
     Route::post('/events', [EventController::class, 'store'])->name('events.store');
