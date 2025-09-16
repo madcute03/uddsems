@@ -1,4 +1,5 @@
 import React, { useState, useRef, useLayoutEffect, useEffect } from "react";
+import PublicLayout from "@/Layouts/PublicLayout";
 
 export default function ShowThreeTeamBracket({ savedBracket }) {
     const defaultMatches = {
@@ -70,6 +71,7 @@ export default function ShowThreeTeamBracket({ savedBracket }) {
     }, [matches]);
 
     return (
+        <PublicLayout>
         <div className="bg-gray-900 min-h-screen p-6 text-white flex flex-col items-center">
             <h1 className="text-2xl font-bold text-center mb-6">
                 3-Team Single Elimination Bracket
@@ -93,5 +95,6 @@ export default function ShowThreeTeamBracket({ savedBracket }) {
                 </svg>
             </div>
         </div>
+        </PublicLayout>
     );
 }

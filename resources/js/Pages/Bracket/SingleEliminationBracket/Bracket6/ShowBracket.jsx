@@ -1,4 +1,5 @@
 import React, { useState, useRef, useLayoutEffect, useEffect } from "react";
+import PublicLayout from "@/Layouts/PublicLayout";
 
 export default function ShowSixTeamBracket({ eventId }) {
     const defaultMatches = {
@@ -86,6 +87,7 @@ export default function ShowSixTeamBracket({ eventId }) {
     }, [matches]);
 
     return (
+        <PublicLayout>
         <div className="bg-gray-900 min-h-screen p-6 text-white">
             <h1 className="text-2xl font-bold text-center mb-6">6-Team Bracket Result</h1>
 
@@ -120,5 +122,6 @@ export default function ShowSixTeamBracket({ eventId }) {
                 </svg>
             </div>
         </div>
+        </PublicLayout>
     );
 }

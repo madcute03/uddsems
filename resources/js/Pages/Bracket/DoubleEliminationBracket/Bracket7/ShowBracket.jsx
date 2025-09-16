@@ -1,5 +1,6 @@
 import React, { useState, useRef, useLayoutEffect } from "react";
 import { Head, Link } from "@inertiajs/react";
+import PublicLayout from "@/Layouts/PublicLayout";
 
 export default function ShowResult({ eventId, matches: initialMatches, champion: initialChampion, teamCount }) {
     const boxRefs = useRef({});
@@ -81,7 +82,7 @@ export default function ShowResult({ eventId, matches: initialMatches, champion:
     }, [matches]);
 
     return (
-        <>
+        <PublicLayout>
             <Head />
             <div className="bg-gray-900 min-h-screen p-4 text-white">
                 <h1 className="text-2xl font-bold text-center mb-6">{teamCount}-Team Double Elimination Bracket</h1>
@@ -90,12 +91,6 @@ export default function ShowResult({ eventId, matches: initialMatches, champion:
                     <svg className="absolute top-0 left-0 w-full h-full pointer-events-none">
                         {lines.map((d, i) => <path key={i} d={d} stroke="white" strokeWidth="2" fill="none" />)}
                     </svg>
-                    <Link
-                        href={route('home')}
-                        className=" mt-4 sm:mt-6 block text-purple-700 underline font-semibold text-sm sm:text-lg"
-                    >
-                        ← Back to Events
-                    </Link>
 
                     {/* Upper Bracket */}
                     <div className="mb-10">
@@ -129,6 +124,6 @@ export default function ShowResult({ eventId, matches: initialMatches, champion:
                     </div>
                 </div>
             </div>
-        </>
+        </PublicLayout>
     );
 }

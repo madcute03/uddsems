@@ -1,6 +1,7 @@
 // resources/js/Pages/Bracket/SingleEliminationBracket/Bracket8/ShowStanding.jsx
 import React from "react";
 import { Head, Link } from "@inertiajs/react";
+import PublicLayout from "@/Layouts/PublicLayout";
 
 export default function ShowStanding({
     eventId,
@@ -60,7 +61,7 @@ export default function ShowStanding({
     const standings = calculateStandings();
 
     return (
-        <>
+        <PublicLayout>
             <Head title={`${teamCount}-Team Standings`} />
             <div className="bg-gray-900 min-h-screen p-6 text-white">
                 {/* Title */}
@@ -68,13 +69,7 @@ export default function ShowStanding({
                     {teamCount}-Team Tournament Standings
                 </h1>
 
-                {/* Back link */}
-                <Link
-                    href={route("home")}
-                    className="mb-6 block text-purple-400 underline font-semibold text-sm sm:text-lg text-center"
-                >
-                    ← Back to Events
-                </Link>
+                
 
                 {/* Standings Table */}
                 <div className="max-w-4xl mx-auto overflow-x-auto">
@@ -123,6 +118,6 @@ export default function ShowStanding({
                     </div>
                 )}
             </div>
-        </>
+        </PublicLayout>
     );
 }

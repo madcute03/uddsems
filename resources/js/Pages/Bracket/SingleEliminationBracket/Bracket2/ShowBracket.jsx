@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import PublicLayout from "@/Layouts/PublicLayout";
 
 export default function ShowTwoTeamBracket({ savedBracket }) {
     const defaultMatch = {
@@ -37,6 +38,7 @@ export default function ShowTwoTeamBracket({ savedBracket }) {
     };
 
     return (
+        <PublicLayout>
         <div className="bg-gray-900 min-h-screen p-6 text-white flex flex-col items-center">
             <h1 className="text-2xl font-bold text-center mb-6">
                 2-Team Single Elimination Bracket
@@ -53,5 +55,6 @@ export default function ShowTwoTeamBracket({ savedBracket }) {
                 )}
             </div>
         </div>
+        </PublicLayout>
     );
 }

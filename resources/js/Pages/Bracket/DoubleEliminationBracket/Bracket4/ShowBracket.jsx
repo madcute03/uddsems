@@ -1,4 +1,5 @@
 import React, { useState, useRef, useLayoutEffect, useEffect } from "react";
+import PublicLayout from "@/Layouts/PublicLayout";
 
 export default function ShowResult({ eventId,teamCount }) {
     const defaultMatches = {
@@ -82,6 +83,7 @@ export default function ShowResult({ eventId,teamCount }) {
     }, [matches]);
 
     return (
+        <PublicLayout>
         <div className="bg-gray-900 min-h-screen p-6 text-white">
             <h1 className="text-2xl font-bold text-center mb-6">
                 {teamCount}-Team Double Elimination Bracket (Results)
@@ -128,5 +130,6 @@ export default function ShowResult({ eventId,teamCount }) {
                 </h2>
             )}
         </div>
+        </PublicLayout>
     );
 }

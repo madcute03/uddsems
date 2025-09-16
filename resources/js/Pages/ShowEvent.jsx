@@ -1,5 +1,6 @@
 import { Head, Link, usePage } from "@inertiajs/react";
 import { useEffect, useState } from "react";
+import PublicLayout from "@/Layouts/PublicLayout";
 
 export default function ShowEvent({ event }) {
     const [showSuccess, setShowSuccess] = useState(false);
@@ -49,7 +50,7 @@ export default function ShowEvent({ event }) {
     };
 
     return (
-        <>
+        <PublicLayout>
             <Head title={event.title} />
             {showSuccess && (
                 <div className="fixed inset-0 flex items-center justify-center z-50">
@@ -291,6 +292,6 @@ export default function ShowEvent({ event }) {
                     </div>
                 )}
             </div>
-        </>
+        </PublicLayout>
     );
 }

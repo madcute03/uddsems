@@ -1,5 +1,6 @@
 import React, { useState, useRef, useLayoutEffect, useEffect } from "react";
 import { Head, Link } from "@inertiajs/react";
+import PublicLayout from "@/Layouts/PublicLayout";
 
 export default function FiveTeamShowResult({ eventId, refreshTrigger }) {
     const boxRefs = useRef({});
@@ -102,6 +103,7 @@ export default function FiveTeamShowResult({ eventId, refreshTrigger }) {
     }, [matches]);
 
     return (
+        <PublicLayout>
         <div className="bg-gray-900 min-h-screen p-6 text-white">
             <Head title="5-Team Bracket Results" />
             <h1 className="text-2xl font-bold text-center mb-6">
@@ -144,16 +146,7 @@ export default function FiveTeamShowResult({ eventId, refreshTrigger }) {
                     🏆 Champion: {champion}
                 </div>
             )}
-
-            {/* Back link */}
-            <div className="text-center mt-6">
-                <Link
-                    href={route("home")}
-                    className="text-purple-400 underline font-semibold"
-                >
-                    ← Back to Events
-                </Link>
-            </div>
         </div>
+        </PublicLayout>
     );
 }
