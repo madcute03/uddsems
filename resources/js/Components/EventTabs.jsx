@@ -33,7 +33,7 @@ export default function EventTabs({ events }) {
         return (
             <Link
                 href={route("events.show", event.id)}
-                className="group w-full h-full min-h-[420px] bg-white rounded-2xl overflow-hidden flex flex-col shadow-sm hover:shadow-xl transition-all duration-300 border border-transparent hover:border-blue-500"
+                className="group w-full h-full min-h-[420px] bg-slate-900/60 backdrop-blur border border-slate-800/50 rounded-xl overflow-hidden flex flex-col shadow-lg shadow-blue-950/20 hover:shadow-xl hover:shadow-blue-950/30 transition-all duration-300 hover:border-blue-500/50"
             >
                 {/* Cover Image reserved height */}
                 <div className="relative w-full h-48 md:h-60 overflow-hidden bg-gray-200">
@@ -84,10 +84,10 @@ export default function EventTabs({ events }) {
 
                 {/* Card Body */}
                 <div className="p-5 flex-1 flex flex-col">
-                    <h3 className="text-xl font-bold text-gray-800 mb-2 line-clamp-2">{event.title}</h3>
-                    <p className="text-gray-600 text-base mb-3 line-clamp-3">{event.description}</p>
-                    <p className="text-sm text-gray-500 mt-auto">
-                        By <span className="font-semibold text-gray-700">{event.coordinator_name}</span> | {dayjs(event.event_date).format("MMM D, YYYY")}
+                    <h3 className="text-xl font-bold text-slate-100 mb-2 line-clamp-2">{event.title}</h3>
+                    <p className="text-slate-300 text-base mb-3 line-clamp-3">{event.description}</p>
+                    <p className="text-sm text-slate-400 mt-auto">
+                        By <span className="font-semibold text-slate-200">{event.coordinator_name}</span> | {dayjs(event.event_date).format("MMM D, YYYY")}
                     </p>
                 </div>
             </Link>

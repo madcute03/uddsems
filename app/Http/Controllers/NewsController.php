@@ -12,7 +12,11 @@ class NewsController extends Controller
     // Show Create News form
     public function index()
     {
-        return Inertia::render('CreateNews');
+        $news = News::orderByDesc('created_at')->get();
+        
+        return Inertia::render('CreateNews', [
+            'news' => $news,
+        ]);
     }
 
     // Store a news post
@@ -54,7 +58,52 @@ class NewsController extends Controller
             'cover_image' => $coverPath,
         ]);
 
-        return redirect()->route('dashboard.createnews')->with('success', 'News created successfully.');
+        return redirect()->route('news.index')->with('success', 'News created successfully.');
+    }
+
+    // Update news
+    public function update(Request $request, News $news)
+    {
+        $validated = $request->validate([
+            'title' => 'required|string|max:255',
+            'content' => 'required|string',
+            'tags' => 'nullable|string',
+            'published_at' => 'nullable|date',
+            'location' => 'nullable|string|max:255',
+            'author' => 'nullable|string|max:255',
+        ]);
+
+        $tagsArray = [];
+        if (!empty($validated['tags'])) {
+            $tagsArray = collect(explode(',', $validated['tags']))
+                ->map(fn($t) => trim($t))
+                ->filter()
+                ->values()
+                ->all();
+        }
+
+        $news->update([
+            'title' => $validated['title'],
+            'content' => $validated['content'],
+            'tags' => $tagsArray,
+            'published_at' => $validated['published_at'] ?? null,
+            'location' => $validated['location'] ?? null,
+            'author' => $validated['author'] ?? null,
+        ]);
+
+        return redirect()->route('news.index')->with('success', 'News updated successfully.');
+    }
+
+    // Delete news
+    public function destroy(News $news)
+    {
+        if ($news->cover_image) {
+            Storage::disk('public')->delete($news->cover_image);
+        }
+        
+        $news->delete();
+        
+        return redirect()->route('news.index')->with('success', 'News deleted successfully.');
     }
 
     // Public: list news

@@ -18,6 +18,122 @@ function Dashboard() {
         required_players: '',
     });
 
+    // Calendar states
+    const [showEventDateCalendar, setShowEventDateCalendar] = useState(false);
+    const [showRegistrationDateCalendar, setShowRegistrationDateCalendar] = useState(false);
+    const [currentMonth, setCurrentMonth] = useState(new Date().getMonth());
+    const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
+
+    // Calendar component
+    const CalendarPicker = ({ isOpen, onClose, onDateSelect, selectedDate, title }) => {
+        if (!isOpen) return null;
+
+        const monthNames = [
+            'January', 'February', 'March', 'April', 'May', 'June',
+            'July', 'August', 'September', 'October', 'November', 'December'
+        ];
+
+        const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+        const firstDayOfMonth = new Date(currentYear, currentMonth, 1).getDay();
+        const today = new Date();
+        const selectedDateObj = selectedDate ? new Date(selectedDate) : null;
+
+        const days = [];
+        
+        // Empty cells for days before the first day of the month
+        for (let i = 0; i < firstDayOfMonth; i++) {
+            days.push(<div key={`empty-${i}`} className="p-2"></div>);
+        }
+
+        // Days of the month
+        for (let day = 1; day <= daysInMonth; day++) {
+            const date = new Date(currentYear, currentMonth, day);
+            const isToday = date.toDateString() === today.toDateString();
+            const isSelected = selectedDateObj && date.toDateString() === selectedDateObj.toDateString();
+            const isPast = date < today.setHours(0, 0, 0, 0);
+
+            days.push(
+                <button
+                    key={day}
+                    onClick={() => {
+                        const formattedDate = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+                        onDateSelect(formattedDate);
+                        onClose();
+                    }}
+                    className={`p-2 text-sm rounded-lg transition-all duration-200 hover:bg-blue-500/20 ${
+                        isSelected ? 'bg-blue-500 text-white' : 
+                        isToday ? 'bg-blue-500/30 text-blue-200' :
+                        isPast ? 'text-gray-500 hover:bg-gray-500/10' :
+                        'text-gray-300 hover:text-white'
+                    }`}
+                >
+                    {day}
+                </button>
+            );
+        }
+
+        const navigateMonth = (direction) => {
+            if (direction === 'prev') {
+                if (currentMonth === 0) {
+                    setCurrentMonth(11);
+                    setCurrentYear(currentYear - 1);
+                } else {
+                    setCurrentMonth(currentMonth - 1);
+                }
+            } else {
+                if (currentMonth === 11) {
+                    setCurrentMonth(0);
+                    setCurrentYear(currentYear + 1);
+                } else {
+                    setCurrentMonth(currentMonth + 1);
+                }
+            }
+        };
+
+        return (
+            <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50" onClick={onClose}>
+                <div className="bg-slate-800 border border-slate-700 rounded-xl p-6 shadow-2xl max-w-sm w-full mx-4" onClick={e => e.stopPropagation()}>
+                    <div className="flex items-center justify-between mb-4">
+                        <h3 className="text-lg font-semibold text-white">{title}</h3>
+                        <button onClick={onClose} className="text-gray-400 hover:text-white text-xl">
+                            ×
+                        </button>
+                    </div>
+                    
+                    <div className="flex items-center justify-between mb-4">
+                        <button 
+                            onClick={() => navigateMonth('prev')}
+                            className="p-2 hover:bg-slate-700 rounded-lg text-gray-300 hover:text-white transition-colors"
+                        >
+                            ‹
+                        </button>
+                        <span className="text-white font-medium">
+                            {monthNames[currentMonth]} {currentYear}
+                        </span>
+                        <button 
+                            onClick={() => navigateMonth('next')}
+                            className="p-2 hover:bg-slate-700 rounded-lg text-gray-300 hover:text-white transition-colors"
+                        >
+                            ›
+                        </button>
+                    </div>
+
+                    <div className="grid grid-cols-7 gap-1 mb-2">
+                        {['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'].map(day => (
+                            <div key={day} className="p-2 text-center text-sm text-gray-400 font-medium">
+                                {day}
+                            </div>
+                        ))}
+                    </div>
+
+                    <div className="grid grid-cols-7 gap-1">
+                        {days}
+                    </div>
+                </div>
+            </div>
+        );
+    };
+
     const startEdit = (event) => {
         setEditingEventId(event.id);
         setEditData({
@@ -119,7 +235,7 @@ function Dashboard() {
                                             type="text"
                                             value={editData.title}
                                             onChange={e => setEditData({ ...editData, title: e.target.value })}
-                                            className="w-full border text-black px-2 py-1 rounded"
+                                            className="w-full border border-slate-600 bg-slate-700 text-white px-2 py-1 rounded focus:border-blue-500 focus:outline-none"
                                         />
                                     </div>
 
@@ -128,7 +244,7 @@ function Dashboard() {
                                         <textarea
                                             value={editData.description}
                                             onChange={e => setEditData({ ...editData, description: e.target.value })}
-                                            className="w-full border text-black px-2 py-1 rounded"
+                                            className="w-full border border-slate-600 bg-slate-700 text-white px-2 py-1 rounded focus:border-blue-500 focus:outline-none"
                                         />
                                     </div>
 
@@ -138,27 +254,63 @@ function Dashboard() {
                                             type="text"
                                             value={editData.coordinator_name}
                                             onChange={e => setEditData({ ...editData, coordinator_name: e.target.value })}
-                                            className="w-full border text-black px-2 py-1 rounded"
+                                            className="w-full border border-slate-600 bg-slate-700 text-white px-2 py-1 rounded focus:border-blue-500 focus:outline-none"
                                         />
                                     </div>
 
                                     <div>
                                         <label className="block text-sm">Event Date</label>
-                                        <input
-                                            type="date"
-                                            value={editData.event_date}
-                                            onChange={e => setEditData({ ...editData, event_date: e.target.value })}
-                                            className="w-full border text-black px-2 py-1 rounded"
+                                        <div className="relative">
+                                            <input
+                                                type="text"
+                                                value={editData.event_date ? new Date(editData.event_date).toLocaleDateString('en-US', {
+                                                    year: 'numeric',
+                                                    month: 'long', 
+                                                    day: 'numeric'
+                                                }) : 'Select event date'}
+                                                onClick={() => setShowEventDateCalendar(true)}
+                                                readOnly
+                                                className="w-full border border-slate-600 bg-slate-700 text-white px-2 py-1 rounded cursor-pointer hover:bg-slate-600 transition-colors focus:border-blue-500 focus:outline-none"
+                                                placeholder="Select event date"
+                                            />
+                                            <div className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500 pointer-events-none">
+                                                📅
+                                            </div>
+                                        </div>
+                                        <CalendarPicker
+                                            isOpen={showEventDateCalendar}
+                                            onClose={() => setShowEventDateCalendar(false)}
+                                            onDateSelect={(date) => setEditData({ ...editData, event_date: date })}
+                                            selectedDate={editData.event_date}
+                                            title="Select Event Date"
                                         />
                                     </div>
 
                                     <div>
                                         <label className="block text-sm">Registration End Date</label>
-                                        <input
-                                            type="date"
-                                            value={editData.registration_end_date}
-                                            onChange={e => setEditData({ ...editData, registration_end_date: e.target.value })}
-                                            className="w-full border text-black px-2 py-1 rounded"
+                                        <div className="relative">
+                                            <input
+                                                type="text"
+                                                value={editData.registration_end_date ? new Date(editData.registration_end_date).toLocaleDateString('en-US', {
+                                                    year: 'numeric',
+                                                    month: 'long',
+                                                    day: 'numeric'
+                                                }) : 'Select registration end date'}
+                                                onClick={() => setShowRegistrationDateCalendar(true)}
+                                                readOnly
+                                                className="w-full border border-slate-600 bg-slate-700 text-white px-2 py-1 rounded cursor-pointer hover:bg-slate-600 transition-colors focus:border-blue-500 focus:outline-none"
+                                                placeholder="Select registration end date"
+                                            />
+                                            <div className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500 pointer-events-none">
+                                                📅
+                                            </div>
+                                        </div>
+                                        <CalendarPicker
+                                            isOpen={showRegistrationDateCalendar}
+                                            onClose={() => setShowRegistrationDateCalendar(false)}
+                                            onDateSelect={(date) => setEditData({ ...editData, registration_end_date: date })}
+                                            selectedDate={editData.registration_end_date}
+                                            title="Select Registration End Date"
                                         />
                                     </div>
 
@@ -168,7 +320,7 @@ function Dashboard() {
                                             <input
                                                 key={idx}
                                                 type="file"
-                                                className="w-full border mt-1 text-white"
+                                                className="w-full border border-slate-600 bg-slate-700 mt-1 text-white focus:border-blue-500 focus:outline-none"
                                                 onChange={e => {
                                                     const newImages = [...editData.images];
                                                     newImages[idx] = e.target.files[0];

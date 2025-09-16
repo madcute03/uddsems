@@ -33,47 +33,113 @@ export default function RegisteredTeams({ registrations: initialRegistrations, e
     const handleStatusChange = () => {
         if (!modal.playerId) return;
 
-        setLoading(true);
+        const playerId = modal.playerId;
+        const action = modal.action;
+
+        // Store previous status for undo
+        const updatedRegistrations = registrations.map(reg => {
+            const playerIndex = reg.players.findIndex(p => p.id === playerId);
+            if (playerIndex === -1) return reg;
+
+            const newPlayers = [...reg.players];
+            newPlayers[playerIndex] = {
+                ...newPlayers[playerIndex],
+                status: action,
+                previousStatus: newPlayers[playerIndex].status || 'Pending',
+                statusUpdatedAt: new Date().toISOString()
+            };
+
+            return { ...reg, players: newPlayers };
+        });
+
+        setRegistrations(updatedRegistrations);
+        closeModal();
+
+        // Auto-clear the previous status after 10 seconds
+        const undoTimeout = setTimeout(() => {
+            setRegistrations(currentRegistrations =>
+                currentRegistrations.map(reg => ({
+                    ...reg,
+                    players: reg.players.map(p =>
+                        p.id === playerId && p.status === action
+                            ? (() => { const { previousStatus, statusUpdatedAt, ...rest } = p; return rest; })()
+                            : p
+                    )
+                }))
+            );
+        }, 10000); // 10 seconds to undo
+
+        // Make the API call
         router.post(route('player.updateStatus'), {
-            player_id: modal.playerId,
-            status: modal.action,
+            player_id: playerId,
+            status: action,
             email: modal.playerEmail
         }, {
-            onSuccess: () => {
-                const updatedRegistrations = registrations.map(reg => ({
-                    ...reg,
-                    players: reg.players.map(player => {
-                        if (player.id === modal.playerId) {
-                            return { ...player, status: modal.action };
-                        }
-                        return player;
-                    }),
-                }));
-                setRegistrations(updatedRegistrations);
-                closeModal();
-            },
             onError: (errors) => {
-                console.error(errors);
-                alert('Something went wrong!');
-                setLoading(false);
-                closeModal();
-            }
+                console.error('Failed to update status:', errors);
+                // Revert on error
+                setRegistrations(currentRegistrations =>
+                    currentRegistrations.map(reg => ({
+                        ...reg,
+                        players: reg.players.map(p =>
+                            p.id === playerId
+                                ? { ...p, status: p.previousStatus || 'Pending' }
+                                : p
+                        )
+                    }))
+                );
+                alert('Failed to update status. Please try again.');
+            },
+            preserveScroll: true,
+            preserveState: true
         });
+
+        return () => clearTimeout(undoTimeout);
     };
 
     const openModal = (playerId, playerEmail, action) => {
-        setModal({ isOpen: true, playerId, playerEmail, action });
+        const player = registrations
+            .flatMap(reg => reg.players)
+            .find(p => p.id === playerId);
+
+        if (player) {
+            const canUndo = player.statusUpdatedAt && new Date() - new Date(player.statusUpdatedAt) < 10000;
+            if (canUndo || !player.status || player.status === 'Pending') {
+                setModal({
+                    isOpen: true,
+                    playerId,
+                    playerEmail,
+                    action,
+                    isUndo: canUndo
+                });
+            }
+        }
     };
 
     const closeModal = () => {
-        setModal({ isOpen: false, playerId: null, playerEmail: null, action: null });
-        setLoading(false);
+        setModal(prev => ({ ...prev, isOpen: false }));
+        // Don't reset loading here to prevent flicker
     };
 
     return (
         <>
             <Head title="Registered Teams" />
+
             <div className="min-h-screen bg-gradient-to-br from-slate-950 via-blue-950 to-black text-slate-100 py-10 px-4">
+                <Link href={route('dashboard')} className="relative
+                                            text-[14px] font-extrabold font-inherit uppercase
+                                            text-[#e1e1e1]
+                                            cursor-pointer bg-none border-0
+                                            transition-colors duration-400 [transition-timing-function:cubic-bezier(0.25,0.8,0.25,1)]
+                                            hover:text-white focus:text-white
+                                            after:content-[''] after:absolute after:bottom-[-2px] after:left-1/2
+                                            after:w-0 after:h-[2px] after:bg-white
+                                            after:transition-[width,left] after:duration-400 [after:transition-timing-function:cubic-bezier(0.25,0.8,0.25,1)]
+                                            hover:after:w-full hover:after:left-0
+                                            focus:after:w-full focus:after:left-0
+                                            h-15 px-2 mt-10">
+                    ← Back to dashboard
+                </Link>
                 <div className="mx-auto w-full max-w-6xl overflow-hidden rounded-xl shadow-2xl border border-white/15 bg-white/10 backdrop-blur-xl p-6 sm:p-8">
                     <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
                         <div>
@@ -152,20 +218,52 @@ export default function RegisteredTeams({ registrations: initialRegistrations, e
                                                                 <span className={statusBadge(player.status)}>{player.status || 'Pending'}</span>
                                                             </td>
                                                             <td className="px-3 py-2 align-middle text-center space-x-2">
-                                                                <button
-                                                                    className="btn-blue-glow disabled:opacity-50 disabled:cursor-not-allowed"
-                                                                    onClick={() => openModal(player.id, player.email, 'approved')}
-                                                                    disabled={player.status && player.status !== 'Pending'}
-                                                                >
-                                                                    Approve
-                                                                </button>
-                                                                <button
-                                                                    className="btn-blue-glow disabled:opacity-50 disabled:cursor-not-allowed"
-                                                                    onClick={() => openModal(player.id, player.email, 'disapproved')}
-                                                                    disabled={player.status && player.status !== 'Pending'}
-                                                                >
-                                                                    Disapprove
-                                                                </button>
+                                                                {/* Always show Approve/Disapprove buttons for Pending status */}
+                                                                {(!player.status || player.status === 'Pending') && (
+                                                                    <>
+                                                                        <button
+                                                                            className="btn-blue-glow disabled:opacity-50 disabled:cursor-not-allowed transition-opacity duration-200 mr-2"
+                                                                            onClick={() => openModal(player.id, player.email, 'approved')}
+                                                                            disabled={loading}
+                                                                        >
+                                                                            {loading && modal.playerId === player.id && modal.action === 'approved' ? 'Processing...' : 'Approve'}
+                                                                        </button>
+                                                                        <button
+                                                                            className="btn-blue-glow disabled:opacity-50 disabled:cursor-not-allowed transition-opacity duration-200"
+                                                                            onClick={() => openModal(player.id, player.email, 'disapproved')}
+                                                                            disabled={loading}
+                                                                        >
+                                                                            {loading && modal.playerId === player.id && modal.action === 'disapproved' ? 'Processing...' : 'Disapprove'}
+                                                                        </button>
+                                                                    </>
+                                                                )}
+
+                                                                {/* Show Undo button for 10 seconds after status change */}
+                                                                {player.status && player.status !== 'Pending' && player.statusUpdatedAt && new Date() - new Date(player.statusUpdatedAt) < 10000 && (
+                                                                    <button
+                                                                        className="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-1 px-3 rounded text-sm transition-colors ml-2"
+                                                                        onClick={() => {
+                                                                            // Undo the status change
+                                                                            setRegistrations(currentRegistrations =>
+                                                                                currentRegistrations.map(reg => ({
+                                                                                    ...reg,
+                                                                                    players: reg.players.map(p =>
+                                                                                        p.id === player.id
+                                                                                            ? { ...p, status: 'Pending' }
+                                                                                            : p
+                                                                                    )
+                                                                                }))
+                                                                            );
+                                                                        }}
+                                                                    >
+                                                                        Undo {player.status}
+                                                                    </button>
+                                                                )}
+
+                                                                {/* Show status text if not in undo period */}
+                                                                {player.status && player.status !== 'Pending' && (!player.statusUpdatedAt || new Date() - new Date(player.statusUpdatedAt) >= 10000) && (
+                                                                    <span className="text-sm text-gray-400">{player.status}</span>
+                                                                )}
                                                             </td>
                                                         </tr>
                                                     ))}
@@ -178,20 +276,7 @@ export default function RegisteredTeams({ registrations: initialRegistrations, e
                         )}
                     </div>
 
-                    <Link href={route('dashboard.createevent')} className="relative
-                                            text-[14px] font-extrabold font-inherit uppercase
-                                            text-[#e1e1e1]
-                                            cursor-pointer bg-none border-0
-                                            transition-colors duration-400 [transition-timing-function:cubic-bezier(0.25,0.8,0.25,1)]
-                                            hover:text-white focus:text-white
-                                            after:content-[''] after:absolute after:bottom-[-2px] after:left-1/2
-                                            after:w-0 after:h-[2px] after:bg-white
-                                            after:transition-[width,left] after:duration-400 [after:transition-timing-function:cubic-bezier(0.25,0.8,0.25,1)]
-                                            hover:after:w-full hover:after:left-0
-                                            focus:after:w-full focus:after:left-0
-                                            h-15 px-2 mt-10">
-                        ← Back to dashboard
-                    </Link>
+
                 </div>
             </div>
 
@@ -220,8 +305,14 @@ export default function RegisteredTeams({ registrations: initialRegistrations, e
             {modal.isOpen && (
                 <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50">
                     <div className="bg-white p-6 rounded shadow max-w-sm w-full text-center">
-                        <h2 className="text-lg font-bold mb-4">Confirm {modal.action}</h2>
-                        <p className="mb-4">Are you sure you want to {modal.action} this player?</p>
+                        <h2 className="text-lg font-bold mb-4">
+                            {modal.isUndo ? 'Undo ' : ''}{modal.action.charAt(0).toUpperCase() + modal.action.slice(1)}
+                        </h2>
+                        <p className="mb-4">
+                            {modal.isUndo
+                                ? `Are you sure you want to undo the ${modal.action} status?`
+                                : `Are you sure you want to ${modal.action} this player?`}
+                        </p>
                         <div className="flex justify-center gap-4">
                             <button
                                 className="btn-blue-glow w-full"
@@ -235,7 +326,7 @@ export default function RegisteredTeams({ registrations: initialRegistrations, e
                                 onClick={handleStatusChange}
                                 disabled={loading}
                             >
-                                {loading ? 'Processing...' : modal.action.charAt(0).toUpperCase() + modal.action.slice(1)}
+                                {modal.action.charAt(0).toUpperCase() + modal.action.slice(1)}
                             </button>
                         </div>
                     </div>

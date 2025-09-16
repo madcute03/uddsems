@@ -101,25 +101,31 @@ export default function TwoTeamBracket({ eventId }) {
 
     const renderMatch = (id, label) => {
         const m = matches[id];
+        if (!m) return null;
         return (
             <div
                 id={id}
-                ref={(el) => (boxRefs.current[id] = el)}
-                className="p-3 border rounded-lg bg-gray-800 text-white mb-12 w-44 relative"
+                ref={el => (boxRefs.current[id] = el)}
+                className="p-1.5 border rounded-lg bg-gray-800 text-white mb-2 w-36 sm:w-40 md:w-44 relative"
             >
-                <p className="font-bold mb-2 text-center">{label}</p>
-                {["p1", "p2"].map((k) => (
-                    <div key={k} className={`flex justify-between items-center mb-2 px-2 py-1 rounded ${m.winner === m[k]?.name ? "bg-green-600" : "bg-gray-700"}`}>
+                <p className="font-bold mb-0.5 text-[10px] sm:text-xs text-center">{label}</p>
+                {["p1", "p2"].map(k => (
+                    <div key={k} className={`flex justify-between items-center mb-0.5 text-[10px] sm:text-xs ${m.winner === m[k]?.name ? "bg-green-600" : "bg-gray-700"} px-1.5 py-1 sm:py-0.5 rounded`}>
                         <span>{m[k]?.name ?? "TBD"}</span>
-                        <span>{m[k]?.score || "-"}</span>
+                        <span className="ml-2">{m[k]?.score || "-"}</span>
                     </div>
                 ))}
                 {m.p1?.name !== "TBD" && m.p2?.name !== "TBD" && !m.winner && (
-                    <button onClick={() => openReportScore(id)} className="px-3 py-1 bg-blue-600 hover:bg-blue-500 rounded font-bold text-sm w-full mt-1">
+                    <button 
+                        onClick={() => openReportScore(id)} 
+                        className="px-2 py-1.5 sm:px-1 sm:py-0.5 bg-blue-600 hover:bg-blue-500 rounded font-medium text-[10px] sm:text-[9px] w-full mt-1 sm:mt-0.5 transition-colors"
+                    >
                         Report Score
                     </button>
                 )}
-                {m.winner && <p className="text-green-400 text-sm mt-1">Winner: {m.winner}</p>}
+                {m.winner && m.winner !== "TBD" && (
+                    <p className="text-green-400 text-[10px] mt-0.5 text-center">🏆 {m.winner} 🏆</p>
+                )}
             </div>
         );
     };
@@ -132,60 +138,114 @@ export default function TwoTeamBracket({ eventId }) {
     }, [matches]);
 
     return (
-        <div className="bg-gray-900 min-h-screen p-6 text-white">
-            <h1 className="text-2xl font-bold text-center mb-6">2-Team Bracket</h1>
+        <div className="bracket-root">
+            <div className="bg-gray-900 min-h-screen p-2 md:p-6 text-white w-full max-w-[1800px] mx-auto overflow-x-auto">
+                <h1 className="text-xl font-bold text-center mb-4">2-Team Single Elimination Bracket</h1>
 
-            <div className="flex gap-4 justify-center mb-6 flex-wrap">
-                {teamsInput.map((t, i) => (
-                    <input key={i} type="text" value={t} onChange={(e) => handleTeamChange(i, e.target.value)} placeholder={`Team ${i + 1}`} className="px-2 py-1 rounded text-black" />
-                ))}
-                <button onClick={applyTeams} className="w-[200px] h-[45px] rounded-[15px] cursor-pointer 
-                                                               transition duration-300 ease-in-out 
-                                                               bg-gradient-to-br from-[#2e8eff] to-[#2e8eff]/0 
-                                                               bg-[#2e8eff]/20 flex items-center justify-center 
-                                                               hover:bg-[#2e8eff]/70 hover:shadow-[0_0_10px_rgba(46,142,255,0.5)] 
-                                                               focus:outline-none focus:bg-[#2e8eff]/70 focus:shadow-[0_0_10px_rgba(46,142,255,0.5)]">Apply Teams</button>
-                <button onClick={handleSave} className="w-[131px] h-[45px] rounded-[15px] cursor-pointer 
-                                                               transition duration-300 ease-in-out 
-                                                               bg-gradient-to-br from-[#00ff00] to-[#00ff00]/0 
-                                                               bg-[#00ff00]/20 flex items-center justify-center 
-                                                               hover:bg-[#00ff00]/70 hover:shadow-[0_0_10px_rgba(0,255,0,0.5)] 
-                                                               focus:outline-none focus:bg-[#00ff00]/70 focus:shadow-[0_0_10px_rgba(0,255,0,0.5)]
-">Save Bracket</button>
-                <button onClick={resetBracket} className="w-[131px] h-[45px] rounded-[15px] cursor-pointer 
-                                                               transition duration-300 ease-in-out 
-                                                               bg-gradient-to-br from-[#ff0000] to-[#ff0000]/0 
-                                                               bg-[#ff0000]/20 flex items-center justify-center 
-                                                               hover:bg-[#ff0000]/70 hover:shadow-[0_0_10px_rgba(255,0,0,0.5)] 
-                                                               focus:outline-none focus:bg-[#ff0000]/70 focus:shadow-[0_0_10px_rgba(255,0,0,0.5)]">Reset Bracket</button>
-            </div>
+                <div className="flex gap-2 sm:gap-4 justify-center mb-4 sm:mb-6 flex-wrap">
+                    {teamsInput.map((t, i) => (
+                        <input
+                            key={i}
+                            type="text"
+                            value={t}
+                            onChange={e => handleTeamChange(i, e.target.value)}
+                            placeholder={`Team ${i + 1}`}
+                            className="px-2 py-1 rounded text-black text-sm sm:text-base w-24 sm:w-auto"
+                        />
+                    ))}
+                    <div className="flex gap-2 w-full sm:w-auto justify-center mt-2 sm:mt-0">
+                        <button 
+                            onClick={applyTeams} 
+                            className="px-3 sm:px-4 py-1 bg-blue-600 rounded text-white font-bold text-sm sm:text-base"
+                        >
+                            Apply Teams
+                        </button>
+                        <button 
+                            onClick={handleSave} 
+                            className="px-3 sm:px-4 py-1 bg-green-600 rounded text-white font-bold text-sm sm:text-base"
+                        >
+                            Save Bracket
+                        </button>
+                        <button
+                            onClick={resetBracket}
+                            className="px-3 sm:px-4 py-1 bg-red-600 rounded text-white font-bold text-sm sm:text-base"
+                        >
+                            Reset
+                        </button>
+                    </div>
+                </div>
 
-            <div id="bracket-container" className="relative flex justify-center items-start gap-24">
-                {renderMatch("F", "Final")}
-                {champion && <div className="absolute left-full top-1/2 transform -translate-y-1/2 ml-6"><h2 className="text-3xl font-bold text-yellow-400">🏆 {champion}</h2></div>}
-            </div>
-
-            {showModal && (
-                <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-60 z-50">
-                    <div className="bg-white text-black p-6 rounded-lg shadow-lg w-80">
-                        <h2 className="text-lg font-bold mb-4">Report Score ({currentMatch})</h2>
-                        <div className="mb-3">
-                            <label className="block text-sm font-semibold">{matches[currentMatch]?.p1?.name}</label>
-                            <input type="number" value={scoreInput.p1} onChange={e => setScoreInput({ ...scoreInput, p1: e.target.value })} className="w-full border px-2 py-1 rounded" />
-                        </div>
-                        <div className="mb-4">
-                            <label className="block text-sm font-semibold">{matches[currentMatch]?.p2?.name}</label>
-                            <input type="number" value={scoreInput.p2} onChange={e => setScoreInput({ ...scoreInput, p2: e.target.value })} className="w-full border px-2 py-1 rounded" />
-                        </div>
-                        <div className="flex justify-end gap-2">
-                            <button onClick={() => setShowModal(false)} className="px-3 py-1 rounded bg-gray-400 text-white">Cancel</button>
-                            <button onClick={submitScore} className="px-3 py-1 rounded bg-blue-600 text-white font-bold">Submit</button>
+                <div id="bracket-container" className="relative w-full">
+                    <div className="flex flex-col md:flex-row md:gap-12 lg:gap-16 xl:gap-24 justify-center">
+                        <div className="mt-8 sm:mt-12">
+                            {renderMatch("F", "Final")}
+                            {champion && (
+                                <h2 className="text-lg sm:text-xl md:text-2xl font-bold text-yellow-400 mt-2 sm:mt-3 text-center">
+                                    🏆 {champion} 🏆
+                                </h2>
+                            )}
                         </div>
                     </div>
                 </div>
-            )}
 
-            {showPopup && <div className="fixed bottom-10 left-1/2 transform -translate-x-1/2 bg-green-600 px-4 py-2 rounded shadow-lg">Bracket Saved!</div>}
+                {/* Popup */}
+                {showPopup && (
+                    <div className="fixed bottom-10 left-1/2 transform -translate-x-1/2 bg-green-600 px-4 py-2 rounded shadow-lg text-sm sm:text-base">
+                        Bracket Saved!
+                    </div>
+                )}
+
+                {/* Score Modal */}
+                {showModal && (
+                    <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center p-4 z-50">
+                        <div className="bg-gray-800 p-4 sm:p-6 rounded-lg w-full max-w-md">
+                            <h2 className="text-lg sm:text-xl font-bold mb-4">Report Score ({currentMatch})</h2>
+                            <div className="space-y-3">
+                                <div>
+                                    <label className="block text-sm mb-1">
+                                        {matches[currentMatch]?.p1?.name}
+                                    </label>
+                                    <input
+                                        type="number"
+                                        value={scoreInput.p1}
+                                        onChange={e => setScoreInput({ ...scoreInput, p1: e.target.value })}
+                                        className="w-full px-3 py-1.5 rounded text-black text-sm sm:text-base"
+                                        placeholder="Score"
+                                        min="0"
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-sm mb-1">
+                                        {matches[currentMatch]?.p2?.name}
+                                    </label>
+                                    <input
+                                        type="number"
+                                        value={scoreInput.p2}
+                                        onChange={e => setScoreInput({ ...scoreInput, p2: e.target.value })}
+                                        className="w-full px-3 py-1.5 rounded text-black text-sm sm:text-base"
+                                        placeholder="Score"
+                                        min="0"
+                                    />
+                                </div>
+                                <div className="flex justify-end gap-2 sm:gap-3 mt-4">
+                                    <button
+                                        onClick={() => setShowModal(false)}
+                                        className="px-3 sm:px-4 py-1.5 bg-gray-600 hover:bg-gray-500 rounded text-white text-sm sm:text-base font-medium"
+                                    >
+                                        Cancel
+                                    </button>
+                                    <button
+                                        onClick={submitScore}
+                                        className="px-3 sm:px-4 py-1.5 bg-blue-600 hover:bg-blue-500 rounded text-white text-sm sm:text-base font-medium"
+                                    >
+                                        Submit
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                )}
+            </div>
         </div>
     );
 }

@@ -140,23 +140,23 @@ export default function CreateBracket({ events = [] }) {
 
                 {/* Step 1: Choose Bracket Type */}
                 {selectedEvent && !bracketType && (
-                    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-                        <div className="bg-white rounded-lg p-6 w-96 shadow-lg">
-                            <h2 className="text-xl text-black   font-bold mb-4">
+                    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-80 z-50">
+                        <div className="bg-gray-800 text-white rounded-lg p-6 w-96 shadow-lg border border-gray-700">
+                            <h2 className="text-xl font-bold mb-4 text-center">
                                 Choose Bracket Type for {selectedEvent.title}
                             </h2>
 
                             <div className="space-y-3">
                                 <button
                                     onClick={() => setBracketType("single")}
-                                    className="block w-full bg-green-600 text-white px-4 py-2 rounded text-center hover:bg-green-700"
+                                    className="block w-full bg-green-600 text-white px-4 py-2 rounded text-center hover:bg-green-700 transition-colors"
                                 >
                                     Single Elimination
                                 </button>
 
                                 <button
                                     onClick={() => setBracketType("double")}
-                                    className="block w-full bg-purple-600 text-white px-4 py-2 rounded text-center hover:bg-purple-700"
+                                    className="block w-full bg-purple-600 text-white px-4 py-2 rounded text-center hover:bg-purple-700 transition-colors"
                                 >
                                     Double Elimination
                                 </button>
@@ -164,7 +164,7 @@ export default function CreateBracket({ events = [] }) {
 
                             <button
                                 onClick={() => setSelectedEvent(null)}
-                                className="mt-4 w-full bg-gray-300 px-4 py-2 rounded hover:bg-gray-400"
+                                className="mt-3 w-full bg-red-300 px-10 py-2 rounded hover:bg-red-400"
                             >
                                 Cancel
                             </button>
@@ -174,9 +174,9 @@ export default function CreateBracket({ events = [] }) {
 
                 {/* Step 2: Choose Number of Teams */}
                 {selectedEvent && bracketType && !teamCount && (
-                    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-                        <div className="bg-white rounded-lg p-6 w-96 shadow-lg">
-                            <h2 className="text-xl font-bold mb-4">
+                    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-80 z-50">
+                        <div className="bg-gray-800 text-white rounded-lg p-6 w-96 shadow-lg border border-gray-700">
+                            <h2 className="text-xl font-bold mb-4 text-center">
                                 Select Number of Teams (
                                 {bracketType === "single" ? "Single" : "Double"}{" "}
                                 Elimination)

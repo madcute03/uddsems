@@ -1,7 +1,17 @@
-import { Head, Link } from "@inertiajs/react";
-import { useState } from "react";
+import { Head, Link, usePage } from "@inertiajs/react";
+import { useEffect, useState } from "react";
 
 export default function ShowEvent({ event }) {
+    const [showSuccess, setShowSuccess] = useState(false);
+    const { flash } = usePage().props;
+
+    useEffect(() => {
+        if (flash.success) {
+            setShowSuccess(true);
+            const timer = setTimeout(() => setShowSuccess(false), 2000);
+            return () => clearTimeout(timer);
+        }
+    }, [flash]);
     const today = new Date().toISOString().split("T")[0];
 
     // States ng event
@@ -41,6 +51,13 @@ export default function ShowEvent({ event }) {
     return (
         <>
             <Head title={event.title} />
+            {showSuccess && (
+                <div className="fixed inset-0 flex items-center justify-center z-50">
+                    <div className="bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg transform transition-all duration-300">
+                        {flash.success}
+                    </div>
+                </div>
+            )}
             <div className="min-h-screen bg-gradient-to-br from-slate-950 via-blue-950 to-black text-slate-100">
                 {/* Image Carousel */}
                 {totalImages > 0 ? (
@@ -55,38 +72,47 @@ export default function ShowEvent({ event }) {
                         />
 
                         {/* Overlay */}
-                        <div className="absolute inset-0 bg-black bg-opacity-40 flex flex-col justify-center items-center text-center px-4 sm:px-6 md:px-12">
-                            <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-white mb-3 drop-shadow-lg">
-                                {event.title}
-                            </h1>
-                            <p className="text-lg sm:text-xl md:text-2xl text-white mb-2 drop-shadow">
-                                {event.description}
-                            </p>
-                            <p className="text-md sm:text-lg md:text-lg text-white opacity-90 mb-2 drop-shadow">
-                                By {event.coordinator_name}
-                            </p>
+                        <div className="absolute inset-0 bg-black bg-opacity-50 flex flex-col justify-center items-center text-center px-4 sm:px-6 md:px-12">
+                            <div className="max-w-4xl mx-auto space-y-4">
+                                <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-white mb-6 drop-shadow-2xl leading-tight">
+                                    {event.title}
+                                </h1>
+                                <div className="bg-black/30 backdrop-blur-sm rounded-xl p-6 mb-6">
+                                    <p className="text-xl sm:text-2xl md:text-3xl text-white mb-4 drop-shadow-lg leading-relaxed font-light">
+                                        {event.description}
+                                    </p>
+                                    <p className="text-lg sm:text-xl md:text-2xl text-slate-200 mb-4 drop-shadow font-medium">
+                                        Organized by <span className="text-blue-300 font-semibold">{event.coordinator_name}</span>
+                                    </p>
+                                </div>
+                            </div>
 
                             {/* Status Labels */}
-                            {isOngoing && !isDone && (
-                                <p className="px-3 sm:px-4 py-1 bg-yellow-400 text-yellow-900 font-bold rounded-full mb-2 text-sm sm:text-lg">
-                                    ⚡ Ongoing
-                                </p>
-                            )}
-                            {isUpcoming && (
-                                <p className="px-3 sm:px-4 py-1 bg-blue-400 text-blue-900 font-bold rounded-full mb-2 text-sm sm:text-lg">
-                                    Starts On: {formatDate(event.event_date)}
-                                </p>
-                            )}
-                            {isDone && (
-                                <p className="px-3 sm:px-4 py-1 bg-red-500 text-white font-bold rounded-full mb-2 text-sm sm:text-lg">
-                                    ✅ Finished
-                                </p>
-                            )}
-                            {event.registration_end_date && !isDone && (
-                                <p className="text-sm sm:text-md text-white font-semibold mb-4 drop-shadow">
-                                    Registration Until:{" "}
-                                    {formatDate(event.registration_end_date)}
-                                </p>
+                            <div className="flex flex-wrap justify-center gap-3 mb-6">
+                                {isOngoing && !isDone && (
+                                    <div className="px-6 py-3 bg-gradient-to-r from-yellow-400 to-orange-400 text-yellow-900 font-bold rounded-full text-lg shadow-lg">
+                                        <span className="text-xl">⚡</span> Event Ongoing
+                                    </div>
+                                )}
+                                {isUpcoming && (
+                                    <div className="px-6 py-3 bg-gradient-to-r from-blue-400 to-cyan-400 text-blue-900 font-bold rounded-full text-lg shadow-lg">
+                                        <span className="text-xl">📅</span> Starts: {formatDate(event.event_date)}
+                                    </div>
+                                )}
+                                {isDone && (
+                                    <div className="px-6 py-3 bg-gradient-to-r from-green-400 to-emerald-400 text-green-900 font-bold rounded-full text-lg shadow-lg">
+                                        <span className="text-xl">✅</span> Event Completed
+                                    </div>
+                                )}
+                            </div>
+                            {event.registration_end_date && !isDone && !isOngoing && (
+                                <div className="bg-slate-800/60 backdrop-blur-sm rounded-lg px-6 py-3 mb-6">
+                                    <p className="text-lg text-slate-200 font-medium">
+                                        <span className="text-red-300 font-semibold">⏰ Registration Deadline:</span>
+                                        <br />
+                                        <span className="text-xl text-white">{formatDate(event.registration_end_date)}</span>
+                                    </p>
+                                </div>
                             )}
 
                             {/* Buttons */}
@@ -162,21 +188,32 @@ export default function ShowEvent({ event }) {
                     </div>
                 ) : (
                     // Fallback if no images
-                    <div className="p-6 sm:p-12 text-center">
-                        <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold mb-4">
-                            <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-400 via-sky-400 to-cyan-300">
-                                {event.title}
-                            </span>
-                        </h1>
-                        <p className="text-lg sm:text-xl md:text-2xl mb-2 text-slate-200">
-                            {event.description}
-                        </p>
-                        <p className="text-md sm:text-lg md:text-lg text-slate-300 mb-2">
-                            By {event.coordinator_name}
-                        </p>
-                        <p className="text-lg sm:text-xl mb-4 text-slate-300">
-                            ⏳ Starts On: {formatDate(event.event_date)}
-                        </p>
+                    <div className="p-8 sm:p-16 text-center min-h-screen flex flex-col justify-center">
+                        <div className="max-w-4xl mx-auto space-y-8">
+                            <h1 className="text-5xl sm:text-6xl md:text-7xl font-bold mb-8 leading-tight">
+                                <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-400 via-sky-400 to-cyan-300">
+                                    {event.title}
+                                </span>
+                            </h1>
+                            
+                            <div className="bg-slate-900/60 backdrop-blur-sm rounded-2xl p-8 mb-8 border border-slate-700">
+                                <p className="text-2xl sm:text-3xl md:text-4xl mb-6 text-slate-100 leading-relaxed font-light">
+                                    {event.description}
+                                </p>
+                                <p className="text-xl sm:text-2xl text-slate-300 mb-6">
+                                    Organized by <span className="text-blue-300 font-semibold text-2xl">{event.coordinator_name}</span>
+                                </p>
+                                
+                                <div className="bg-gradient-to-r from-blue-500/20 to-cyan-500/20 rounded-xl p-6 border border-blue-400/30">
+                                    <p className="text-2xl sm:text-3xl text-blue-200 font-medium">
+                                        <span className="text-3xl">📅</span> Event Date
+                                    </p>
+                                    <p className="text-xl sm:text-2xl text-white font-bold mt-2">
+                                        {formatDate(event.event_date)}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
 
                         <div className="flex flex-wrap gap-3 mt-4 justify-center">
                             {isUpcoming && !isRegistrationClosed ? (
@@ -217,34 +254,38 @@ export default function ShowEvent({ event }) {
                             )}
                         </div>
 
-                        <Link
-                            href={route("home")}
-                            className="mt-4 sm:mt-6 block text-blue-300 underline font-semibold text-sm sm:text-lg hover:text-blue-200"
-                        >
-                            ← Back to Events
-                        </Link>
+                        <div className="mt-12">
+                            <Link
+                                href={route("home")}
+                                className="inline-flex items-center gap-2 text-xl font-semibold text-blue-300 hover:text-blue-200 transition-colors duration-300 group"
+                            >
+                                <span className="text-2xl group-hover:-translate-x-1 transition-transform duration-300">←</span>
+                                Back to Events
+                            </Link>
+                        </div>
                     </div>
                 )}
 
                 {/* Popup Modal kapag wala pang bracket settings */}
                 {showSoonModal && (
-                    <div className="fixed inset-0 flex items-center justify-center bg-black/70 z-50">
-                        <div className="bg-slate-900/90 border border-slate-800 p-6 rounded-lg shadow-lg w-80 text-center text-slate-100">
-                            <h2 className="text-xl font-bold mb-4">
+                    <div className="fixed inset-0 flex items-center justify-center bg-black/80 backdrop-blur-sm z-50">
+                        <div className="bg-slate-900/95 border border-slate-700 p-8 rounded-2xl shadow-2xl max-w-md mx-4 text-center text-slate-100">
+                            <div className="text-6xl mb-4">⏳</div>
+                            <h2 className="text-2xl font-bold mb-6 text-blue-300">
                                 Coming Soon
                             </h2>
-                            <p className="text-slate-300 mb-4">
+                            <p className="text-lg text-slate-300 mb-6 leading-relaxed">
                                 The bracket for{" "}
-                                <span className="font-semibold">
+                                <span className="font-semibold text-white text-xl">
                                     {event.title}
                                 </span>{" "}
-                                is not yet available.
+                                is not yet available. Please check back later!
                             </p>
                             <button
                                 onClick={() => setShowSoonModal(false)}
-                                className="mt-2 btn-blue-glow"
+                                className="px-8 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-colors duration-300 text-lg"
                             >
-                                OK
+                                Got it!
                             </button>
                         </div>
                     </div>

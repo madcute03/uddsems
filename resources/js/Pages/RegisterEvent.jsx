@@ -1,4 +1,4 @@
-import { Head, useForm, Link } from '@inertiajs/react';
+import { Head, useForm, Link, router } from '@inertiajs/react';
 import { useEffect } from 'react';
 
 export default function RegisterEvent({ event, requiredPlayers }) {
@@ -60,7 +60,16 @@ export default function RegisterEvent({ event, requiredPlayers }) {
 
         post(route('eventregistrations.store', event.id), formData, {
             forceFormData: true,
-            onFinish: () => reset(),
+            onSuccess: () => {
+                router.visit(route('events.show', event.id), {
+                    only: ['event'],
+                    data: { success: 'Registration successful!' },
+                    onFinish: () => reset()
+                });
+            },
+            onError: (errors) => {
+                console.error('Registration error:', errors);
+            }
         });
     };
 
