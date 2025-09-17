@@ -94,9 +94,7 @@ export default function Register() {
                             </div>
 
                             <div className="mt-4">
-                                <div className="flex justify-between items-center">
-                                    <InputLabel htmlFor="password" value="Password" className="text-slate-200" />
-                                </div>
+                                <InputLabel htmlFor="password" value="Password" className="text-slate-200" />
                                 <div className="relative">
                                     <TextInput
                                         id="password"
@@ -110,9 +108,9 @@ export default function Register() {
                                     />
                                     <button
                                         type="button"
-                                        aria-label={showPassword ? 'Hide password' : 'Show password'}
-                                        onClick={() => setShowPassword(s => !s)}
+                                        onClick={() => setShowPassword(!showPassword)}
                                         className="absolute inset-y-0 right-0 px-3 flex items-center text-slate-300 hover:text-white"
+                                        aria-label={showPassword ? 'Hide password' : 'Show password'}
                                     >
                                         {showPassword ? (
                                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-5 w-5">
@@ -120,7 +118,8 @@ export default function Register() {
                                             </svg>
                                         ) : (
                                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-5 w-5">
-                                                <path d="M12 5.25C6.743 5.25 3.05 8.33 1.793 12c1.257 3.67 4.95 6.75 10.207 6.75S20.95 15.67 22.207 12C20.95 8.33 17.257 5.25 12 5.25Zm0 10.5a3.75 3.75 0 1 1 0-7.5 3.75 3.75 0 0 1 0 7.5Z" />
+                                                <path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" />
+                                                <path fillRule="evenodd" d="M1.323 11.447C2.811 6.976 7.028 3.75 12.001 3.75c4.97 0 9.185 3.223 10.675 7.69.12.362.12.752 0 1.113-1.487 4.471-5.705 7.697-10.677 7.697-4.97 0-9.186-3.223-10.675-7.69a1.762 1.762 0 0 1 0-1.113ZM17.25 12a5.25 5.25 0 1 1-10.5 0 5.25 5.25 0 0 1 10.5 0Z" clipRule="evenodd" />
                                             </svg>
                                         )}
                                     </button>
@@ -130,34 +129,16 @@ export default function Register() {
 
                             <div className="mt-4">
                                 <InputLabel htmlFor="password_confirmation" value="Confirm Password" className="text-slate-200" />
-                                <div className="relative">
-                                    <TextInput
-                                        id="password_confirmation"
-                                        type={showPassword2 ? 'text' : 'password'}
-                                        name="password_confirmation"
-                                        value={data.password_confirmation}
-                                        className="mt-1 block w-full bg-white/10 border border-white/20 text-slate-100 placeholder-slate-300 focus:ring-2 focus:ring-blue-500/40 pr-10"
-                                        autoComplete="new-password"
-                                        onChange={(e) => setData('password_confirmation', e.target.value)}
-                                        required
-                                    />
-                                    <button
-                                        type="button"
-                                        aria-label={showPassword2 ? 'Hide password' : 'Show password'}
-                                        onClick={() => setShowPassword2(s => !s)}
-                                        className="absolute inset-y-0 right-0 px-3 flex items-center text-slate-300 hover:text-white"
-                                    >
-                                        {showPassword2 ? (
-                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-5 w-5">
-                                                <path d="M3.53 2.47a.75.75 0 0 0-1.06 1.06l2.112 2.112A11.7 11.7 0 0 0 1.293 12c1.258 3.67 4.95 6.75 10.207 6.75 2.087 0 3.884-.47 5.38-1.24l3.59 3.59a.75.75 0 1 0 1.06-1.06L3.53 2.47ZM12.75 14.56l1.69 1.69a3.75 3.75 0 0 1-5.39-5.19l1.68 1.68a1.5 1.5 0 0 0 2.02 1.82ZM12 6.75c5.257 0 8.95 3.08 10.207 6.75-.598 1.747-1.77 3.33-3.388 4.532l-2.032-2.032A6 6 0 0 0 9.75 8.063V7.5A10.4 10.4 0 0 1 12 6.75Z" />
-                                            </svg>
-                                        ) : (
-                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-5 w-5">
-                                                <path d="M12 5.25C6.743 5.25 3.05 8.33 1.793 12c1.257 3.67 4.95 6.75 10.207 6.75S20.95 15.67 22.207 12C20.95 8.33 17.257 5.25 12 5.25Zm0 10.5a3.75 3.75 0 1 1 0-7.5 3.75 3.75 0 0 1 0 7.5Z" />
-                                            </svg>
-                                        )}
-                                    </button>
-                                </div>
+                                <TextInput
+                                    id="password_confirmation"
+                                    type={showPassword ? 'text' : 'password'}
+                                    name="password_confirmation"
+                                    value={data.password_confirmation}
+                                    className="mt-1 block w-full bg-white/10 border border-white/20 text-slate-100 placeholder-slate-300 focus:ring-2 focus:ring-blue-500/40"
+                                    autoComplete="new-password"
+                                    onChange={(e) => setData('password_confirmation', e.target.value)}
+                                    required
+                                />
                                 <InputError message={errors.password_confirmation} className="mt-2" />
                             </div>
 

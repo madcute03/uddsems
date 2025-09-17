@@ -73,7 +73,17 @@ export default function Login({ status, canResetPassword }) {
                             </div>
 
                             <div className="mt-4">
-
+                                <div className="flex justify-between items-center">
+                                    <InputLabel htmlFor="password" value="Password" className="text-slate-200" />
+                                    {canResetPassword && (
+                                        <Link
+                                            href={route('password.request')}
+                                            className="text-xs text-slate-300 hover:text-white hover:underline"
+                                        >
+                                            Forgot Password?
+                                        </Link>
+                                    )}
+                                </div>
                                 <div className="relative">
                                     <TextInput
                                         id="password"
@@ -84,17 +94,6 @@ export default function Login({ status, canResetPassword }) {
                                         autoComplete="new-password"
                                         onChange={(e) => setData('password', e.target.value)}
                                     />
-                                    <div className="flex justify-between items-center">
-                                        <InputLabel htmlFor="password" value="Password" className="text-slate-200" />
-                                        {canResetPassword && (
-                                            <Link
-                                                href={route('password.request')}
-                                                className="text-xs text-slate-300 hover:text-white hover:underline"
-                                            >
-                                                Forgot Password?
-                                            </Link>
-                                        )}
-                                    </div>
                                     <button
                                         type="button"
                                         aria-label={showPassword ? 'Hide password' : 'Show password'}
