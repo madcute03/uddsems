@@ -22,7 +22,7 @@ export default function ShowNews({ news }) {
                   </div>
                 <article>
                     <div className="max-w-3xl ">
-                        <div className="text-2xl text-slate-300 mb-3">
+                        <div className="text-2  xl text-slate-300 mb-3">
                             <span> Published: {formatDateTime(item.published_at || item.created_at)}</span>
                             {item.author && <span> By: {item.author}</span>}
                             {item.location && <span> • {item.location}</span>}

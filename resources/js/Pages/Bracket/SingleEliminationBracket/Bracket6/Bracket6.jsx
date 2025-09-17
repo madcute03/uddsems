@@ -244,7 +244,7 @@ export default function SixTeamBracket({ eventId }) {
                             {renderMatch("GF", "Grand Final")}
                             {champion && (
                                 <h2 className="text-lg sm:text-xl md:text-2xl font-bold text-yellow-400 mt-2 sm:mt-3 text-center">
-                                    🏆 {champion} 🏆
+                                    Winner: {champion}
                                 </h2>
                             )}
                         </div>

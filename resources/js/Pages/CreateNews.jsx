@@ -318,7 +318,20 @@ const TimePicker = ({ value, onChange, label, placeholder = "Select time" }) => 
 const ViewCreatedNews = ({ news = [] }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [editingId, setEditingId] = useState(null);
-  const [editData, setEditData] = useState({});
+  const [editData, setEditData] = useState({
+    title: '',
+    content: '',
+    tags: '',
+    published_date: '',
+    published_time: '',
+    location: '',
+    author: '',
+    cover_image: null,
+    cover_image_preview: null
+  });
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
 
   const startEdit = (item) => {
     setEditingId(item.id);
@@ -330,50 +343,114 @@ const ViewCreatedNews = ({ news = [] }) => {
       published_time: item.published_at ? item.published_at.split('T')[1]?.substring(0, 5) : '',
       location: item.location || '',
       author: item.author || '',
+      cover_image: null,
+      cover_image_preview: item.cover_image ? `/storage/${item.cover_image}` : null
     });
+    setError('');
+    setSuccess('');
   };
 
-  const handleEditSubmit = (e, itemId) => {
+  const handleEditChange = (e) => {
+    const { name, value, files } = e.target;
+    if (name === 'cover_image') {
+      const file = files[0];
+      setEditData(prev => ({
+        ...prev,
+        cover_image: file,
+        cover_image_preview: file ? URL.createObjectURL(file) : prev.cover_image_preview
+      }));
+    } else {
+      setEditData(prev => ({
+        ...prev,
+        [name]: value
+      }));
+    }
+  };
+
+  const handleEditSubmit = async (e, itemId) => {
     e.preventDefault();
-    
-    // Combine date and time
-    let published_at = '';
-    if (editData.published_date && editData.published_time) {
-      published_at = `${editData.published_date}T${editData.published_time}`;
-    }
-    
-    const formData = new FormData();
-    Object.entries(editData).forEach(([key, val]) => {
-      if (key !== 'published_date' && key !== 'published_time') {
-        formData.append(key, val);
-      }
-    });
-    if (published_at) {
-      formData.append('published_at', published_at);
-    }
+    setIsLoading(true);
+    setError('');
+    setSuccess('');
 
-    fetch(`/news/${itemId}`, {
-      method: 'POST',
-      headers: {
-        'X-HTTP-Method-Override': 'PUT',
-        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-      },
-      body: formData,
-    }).then(() => {
-      setEditingId(null);
-      window.location.reload();
-    });
+    try {
+      const formData = new FormData();
+      
+      // Add all fields to formData
+      Object.entries(editData).forEach(([key, value]) => {
+        if (key === 'published_date' || key === 'published_time' || key === 'cover_image_preview') {
+          return; // Skip these as they're not part of the form data
+        }
+        
+        if (key === 'tags') {
+          // Convert tags string to array
+          const tagsArray = value.split(',').map(tag => tag.trim()).filter(tag => tag);
+          formData.append('tags', tagsArray.join(','));
+        } else if (key === 'cover_image' && value) {
+          // Only append if it's a new file
+          formData.append('cover_image', value);
+        } else if (key === 'published_date' && value && editData.published_time) {
+          // Handle date and time combination
+          formData.append('published_at', `${value}T${editData.published_time}`);
+        } else if (value !== null && value !== undefined) {
+          formData.append(key, value);
+        }
+      });
+
+      const response = await fetch(`/news/${itemId}`, {
+        method: 'POST',
+        headers: {
+          'X-HTTP-Method-Override': 'PUT',
+          'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+          'Accept': 'application/json',
+        },
+        body: formData,
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Failed to update news');
+      }
+
+      setSuccess('News updated successfully!');
+      setTimeout(() => window.location.reload(), 1000);
+    } catch (err) {
+      setError(err.message || 'An error occurred while updating the news');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  const handleDelete = (id) => {
-    if (!confirm('Delete this news item?')) return;
-    fetch(`/news/${id}`, {
-      method: 'POST',
-      headers: {
-        'X-HTTP-Method-Override': 'DELETE',
-        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-      },
-    }).then(() => window.location.reload());
+  const handleDelete = async (id) => {
+    if (!window.confirm('Are you sure you want to delete this news item?')) return;
+    
+    setIsLoading(true);
+    setError('');
+    setSuccess('');
+
+    try {
+      const response = await fetch(`/news/${id}`, {
+        method: 'POST',
+        headers: {
+          'X-HTTP-Method-Override': 'DELETE',
+          'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Failed to delete news');
+      }
+
+      setSuccess('News deleted successfully!');
+      setTimeout(() => window.location.reload(), 1000);
+    } catch (err) {
+      setError(err.message || 'An error occurred while deleting the news');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   if (news.length === 0) {
@@ -397,29 +474,67 @@ const ViewCreatedNews = ({ news = [] }) => {
         </button>
       </div>
       
+      {/* Success and Error Messages */}
+      {success && (
+        <div className="mb-4 p-3 bg-green-500/20 border border-green-500/50 text-green-300 rounded-md">
+          {success}
+        </div>
+      )}
+      {error && (
+        <div className="mb-4 p-3 bg-red-500/20 border border-red-500/50 text-red-300 rounded-md">
+          {error}
+        </div>
+      )}
+      
       <div className={`space-y-4 ${isExpanded ? 'max-h-96 overflow-y-auto' : 'max-h-32 overflow-hidden'} transition-all duration-300`}>
-        {news.map((item, index) => (
-          <div key={item.id || index} className="border-b border-slate-700 pb-3 last:border-b-0">
+        {news.map((item) => (
+          <div key={item.id} className="border-b border-slate-700 pb-3 last:border-b-0">
             {editingId === item.id ? (
               <form onSubmit={(e) => handleEditSubmit(e, item.id)} className="space-y-3">
                 <div>
                   <input
                     type="text"
+                    name="title"
                     value={editData.title}
-                    onChange={(e) => setEditData({...editData, title: e.target.value})}
+                    onChange={handleEditChange}
                     className="w-full border border-slate-600 bg-slate-700 text-white px-2 py-1 rounded text-sm focus:border-blue-500 focus:outline-none"
                     placeholder="Title"
+                    required
                   />
                 </div>
                 <div>
                   <textarea
+                    name="content"
                     value={editData.content}
-                    onChange={(e) => setEditData({...editData, content: e.target.value})}
+                    onChange={handleEditChange}
                     className="w-full border border-slate-600 bg-slate-700 text-white px-2 py-1 rounded text-sm focus:border-blue-500 focus:outline-none"
                     rows="3"
                     placeholder="Content"
+                    required
                   />
                 </div>
+                
+                {/* Cover Image Update */}
+                <div>
+                  <label className="block text-xs text-slate-400 mb-1">Cover Image</label>
+                  <input
+                    type="file"
+                    name="cover_image"
+                    onChange={handleEditChange}
+                    accept="image/*"
+                    className="w-full text-xs text-slate-300 file:mr-3 file:py-1 file:px-2 file:rounded file:border-0 file:text-xs file:font-medium file:bg-slate-700 file:text-slate-300 hover:file:bg-slate-600"
+                  />
+                  {editData.cover_image_preview && (
+                    <div className="mt-2">
+                      <img 
+                        src={editData.cover_image_preview} 
+                        alt="Preview" 
+                        className="h-20 w-20 object-cover rounded border border-slate-600"
+                      />
+                    </div>
+                  )}
+                </div>
+                
                 <div className="grid grid-cols-2 gap-2">
                   <CalendarPicker
                     label=""
@@ -437,15 +552,17 @@ const ViewCreatedNews = ({ news = [] }) => {
                 <div className="grid grid-cols-2 gap-2">
                   <input
                     type="text"
+                    name="author"
                     value={editData.author}
-                    onChange={(e) => setEditData({...editData, author: e.target.value})}
+                    onChange={handleEditChange}
                     className="border border-slate-600 bg-slate-700 text-white px-2 py-1 rounded text-sm focus:border-blue-500 focus:outline-none"
                     placeholder="Author"
                   />
                   <input
                     type="text"
+                    name="location"
                     value={editData.location}
-                    onChange={(e) => setEditData({...editData, location: e.target.value})}
+                    onChange={handleEditChange}
                     className="border border-slate-600 bg-slate-700 text-white px-2 py-1 rounded text-sm focus:border-blue-500 focus:outline-none"
                     placeholder="Location"
                   />
@@ -453,25 +570,39 @@ const ViewCreatedNews = ({ news = [] }) => {
                 <div>
                   <input
                     type="text"
+                    name="tags"
                     value={editData.tags}
-                    onChange={(e) => setEditData({...editData, tags: e.target.value})}
+                    onChange={handleEditChange}
                     className="w-full border border-slate-600 bg-slate-700 text-white px-2 py-1 rounded text-sm focus:border-blue-500 focus:outline-none"
                     placeholder="Tags (comma-separated)"
                   />
                 </div>
                 <div className="flex gap-2">
-                  <button type="submit" className="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white rounded text-sm transition-colors">
-                    Save
+                  <button 
+                    type="submit" 
+                    disabled={isLoading}
+                    className={`px-3 py-1 rounded text-sm transition-colors ${
+                      isLoading 
+                        ? 'bg-blue-700 cursor-not-allowed' 
+                        : 'bg-blue-600 hover:bg-blue-700 text-white'
+                    }`}
+                  >
+                    {isLoading ? 'Saving...' : 'Save'}
                   </button>
-                  <button type="button" onClick={() => setEditingId(null)} className="px-3 py-1 bg-gray-600 hover:bg-gray-700 text-white rounded text-sm transition-colors">
+                  <button 
+                    type="button" 
+                    onClick={() => setEditingId(null)} 
+                    disabled={isLoading}
+                    className="px-3 py-1 bg-gray-600 hover:bg-gray-700 text-white rounded text-sm transition-colors"
+                  >
                     Cancel
                   </button>
                 </div>
               </form>
             ) : (
               <div className="flex items-start justify-between">
-                <div className="flex-1 cursor-pointer" onClick={() => startEdit(item)}>
-                  <h4 className="font-medium text-slate-100 mb-1 hover:text-blue-300 transition-colors">{item.title}</h4>
+                <div className="flex-1">
+                  <h4 className="font-medium text-slate-100 mb-1">{item.title}</h4>
                   <p className="text-sm text-slate-400 mb-2 line-clamp-2">{item.content}</p>
                   <div className="flex items-center gap-4 text-xs text-slate-500">
                     {item.published_at && (
@@ -480,10 +611,10 @@ const ViewCreatedNews = ({ news = [] }) => {
                     {item.author && <span>👤 {item.author}</span>}
                     {item.location && <span>📍 {item.location}</span>}
                   </div>
-                  {item.tags && (
+                  {item.tags && item.tags.length > 0 && (
                     <div className="flex flex-wrap gap-1 mt-2">
                       {(Array.isArray(item.tags) ? item.tags : item.tags.split(',')).map((tag, tagIndex) => (
-                        <span key={tagIndex} className="px-2 py-1 bg-blue-500/20 text-blue-300 text-xs rounded">
+                        <span key={tagIndex} className="px-2 py-0.5 bg-blue-500/20 text-blue-300 text-xs rounded">
                           {typeof tag === 'string' ? tag.trim() : tag}
                         </span>
                       ))}
@@ -493,7 +624,7 @@ const ViewCreatedNews = ({ news = [] }) => {
                 <div className="flex items-center gap-2 ml-3">
                   {item.cover_image && (
                     <img
-                      src={typeof item.cover_image === 'string' ? `/storage/${item.cover_image}` : URL.createObjectURL(item.cover_image)}
+                      src={`/storage/${item.cover_image}`}
                       alt="Cover"
                       className="w-16 h-16 object-cover rounded"
                     />
@@ -502,14 +633,16 @@ const ViewCreatedNews = ({ news = [] }) => {
                     <button
                       onClick={() => startEdit(item)}
                       className="px-2 py-1 bg-blue-600 hover:bg-blue-700 text-white rounded text-xs transition-colors"
+                      disabled={isLoading}
                     >
                       Edit
                     </button>
                     <button
                       onClick={() => handleDelete(item.id)}
                       className="px-2 py-1 bg-red-600 hover:bg-red-700 text-white rounded text-xs transition-colors"
+                      disabled={isLoading}
                     >
-                      Delete
+                      {isLoading ? 'Deleting...' : 'Delete'}
                     </button>
                   </div>
                 </div>
@@ -547,24 +680,45 @@ export default function CreateNews() {
     cover_image: null,
   });
 
+  // Handle file input change
+  const handleFileChange = (e) => {
+    setData('cover_image', e.target.files[0] || null);
+  };
+
   // Combine date and time for submission
   const handleSubmit = (e) => {
     e.preventDefault();
     
+    // Create FormData for file upload
+    const formData = new FormData();
+    
+    // Add all form data to FormData
+    Object.keys(data).forEach(key => {
+      if (key === 'cover_image') {
+        if (data.cover_image) {
+          formData.append('cover_image', data.cover_image);
+        }
+      } else if (key === 'published_date' || key === 'published_time') {
+        // Skip these as we'll handle them separately
+      } else if (data[key] !== null && data[key] !== '') {
+        formData.append(key, data[key]);
+      }
+    });
+    
     // Combine date and time into datetime-local format
-    let published_at = '';
     if (data.published_date && data.published_time) {
-      published_at = `${data.published_date}T${data.published_time}`;
+      formData.append('published_at', `${data.published_date}T${data.published_time}`);
     }
     
-    const submitData = {
-      ...data,
-      published_at,
-    };
-    
-    post(route('news.store'), {
-      data: submitData,
-      onSuccess: () => reset(),
+    // Post the form data using Inertia
+    post(route('news.store'), formData, {
+      forceFormData: true,
+      preserveScroll: true,
+      onSuccess: () => {
+        reset();
+        // Show success message
+        window.scrollTo(0, 0);
+      },
     });
   };
 
@@ -602,14 +756,14 @@ export default function CreateNews() {
                 <input
                   type="file"
                   accept="image/*"
-                  onChange={(e) => setData('cover_image', e.target.files?.[0] || null)}
+                  onChange={handleFileChange}
                   className="w-full bg-slate-800/60 border border-slate-700 text-slate-100 rounded-md file:mr-3 file:py-2 file:px-3 file:rounded-md file:border-0 file:bg-slate-700 file:text-slate-100 hover:file:bg-slate-600"
                 />
                 {errors.cover_image && <p className="text-red-300 text-sm mt-1">{errors.cover_image}</p>}
                 {data.cover_image && (
                   <div className="mt-3 flex items-center gap-3">
                     <img
-                      src={URL.createObjectURL(data.cover_image)}
+                      src={data.cover_image instanceof File ? URL.createObjectURL(data.cover_image) : data.cover_image}
                       alt="Cover preview"
                       className="h-24 w-24 object-cover rounded border border-white/20"
                     />
@@ -639,7 +793,7 @@ export default function CreateNews() {
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block mb-1 text-slate-300">Category / Tags (comma-separated)</label>
+                  <label className="block mb-1 text-slate-300">Category</label>
                   <input
                     type="text"
                     value={data.tags}
