@@ -1,45 +1,73 @@
 #!/bin/bash
 
-# Exit on error
-set -e
+# Enable debug mode and exit on error
+set -ex
 
-echo "🚀 Starting deployment..."
+# Function to log messages
+log() {
+    echo "[$(date +'%Y-%m-%d %H:%M:%S')] $1"
+}
+
+log "🚀 Starting deployment..."
+
+# Check if .env exists, copy from example if not
+if [ ! -f .env ]; then
+    log "📄 Creating .env file..."
+    cp .env.example .env
+    php artisan key:generate
+fi
+
+# Clear caches first
+log "🧹 Clearing caches..."
+php artisan config:clear
+php artisan cache:clear
+php artisan view:clear
+php artisan route:clear
 
 # Install PHP dependencies
-echo "📦 Installing PHP dependencies..."
+log "📦 Installing PHP dependencies..."
 composer install --no-interaction --optimize-autoloader --no-dev
 
 # Install Node.js dependencies
-echo "📦 Installing Node.js dependencies..."
+log "📦 Installing Node.js dependencies..."
 npm ci
 
 # Build assets
-echo "🔨 Building assets..."
+log "🔨 Building assets..."
 npm run build:prod
 
 # Generate application key if not exists
 if [ -z "$APP_KEY" ]; then
-    echo "🔑 Generating application key..."
+    log "🔑 Generating application key..."
     php artisan key:generate --force
 fi
 
-# Run database migrations
-echo "🔄 Running database migrations..."
-php artisan migrate --force
+# Set permissions
+log "🔒 Setting permissions..."
+chmod -R 775 storage bootstrap/cache
+chmod -R 775 public/build
+
+# Create storage link if it doesn't exist
+if [ ! -L "public/storage" ]; then
+    log "🔗 Creating storage link..."
+    php artisan storage:link
+fi
 
 # Cache configuration
+log "⚙️ Caching configuration..."
 php artisan config:cache
 php artisan route:cache
 php artisan view:cache
 
-# Set permissions
-echo "🔒 Setting permissions..."
-chmod -R 775 storage bootstrap/cache
-chmod -R 775 public/build
+# Verify the application
+log "🔍 Verifying application..."
+php artisan about
 
-# Create storage link
-php artisan storage:link
+# Display environment summary
+log "\n=== Environment Summary ==="
+grep -E 'APP_|DB_|LOG_|BROADCAST_|CACHE_|QUEUE_|SESSION_|REDIS_|MAIL_|AWS_|PUSHER_|JWT_' .env || echo "No .env file found"
+echo "=========================="
 
-echo "✨ Deployment completed successfully!"
+log "✨ Deployment completed successfully!"
 
 exit 0

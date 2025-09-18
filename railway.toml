@@ -3,6 +3,17 @@ builder = "nixpacks"
 
 [deploy]
 startCommand = "bash deploy.sh && php artisan serve --host=0.0.0.0 --port=${PORT}"
+restartPolicyType = "on-failure"
+restartPolicyMaxRetries = 3
+
+[build.args]
+  PHP_VERSION = "8.2"
+  NODE_OPTIONS = "--max_old_space_size=1024"
+
+[build.environment]
+  APP_ENV = "production"
+  APP_DEBUG = "false"
+  LOG_LEVEL = "error"
 
 [build.environment]
 NODE_VERSION = "18"
