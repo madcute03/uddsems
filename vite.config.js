@@ -27,8 +27,16 @@ export default defineConfig(({ command, mode }) => {
             },
         },
         base: isProduction
-            ? 'https://semsupdate-production.up.railway.app/'
+            ? '/build/'
             : `${appUrl}/`,
+        build: {
+            outDir: 'public/build',
+            assetsDir: '.',
+            emptyOutDir: true,
+            manifest: true,
+            rollupOptions: {
+                input: 'resources/js/app.jsx',
+            },
         server: {
             host: '0.0.0.0',
             port: port,
@@ -58,8 +66,7 @@ export default defineConfig(({ command, mode }) => {
                 },
             }
         },
-        build: {
-            sourcemap: !isProduction,
+            sourcemap: isProduction ? false : 'inline',
         },
     };
 });
