@@ -1,14 +1,18 @@
-import { defineConfig } from 'vite'
-import laravel from 'laravel-vite-plugin'
-import react from '@vitejs/plugin-react'
-import path from 'path'
+import { defineConfig, loadEnv } from 'vite';
+import laravel from 'laravel-vite-plugin';
+import react from '@vitejs/plugin-react';
+import path from 'path';
 
 export default defineConfig(({ command, mode }) => {
-    const isProduction = process.env.NODE_ENV === 'production';
-    const host = process.env.VITE_DEV_SERVER_HOST || '127.0.0.1';
+    // Load env file based on `mode` in the current directory.
+    // Set the third parameter to '' to load all env regardless of the `VITE_` prefix.
+    const env = loadEnv(mode, process.cwd(), '');
+    
+    const isProduction = env.APP_ENV === 'production';
+    const host = env.VITE_DEV_SERVER_HOST || '0.0.0.0';
     const protocol = isProduction ? 'https' : 'http';
     const port = 5173;
-    const appUrl = process.env.APP_URL || 'https://semsupdate-production.up.railway.app';
+    const appUrl = env.APP_URL || 'https://semsupdate-production.up.railway.app';
 
     return {
         plugins: [
