@@ -8,7 +8,7 @@ export default defineConfig(({ command, mode }) => {
     const host = process.env.VITE_DEV_SERVER_HOST || '127.0.0.1';
     const protocol = isProduction ? 'https' : 'http';
     const port = 5173;
-    const appUrl = process.env.APP_URL || 'http://127.0.0.1:8000';
+    const appUrl = process.env.APP_URL || 'https://semsupdate-production.up.railway.app';
 
     return {
         plugins: [
