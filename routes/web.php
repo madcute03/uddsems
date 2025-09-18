@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use Illuminate\Foundation\Application;
 use Inertia\Inertia;
+use Illuminate\Support\Facades\DB;
 
 // Controllers
 use App\Http\Controllers\EventController;
@@ -17,6 +18,27 @@ use App\Http\Controllers\NewsController;
 use App\Http\Controllers\ComplaintController;
 use App\Models\Event;
 use App\Models\News;
+
+// ============================================
+// Health Check Route
+// ============================================
+Route::get('/health', function () {
+    try {
+        DB::connection()->getPdo();
+        return response()->json([
+            'status' => 'ok',
+            'database' => 'connected',
+            'timestamp' => now()->toDateTimeString()
+        ]);
+    } catch (\Exception $e) {
+        return response()->json([
+            'status' => 'error',
+            'database' => 'not_connected',
+            'error' => $e->getMessage(),
+            'timestamp' => now()->toDateTimeString()
+        ], 500);
+    }
+});
 
 // ============================================
 // Public Routes
