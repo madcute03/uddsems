@@ -7,7 +7,11 @@
         "build": "vite build",
         "preview": "vite preview",
         "build:prod": "vite build --mode production",
-        "postinstall": "npm run build:prod"
+        "postinstall": "npm run build:prod",
+        "start": "vite preview --port 3000 --host",
+        "dev:inspect": "node --inspect-brk node_modules/vite/bin/vite.js",
+        "lint": "eslint . --ext .js,.jsx",
+        "format": "prettier --write \"**/*.{js,jsx,json,md}\""
     },
     "devDependencies": {
         "@headlessui/react": "^2.0.0",

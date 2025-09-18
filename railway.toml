@@ -2,14 +2,16 @@
 builder = "nixpacks"
 
 [deploy]
-startCommand = "php artisan migrate --force && php artisan serve --host=0.0.0.0 --port=${PORT}"
+startCommand = "bash deploy.sh && php artisan serve --host=0.0.0.0 --port=${PORT}"
 
 [build.environment]
 NODE_VERSION = "18"
+NPM_CONFIG_PRODUCTION = "false"
 
 [build.install]
-  - "apt-get update && apt-get install -y libpng-dev libonig-dev libxml2-dev"
-  - "docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd"
+  - "apt-get update && apt-get install -y libpng-dev libonig-dev libxml2-dev libzip-dev"
+  - "docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd zip"
+  - "chmod +x deploy.sh"
 
 [build.build]
   # Install PHP dependencies
@@ -19,13 +21,10 @@ NODE_VERSION = "18"
   - "npm ci"
   
   # Build assets
-  - "npm run build"
+  - "npm run build:prod"
   
-  # Generate application key
-  - "php artisan key:generate --force"
-  
-  # Create storage link
-  - "php artisan storage:link"
+  # Generate application key if not exists
+  - "[ -z "$APP_KEY" ] && php artisan key:generate --force || echo "APP_KEY already set""
   
   # Cache configuration
   - "php artisan config:cache"
@@ -35,6 +34,34 @@ NODE_VERSION = "18"
   # Set permissions
   - "chmod -R 775 storage bootstrap/cache"
   - "chmod -R 775 public/build"
+  
+  # Create storage link
+  - "php artisan storage:link"
 
 [build.start]
   - "php-fpm"
+
+[healthcheck]
+path = "/"
+initialDelay = 30
+timeout = 10
+interval = 15
+maxRetries = 3
+
+[environment]
+NODE_ENV = "production"
+APP_ENV = "production"
+APP_DEBUG = "false"
+LOG_LEVEL = "error"
+
+[build.args]
+  PHP_VERSION = "8.2"
+  NODE_OPTIONS = "--max_old_space_size=1024"
+
+[deploy.healthcheck]
+  enabled = true
+  path = "/"
+  initialDelay = 30
+  timeoutSeconds = 10
+  periodSeconds = 15
+  failureThreshold = 3

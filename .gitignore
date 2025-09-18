@@ -4,7 +4,7 @@
 # Environment files
 .env
 .env.backup
-.env.production
+!.env.production  # Allow this file to be committed
 
 # Editor directories and files
 .DS_Store
