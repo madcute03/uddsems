@@ -22,16 +22,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        // Always set the asset URL to use HTTPS in production
+        // Force HTTPS in production
         if ($this->app->environment('production')) {
             \Illuminate\Support\Facades\URL::forceScheme('https');
-            
-            // Trust the proxy headers from Railway
-            $this->app['request']->server->set('HTTPS', 'on');
             \Illuminate\Support\Facades\URL::forceRootUrl(config('app.url'));
-            
-            // Ensure the asset URLs are generated with HTTPS
-            \Illuminate\Support\Facades\URL::forceScheme('https');
         }
 
         Vite::prefetch(concurrency: 3);

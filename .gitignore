@@ -36,12 +36,5 @@ Homestead.json
 Homestead.yaml
 Thumbs.db
 
-# Railway specific
-.railway
-
-# Keep these files in version control
+# Keep this file in version control
 !.env.example
-!Dockerfile
-!Procfile
-!railway.toml
-!server.php
