@@ -41,37 +41,42 @@ restartPolicyMaxRetries = 3
   FILESYSTEM_DISK = "public"
 
 [build.install]
-  - "apt-get update && apt-get install -y libpng-dev libonig-dev libxml2-dev libzip-dev"
-  - "docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd zip"
-  - "chmod +x deploy.sh"
+  commands = [
+    "apt-get update && apt-get install -y libpng-dev libonig-dev libxml2-dev libzip-dev",
+    "docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd zip",
+    "chmod +x deploy.sh"
+  ]
 
 [build.build]
-  # Install PHP dependencies
-  - "composer install --no-interaction --optimize-autoloader --no-dev"
+  commands = [
+    # Install PHP dependencies
+    "composer install --no-interaction --optimize-autoloader --no-dev",
+    
+    # Install Node.js dependencies
+    "npm ci",
+    
+    # Build assets
+    "npm run build:prod",
+    
+    # Generate application key if not exists
+    "[ -z \"$APP_KEY\" ] && php artisan key:generate --force || echo \"APP_KEY already set\""
+  ]
   
-  # Install Node.js dependencies
-  - "npm ci"
+    # Cache configuration
+    "php artisan config:cache",
+    "php artisan route:cache",
+    "php artisan view:cache",
+    
+    # Set permissions
+    "chmod -R 775 storage bootstrap/cache",
+    "chmod -R 775 public/build"
   
-  # Build assets
-  - "npm run build:prod"
-  
-  # Generate application key if not exists
-  - "[ -z "$APP_KEY" ] && php artisan key:generate --force || echo "APP_KEY already set""
-  
-  # Cache configuration
-  - "php artisan config:cache"
-  - "php artisan route:cache"
-  - "php artisan view:cache"
-  
-  # Set permissions
-  - "chmod -R 775 storage bootstrap/cache"
-  - "chmod -R 775 public/build"
-  
-  # Create storage link
-  - "php artisan storage:link"
+    # Create storage link
+    "php artisan storage:link"
+  ]
 
 [build.start]
-  - "php-fpm"
+  commands = ["php-fpm"]
 
 [healthcheck]
 path = "/"
