@@ -1,9 +1,0 @@
-[build]
-builder = "nixpacks"
-
-[build.args]
-NIXPACKS_INSTALL_CMD = "composer install --no-dev --optimize-autoloader && npm ci && npm run build"
-NIXPACKS_START_CMD = "php artisan serve --host=0.0.0.0 --port=${PORT}"
-
-[deploy]
-start_command = "php artisan serve --host=0.0.0.0 --port=${PORT}"
