@@ -3,8 +3,7 @@ builder = "nixpacks"
 
 [deploy]
 startCommand = "bash deploy.sh && php artisan serve --host=0.0.0.0 --port=${PORT}"
-restartPolicyType = "on-failure"
-restartPolicyMaxRetries = 3
+restart.maxRetries = 3
 
 [build.args]
 PHP_VERSION = "8.2"
@@ -46,6 +45,9 @@ FILESYSTEM_DISK = "public"
 # Node.js
 NPM_CONFIG_PRODUCTION = "false"
 
+# Set memory limit for PHP
+PHP_MEMORY_LIMIT = "256M"
+
 [build.install]
 commands = [
   # Install system dependencies
@@ -77,8 +79,8 @@ commands = [
   "chmod -R 775 storage bootstrap/cache",
   "chmod -R 775 public/build",
   
-  # Create storage link
-  "php artisan storage:link"
+  # Create storage link if it doesn't exist
+  "[ ! -L public/storage ] && php artisan storage:link || echo 'Storage link already exists'"
 ]
 
 [build.start]

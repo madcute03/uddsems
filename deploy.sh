@@ -5,18 +5,31 @@ set -euo pipefail
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 RED='\033[0;31m'
+BLUE='\033[0;34m'
 NC='\033[0m' # No Color
+
+# Log function
+log() {
+    echo -e "${BLUE}[$(date +'%Y-%m-%d %H:%M:%S')]${NC} $1"
+}
 
 # Auto-detect environment
 if [ -z "${RAILWAY_ENVIRONMENT:-}" ]; then
     ENV_FILE=".env"
+    log "${YELLOW}Running in local environment${NC}"
 else
     ENV_FILE=".env.production"
-    cp .env.example .env
+    log "${GREEN}Running in Railway environment${NC}"
+    
+    # Copy .env.example to .env if it doesn't exist
+    if [ ! -f ".env" ]; then
+        log "${YELLOW}Creating .env file from .env.example${NC}"
+        cp .env.example .env
+    fi
     
     # Generate app key if not set
     if ! grep -q '^APP_KEY=' .env; then
-        echo -e "${YELLOW}🔑 Generating application key...${NC}"
+        log "${YELLOW}🔑 Generating application key...${NC}"
         php artisan key:generate --no-interaction --force
     fi
 fi
@@ -30,121 +43,148 @@ error_exit() {
 # Function to run commands with error handling
 run_command() {
     local cmd="$*"
-    echo -e "${YELLOW}➜${NC} Running: ${cmd}"
+    log "${YELLOW}➜ Running: ${cmd}${NC}"
     if ! output=$($cmd 2>&1); then
-        error_exit "Command failed: $cmd\n$output"
+        log "${RED}❌ Command failed: $cmd"
+        log "${RED}Output: $output${NC}"
+        return 1
     fi
     return 0
 }
 
-echo -e "\n${GREEN}🚀 Starting deployment process in ${ENV_FILE} environment...${NC}"
-
-# Check for required commands
-for cmd in php composer node npm; do
-    if ! command -v $cmd &> /dev/null; then
-        error_exit "$cmd is required but not installed"
-    fi
-done
-
-# Create necessary directories with proper permissions
-echo -e "\n${GREEN}📂 Creating directories...${NC}"
-for dir in "storage/framework/sessions" "storage/framework/views" "storage/framework/cache" "storage/logs" "bootstrap/cache"; do
-    if [ ! -d "$dir" ]; then
-        run_command mkdir -p "$dir"
-    fi
-    run_command chmod 775 "$dir"
-done
-
-# Set proper permissions
-echo -e "\n${GREEN}🔒 Setting permissions...${NC}"
-run_command find storage -type d -exec chmod 775 {} \;
-run_command find storage -type f -exec chmod 664 {} \;
-run_command find bootstrap/cache -type d -exec chmod 775 {} \;
-run_command find bootstrap/cache -type f -exec chmod 664 {} \;
-
-# Clear caches
-echo -e "\n${GREEN}🧹 Clearing caches...${NC}"
-for cmd in "cache:clear" "config:clear" "route:clear" "view:clear" "event:clear"; do
-    run_command php artisan $cmd
-    echo -e "${GREEN}✓${NC} Cleared: $cmd"
-done
-
-# Install PHP dependencies
-echo -e "\n${GREEN}📦 Installing PHP dependencies...${NC}"
-run_command composer install --optimize-autoloader --no-interaction --prefer-dist
-
-# Install Node.js dependencies if package.json exists
-if [ -f "package.json" ]; then
-    echo -e "\n${GREEN}📦 Installing Node.js dependencies...${NC}"
-    run_command npm ci --no-audit --prefer-offline
+# Main deployment function
+main() {
+    log "${GREEN}🚀 Starting deployment process in ${ENV_FILE} environment...${NC}"
     
-    # Build assets for production
-    echo -e "\n${GREEN}🔨 Building assets...${NC}"
-    run_command npm run build --if-present
-fi
+    # Check for required commands
+    local required_commands=("php" "composer" "node" "npm")
+    for cmd in "${required_commands[@]}"; do
+        if ! command -v "$cmd" &> /dev/null; then
+            log "${RED}❌ $cmd is required but not installed${NC}"
+            exit 1
+        fi
+    done
 
-# Database setup
-echo -e "\n${GREEN}🔄 Setting up database...${NC}"
-if [ "$DB_CONNECTION" = "pgsql" ]; then
-    # Wait for PostgreSQL to be ready
-    echo -e "${YELLOW}⏳ Waiting for PostgreSQL to be ready...${NC}"
-    timeout 30 bash -c 'until pg_isready -h $DB_HOST -p $DB_PORT -U $DB_USERNAME -d $DB_DATABASE; do sleep 1; done' || {
-        echo -e "${RED}❌ PostgreSQL is not ready${NC}"
-        exit 1
-    }
-fi
+    # Create necessary directories with proper permissions
+    log "${GREEN}📂 Creating directories...${NC}"
+    local dirs=(
+        "storage/framework/sessions"
+        "storage/framework/views"
+        "storage/framework/cache"
+        "storage/logs"
+        "bootstrap/cache"
+    )
+    
+    for dir in "${dirs[@]}"; do
+        if [ ! -d "$dir" ]; then
+            run_command mkdir -p "$dir"
+        fi
+        run_command chmod 775 "$dir"
+    done
 
-# Run migrations
-echo -e "\n${GREEN}🔄 Running database migrations...${NC}
-run_command php artisan migrate --force --no-interaction
+    # Set proper permissions
+    log "${GREEN}🔒 Setting permissions...${NC}"
+    run_command find storage -type d -exec chmod 775 {} \;
+    run_command find storage -type f -exec chmod 664 {} \;
+    run_command find bootstrap/cache -type d -exec chmod 775 {} \;
+    run_command find bootstrap/cache -type f -exec chmod 664 {} \;
 
-# Run database seeders if needed
-# Uncomment the following line if you want to run seeders during deployment
-# run_command php artisan db:seed --force --no-interaction
+    # Clear caches
+    log "${GREEN}🧹 Clearing caches...${NC}"
+    local cache_commands=(
+        "cache:clear"
+        "config:clear"
+        "route:clear"
+        "view:clear"
+        "event:clear"
+    )
+    
+    for cmd in "${cache_commands[@]}"; do
+        run_command php artisan "$cmd"
+        log "${GREEN}✓ Cleared: $cmd${NC}"
+    done
 
-# Optimize framework
-echo -e "\n${GREEN}⚡ Optimizing framework...${NC}"
-for cmd in "config:cache" "route:cache" "view:cache"; do
-    run_command php artisan $cmd
-    echo -e "${GREEN}✓${NC} Optimized: $cmd"
-done
+    # Install PHP dependencies
+    log "${GREEN}📦 Installing PHP dependencies...${NC}"
+    run_command composer install --optimize-autoloader --no-interaction --prefer-dist
 
-# Set ownership (uncomment and adjust if needed)
-# echo -e "\n${GREEN}👤 Setting ownership...${NC}"
-# run_command chown -R www-data:www-data .
+    # Install Node.js dependencies if package.json exists
+    if [ -f "package.json" ]; then
+        log "${GREEN}📦 Installing Node.js dependencies...${NC}"
+        run_command npm ci --no-audit --prefer-offline
+        
+        # Build assets for production
+        log "${GREEN}🔨 Building assets...${NC}"
+        run_command npm run build --if-present
+    fi
 
-# Restart queue workers if using queues
-if [ -f "storage/logs/worker.log" ]; then
-    echo -e "\n${GREEN}🔄 Restarting queue workers...${NC}"
-    run_command php artisan queue:restart
-fi
+    # Database setup
+    log "${GREEN}🔄 Setting up database...${NC}"
+    if [ "${DB_CONNECTION:-}" = "pgsql" ]; then
+        # Wait for PostgreSQL to be ready
+        log "${YELLOW}⏳ Waiting for PostgreSQL to be ready...${NC}"
+        timeout 30 bash -c 'until pg_isready -h $DB_HOST -p $DB_PORT -U $DB_USERNAME -d $DB_DATABASE; do sleep 1; done' || {
+            log "${RED}❌ PostgreSQL is not ready${NC}"
+            exit 1
+        }
+    fi
 
-# Clear the application cache one final time
-echo -e "\n${GREEN}🧹 Final cache clear...${NC}"
-run_command php artisan cache:clear
+    # Run migrations
+    log "${GREEN}🔄 Running database migrations...${NC}"
+    run_command php artisan migrate --force --no-interaction
 
-# Generate application key if not exists
-if [ ! -f ".env" ] || ! grep -q "^APP_KEY=" .env; then
-    echo -e "\n${GREEN}🔑 Generating application key...${NC}"
-    run_command php artisan key:generate
-fi
+    # Run database seeders if needed
+    # Uncomment the following line if you want to run seeders during deployment
+    # run_command php artisan db:seed --force --no-interaction
 
-# Create storage link if it doesn't exist
-if [ ! -L "public/storage" ]; then
-    echo -e "\n${GREEN}🔗 Creating storage link...${NC}"
-    run_command php artisan storage:link
-fi
+    # Optimize framework
+    log "${GREEN}⚡ Optimizing framework...${NC}"
+    local optimize_commands=(
+        "config:cache"
+        "route:cache"
+        "view:cache"
+    )
+    
+    for cmd in "${optimize_commands[@]}"; do
+        run_command php artisan "$cmd"
+        log "${GREEN}✓ Optimized: $cmd${NC}"
+    done
 
-# Cache configuration
-echo -e "\n${GREEN}⚡ Caching configuration...${NC}"
-run_command php artisan config:cache
-run_command php artisan route:cache
-run_command php artisan view:cache
+    # Restart queue workers if using queues
+    if [ -f "storage/logs/worker.log" ]; then
+        log "${GREEN}🔄 Restarting queue workers...${NC}"
+        run_command php artisan queue:restart
+    fi
 
-# Final success message
-echo -e "\n${GREEN}✨ Deployment completed successfully!${NC}"
-echo -e "\n${GREEN}🌐 Your app is now running at: ${APP_URL:-https://$RAILWAY_PUBLIC_DOMAIN}${NC}"
-echo -e "\n${YELLOW}ℹ️  Debug Info:${NC}"
-echo -e "Environment: ${APP_ENV:-production}"
-echo -e "Debug Mode: ${APP_DEBUG:-false}"
-echo -e "Log Level: ${LOG_LEVEL:-error}"
+    # Generate application key if not exists
+    if [ ! -f ".env" ] || ! grep -q "^APP_KEY=" .env; then
+        log "${GREEN}🔑 Generating application key...${NC}"
+        run_command php artisan key:generate
+    fi
+
+    # Create storage link if it doesn't exist
+    if [ ! -L "public/storage" ]; then
+        log "${GREEN}🔗 Creating storage link...${NC}"
+        run_command php artisan storage:link
+    fi
+
+    # Cache configuration
+    log "${GREEN}⚡ Caching configuration...${NC}"
+    run_command php artisan config:cache
+    run_command php artisan route:cache
+    run_command php artisan view:cache
+
+    # Final success message
+    log "${GREEN}✨ Deployment completed successfully!${NC}"
+    log "${GREEN}🌐 Your app is now running at: ${APP_URL:-https://$RAILWAY_PUBLIC_DOMAIN}${NC}"
+    log "${YELLOW}ℹ️  Debug Info:${NC}"
+    log "- Environment: ${APP_ENV:-production}"
+    log "- Debug Mode: ${APP_DEBUG:-false}"
+    log "- Log Level: ${LOG_LEVEL:-error}"
+    
+    # Exit with success
+    exit 0
+}
+
+# Run the main function
+main "$@"
