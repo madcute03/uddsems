@@ -60,6 +60,7 @@ export default defineConfig(({ command, mode }) => {
                     assetFileNames: 'assets/[name].[hash].[ext]',
                 },
             },
+        },
         // Server configuration
         server: {
             host: host,
@@ -90,9 +91,7 @@ export default defineConfig(({ command, mode }) => {
                     changeOrigin: true,
                     secure: false,
                 },
-            }
-        },
-            sourcemap: isProduction ? false : 'inline',
+            },
         },
     };
 });
