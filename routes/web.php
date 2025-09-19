@@ -110,6 +110,27 @@ Route::get('/bracket/double/{teams}', function ($teams) {
     return Inertia::render($componentMap[$teams], ['teams' => $teams]);
 })->name('bracket.double');
 
+// Database Test Route
+Route::get('/db-test', function() {
+    try {
+        DB::connection()->getPdo();
+        return "Database connected!";
+    } catch (\Exception $e) {
+        return "Database connection failed: " . $e->getMessage();
+    }
+});
+
+// Debug Route
+Route::get('/debug', function() {
+    return response()->json([
+        'APP_URL' => env('APP_URL'),
+        'DB_HOST' => env('DB_HOST'),
+        'DB_CONNECTION' => \DB::connection()->getPdo() ? 'Connected' : 'Failed',
+        'Inertia_version' => class_exists('Inertia\Inertia') ? 'Loaded' : 'Missing',
+        'Vite_version' => class_exists('Vite') ? 'Loaded' : 'Missing'
+    ]);
+});
+
 // ============================================
 // Admin Routes (Authenticated & Verified)
 // ============================================

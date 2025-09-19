@@ -4,7 +4,7 @@ namespace App\Providers;
 
 use Illuminate\Support\Facades\Vite;
 use Illuminate\Support\ServiceProvider;
-use Inertia\Inertia; // ✅ CORRECT
+use Inertia\Inertia; // 
 
 
 class AppServiceProvider extends ServiceProvider
@@ -14,7 +14,14 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        $this->registerInertia();
+    }
+
+    protected function registerInertia()
+    {
+        \Inertia\Inertia::version(function () {
+            return md5_file(public_path('build/manifest.json'));
+        });
     }
 
     /**

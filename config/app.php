@@ -106,6 +106,11 @@ return [
         ),
     ],
 
+    'providers' => [
+        App\Providers\AppServiceProvider::class,
+        \Inertia\ServiceProvider::class,
+    ],
+
     /*
     |--------------------------------------------------------------------------
     | Maintenance Mode Driver
