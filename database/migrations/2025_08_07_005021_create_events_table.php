@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('title');
             $table->text('description');
             $table->string('coordinator_name');
-            $table->string('image_path')->nullable();
+            $table->string('image_path');
             $table->date('event_date');
             $table->date('registration_end_date')->nullable(); // added here
             $table->boolean('is_done')->default(false); 
