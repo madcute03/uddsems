@@ -13,7 +13,11 @@ export default defineConfig(({ command, mode }) => {
     const protocol = isProduction ? 'https' : 'http';
     const port = parseInt(env.VITE_PORT || '5173');
     const appUrl = env.APP_URL || 'http://localhost:8000';
-    const hmrHost = env.VITE_HMR_HOST || 'localhost';
+    const hmrHost = env.VITE_HMR_HOST || (isProduction ? new URL(appUrl).hostname : 'localhost');
+    
+    // For Railway deployment
+    const isRailway = process.env.RAILWAY_ENVIRONMENT === 'production';
+    const assetUrl = isRailway ? process.env.RAILWAY_STATIC_URL : '';
 
     return {
         plugins: [
@@ -31,9 +35,9 @@ export default defineConfig(({ command, mode }) => {
                 '@': path.resolve(__dirname, 'resources/js'),
             },
         },
-        base: isProduction
-            ? '/build/'
-            : `${appUrl}/`,
+        base: isRailway 
+            ? (assetUrl ? `${assetUrl}/` : '/build/')
+            : (isProduction ? '/build/' : `${appUrl}/`),
         // Build configuration
         build: {
             outDir: 'public/build',
@@ -72,19 +76,16 @@ export default defineConfig(({ command, mode }) => {
             host: host,
             port: port,
             strictPort: true,
-            hmr: {
+            hmr: isProduction ? false : {
                 host: hmrHost,
+                protocol: protocol,
                 port: port,
-                protocol: isProduction ? 'wss' : 'ws',
                 clientPort: isProduction ? 443 : port,
             },
             watch: {
                 usePolling: true,
-                interval: 100,
             },
-            // Allow connections from any IP
             cors: true,
-            // Enable CORS for development
             headers: {
                 'Access-Control-Allow-Origin': '*',
                 'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, PATCH, OPTIONS',

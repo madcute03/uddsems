@@ -69,11 +69,9 @@ Route::get('/', function () {
 })->name('home');
 
 // News
-Route::get('/news', fn() => app(NewsController::class)->publicIndex())
-    ->name('news.index');
+Route::get('/news', [NewsController::class, 'publicIndex'])->name('news.index');
 
-Route::get('/news/{news}', fn($news) => app(NewsController::class)->show($news))
-    ->name('news.show');
+Route::get('/news/{news}', [NewsController::class, 'show'])->name('news.show');
 
 // Events
 Route::get('/events/{event}', fn($event) => app(EventController::class)->show($event))
