@@ -1,5 +1,6 @@
 {
     "$schema": "https://json.schemastore.org/package.json",
+    "name": "sems",
     "private": true,
     "type": "module",
     "scripts": {
@@ -7,7 +8,7 @@
         "build": "vite build",
         "preview": "vite preview",
         "build:prod": "vite build --mode production",
-        "postinstall": "npm run build:prod",
+        "postinstall": "npm run build",
         "start": "vite preview --port 3000 --host",
         "dev:inspect": "node --inspect-brk node_modules/vite/bin/vite.js",
         "lint": "eslint . --ext .js,.jsx",
