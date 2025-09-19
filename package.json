@@ -8,9 +8,7 @@
         "build": "vite build",
         "preview": "vite preview",
         "build:prod": "vite build --mode production",
-        "postinstall": "npm run build",
         "start": "vite preview --port 3000 --host",
-        "dev:inspect": "node --inspect-brk node_modules/vite/bin/vite.js",
         "lint": "eslint . --ext .js,.jsx",
         "format": "prettier --write \"**/*.{js,jsx,json,md}\""
     },
@@ -34,6 +32,7 @@
         "@inertiajs/inertia": "^0.11.1",
         "@inertiajs/inertia-react": "^0.8.1",
         "dayjs": "^1.11.18",
+        "terser": "^5.44.0",
         "uuid": "^11.1.0",
         "ziggy-js": "^2.5.3"
     }
