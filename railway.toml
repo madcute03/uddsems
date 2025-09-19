@@ -25,28 +25,22 @@ CACHE_DRIVER = "file"
 QUEUE_CONNECTION = "sync"
 SESSION_SECURE_COOKIE = "true"
 
-# Database configuration
+# Database configuration (Railway provides these variables)
 DB_CONNECTION = "pgsql"
 DB_HOST = "${DATABASE_URL}"
-DB_PORT = "5432"
-DB_DATABASE = "${PGDATABASE}"
-DB_USERNAME = "${PGUSER}"
-DB_PASSWORD = "${PGPASSWORD}"
-DB_CONNECTION = "pgsql"
-DB_HOST = "${DATABASE_URL}"
-DB_PORT = "${DATABASE_PORT}"
-DB_DATABASE = "${DATABASE}"
-DB_USERNAME = "${DATABASE_USERNAME}"
-DB_PASSWORD = "${DATABASE_PASSWORD}"
+DB_PORT = "${DATABASE_PORT:-5432}"
+DB_DATABASE = "${PGDATABASE:-${DATABASE}}"
+DB_USERNAME = "${PGUSER:-${DATABASE_USERNAME}}"
+DB_PASSWORD = "${PGPASSWORD:-${DATABASE_PASSWORD}}"
 
-# Session configuration
+# Session configuration (using database for better performance in production)
 SESSION_DRIVER = "database"
 SESSION_LIFETIME = "120"
-SESSION_ENCRYPT = "false"
+SESSION_ENCRYPT = "true"
 
 # Cache configuration
-CACHE_DRIVER = "file"
-QUEUE_CONNECTION = "sync"
+CACHE_DRIVER = "file"  # Consider using 'redis' for production
+QUEUE_CONNECTION = "sync"  # Consider using 'database' or 'redis' for production
 
 # Set application URL
 APP_URL = "https://${RAILWAY_PUBLIC_DOMAIN}"
