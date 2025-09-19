@@ -1,0 +1,840 @@
+{
+  "_AuthenticatedLayout.BA5uTxXo.js": {
+    "file": "assets/AuthenticatedLayout.BA5uTxXo.js",
+    "name": "AuthenticatedLayout",
+    "imports": [
+      "resources/js/app.jsx",
+      "_vendor.Dilc0e1Z.js",
+      "_transition.DRRNCHc7.js"
+    ]
+  },
+  "_GuestLayout.D_OdBKtj.js": {
+    "file": "assets/GuestLayout.D_OdBKtj.js",
+    "name": "GuestLayout",
+    "imports": [
+      "resources/js/app.jsx",
+      "_vendor.Dilc0e1Z.js"
+    ]
+  },
+  "_InputError.ByeqyaK1.js": {
+    "file": "assets/InputError.ByeqyaK1.js",
+    "name": "InputError",
+    "imports": [
+      "resources/js/app.jsx"
+    ]
+  },
+  "_InputLabel.B4_9p4ji.js": {
+    "file": "assets/InputLabel.B4_9p4ji.js",
+    "name": "InputLabel",
+    "imports": [
+      "resources/js/app.jsx"
+    ]
+  },
+  "_PublicLayout.CrDxCOP8.js": {
+    "file": "assets/PublicLayout.CrDxCOP8.js",
+    "name": "PublicLayout",
+    "imports": [
+      "resources/js/app.jsx",
+      "_vendor.Dilc0e1Z.js"
+    ]
+  },
+  "_TextInput.D9UOrgoA.js": {
+    "file": "assets/TextInput.D9UOrgoA.js",
+    "name": "TextInput",
+    "imports": [
+      "resources/js/app.jsx",
+      "_vendor.Dilc0e1Z.js"
+    ]
+  },
+  "_index.9-qugqKv.js": {
+    "file": "assets/index.9-qugqKv.js",
+    "name": "index",
+    "imports": [
+      "_vendor.Dilc0e1Z.js"
+    ]
+  },
+  "_transition.DRRNCHc7.js": {
+    "file": "assets/transition.DRRNCHc7.js",
+    "name": "transition",
+    "imports": [
+      "_vendor.Dilc0e1Z.js"
+    ]
+  },
+  "_vendor.Dilc0e1Z.js": {
+    "file": "assets/vendor.Dilc0e1Z.js",
+    "name": "vendor"
+  },
+  "resources/js/Pages/Auth/ConfirmPassword.jsx": {
+    "file": "assets/ConfirmPassword.ZI3eCz5q.js",
+    "name": "ConfirmPassword",
+    "src": "resources/js/Pages/Auth/ConfirmPassword.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "_InputError.ByeqyaK1.js",
+      "_InputLabel.B4_9p4ji.js",
+      "_GuestLayout.D_OdBKtj.js",
+      "_TextInput.D9UOrgoA.js",
+      "_vendor.Dilc0e1Z.js"
+    ]
+  },
+  "resources/js/Pages/Auth/ForgotPassword.jsx": {
+    "file": "assets/ForgotPassword.wYOt_yPe.js",
+    "name": "ForgotPassword",
+    "src": "resources/js/Pages/Auth/ForgotPassword.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "_InputError.ByeqyaK1.js",
+      "_GuestLayout.D_OdBKtj.js",
+      "_TextInput.D9UOrgoA.js",
+      "_vendor.Dilc0e1Z.js"
+    ]
+  },
+  "resources/js/Pages/Auth/Login.jsx": {
+    "file": "assets/Login.C6molgCf.js",
+    "name": "Login",
+    "src": "resources/js/Pages/Auth/Login.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "_InputError.ByeqyaK1.js",
+      "_InputLabel.B4_9p4ji.js",
+      "_GuestLayout.D_OdBKtj.js",
+      "_TextInput.D9UOrgoA.js",
+      "_vendor.Dilc0e1Z.js"
+    ]
+  },
+  "resources/js/Pages/Auth/Register.jsx": {
+    "file": "assets/Register.z5BUTEfy.js",
+    "name": "Register",
+    "src": "resources/js/Pages/Auth/Register.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "_InputError.ByeqyaK1.js",
+      "_InputLabel.B4_9p4ji.js",
+      "_GuestLayout.D_OdBKtj.js",
+      "_TextInput.D9UOrgoA.js",
+      "_vendor.Dilc0e1Z.js"
+    ]
+  },
+  "resources/js/Pages/Auth/ResetPassword.jsx": {
+    "file": "assets/ResetPassword.BSP0g5bF.js",
+    "name": "ResetPassword",
+    "src": "resources/js/Pages/Auth/ResetPassword.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "_InputError.ByeqyaK1.js",
+      "_InputLabel.B4_9p4ji.js",
+      "_GuestLayout.D_OdBKtj.js",
+      "_TextInput.D9UOrgoA.js",
+      "_vendor.Dilc0e1Z.js"
+    ]
+  },
+  "resources/js/Pages/Auth/VerifyEmail.jsx": {
+    "file": "assets/VerifyEmail.Df67aP_l.js",
+    "name": "VerifyEmail",
+    "src": "resources/js/Pages/Auth/VerifyEmail.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "_GuestLayout.D_OdBKtj.js",
+      "_vendor.Dilc0e1Z.js"
+    ]
+  },
+  "resources/js/Pages/Bracket/DoubleEliminationBracket/Bracket3/Bracket.jsx": {
+    "file": "assets/Bracket.DjDdk44g.js",
+    "name": "Bracket",
+    "src": "resources/js/Pages/Bracket/DoubleEliminationBracket/Bracket3/Bracket.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "_vendor.Dilc0e1Z.js"
+    ]
+  },
+  "resources/js/Pages/Bracket/DoubleEliminationBracket/Bracket3/ShowBracket.jsx": {
+    "file": "assets/ShowBracket.CLW62qxx.js",
+    "name": "ShowBracket",
+    "src": "resources/js/Pages/Bracket/DoubleEliminationBracket/Bracket3/ShowBracket.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "_vendor.Dilc0e1Z.js",
+      "_PublicLayout.CrDxCOP8.js"
+    ]
+  },
+  "resources/js/Pages/Bracket/DoubleEliminationBracket/Bracket3/ShowStanding.jsx": {
+    "file": "assets/ShowStanding.Burymlxx.js",
+    "name": "ShowStanding",
+    "src": "resources/js/Pages/Bracket/DoubleEliminationBracket/Bracket3/ShowStanding.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "_vendor.Dilc0e1Z.js",
+      "_PublicLayout.CrDxCOP8.js"
+    ]
+  },
+  "resources/js/Pages/Bracket/DoubleEliminationBracket/Bracket4/Bracket.jsx": {
+    "file": "assets/Bracket.C1_Q4WSG.js",
+    "name": "Bracket",
+    "src": "resources/js/Pages/Bracket/DoubleEliminationBracket/Bracket4/Bracket.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "_vendor.Dilc0e1Z.js"
+    ]
+  },
+  "resources/js/Pages/Bracket/DoubleEliminationBracket/Bracket4/ShowBracket.jsx": {
+    "file": "assets/ShowBracket.DLdT7WHy.js",
+    "name": "ShowBracket",
+    "src": "resources/js/Pages/Bracket/DoubleEliminationBracket/Bracket4/ShowBracket.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "_vendor.Dilc0e1Z.js",
+      "_PublicLayout.CrDxCOP8.js"
+    ]
+  },
+  "resources/js/Pages/Bracket/DoubleEliminationBracket/Bracket4/ShowStanding.jsx": {
+    "file": "assets/ShowStanding.K8W3xxA6.js",
+    "name": "ShowStanding",
+    "src": "resources/js/Pages/Bracket/DoubleEliminationBracket/Bracket4/ShowStanding.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "_vendor.Dilc0e1Z.js",
+      "_PublicLayout.CrDxCOP8.js"
+    ]
+  },
+  "resources/js/Pages/Bracket/DoubleEliminationBracket/Bracket5/Bracket.jsx": {
+    "file": "assets/Bracket.Cnv0pr9M.js",
+    "name": "Bracket",
+    "src": "resources/js/Pages/Bracket/DoubleEliminationBracket/Bracket5/Bracket.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "_vendor.Dilc0e1Z.js"
+    ]
+  },
+  "resources/js/Pages/Bracket/DoubleEliminationBracket/Bracket5/ShowBracket.jsx": {
+    "file": "assets/ShowBracket.DvZUotTc.js",
+    "name": "ShowBracket",
+    "src": "resources/js/Pages/Bracket/DoubleEliminationBracket/Bracket5/ShowBracket.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "_vendor.Dilc0e1Z.js",
+      "_PublicLayout.CrDxCOP8.js"
+    ]
+  },
+  "resources/js/Pages/Bracket/DoubleEliminationBracket/Bracket5/ShowStanding.jsx": {
+    "file": "assets/ShowStanding.DF9I622-.js",
+    "name": "ShowStanding",
+    "src": "resources/js/Pages/Bracket/DoubleEliminationBracket/Bracket5/ShowStanding.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "_vendor.Dilc0e1Z.js",
+      "_PublicLayout.CrDxCOP8.js"
+    ]
+  },
+  "resources/js/Pages/Bracket/DoubleEliminationBracket/Bracket6/Bracket.jsx": {
+    "file": "assets/Bracket.O8_TbAtW.js",
+    "name": "Bracket",
+    "src": "resources/js/Pages/Bracket/DoubleEliminationBracket/Bracket6/Bracket.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "_vendor.Dilc0e1Z.js"
+    ]
+  },
+  "resources/js/Pages/Bracket/DoubleEliminationBracket/Bracket6/ShowBracket.jsx": {
+    "file": "assets/ShowBracket.I0I_DPkF.js",
+    "name": "ShowBracket",
+    "src": "resources/js/Pages/Bracket/DoubleEliminationBracket/Bracket6/ShowBracket.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "_vendor.Dilc0e1Z.js",
+      "_PublicLayout.CrDxCOP8.js"
+    ]
+  },
+  "resources/js/Pages/Bracket/DoubleEliminationBracket/Bracket6/ShowStanding.jsx": {
+    "file": "assets/ShowStanding.EATOsGB6.js",
+    "name": "ShowStanding",
+    "src": "resources/js/Pages/Bracket/DoubleEliminationBracket/Bracket6/ShowStanding.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "_vendor.Dilc0e1Z.js",
+      "_PublicLayout.CrDxCOP8.js"
+    ]
+  },
+  "resources/js/Pages/Bracket/DoubleEliminationBracket/Bracket7/Bracket.jsx": {
+    "file": "assets/Bracket.DZQoFPTr.js",
+    "name": "Bracket",
+    "src": "resources/js/Pages/Bracket/DoubleEliminationBracket/Bracket7/Bracket.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "_vendor.Dilc0e1Z.js"
+    ]
+  },
+  "resources/js/Pages/Bracket/DoubleEliminationBracket/Bracket7/ShowBracket.jsx": {
+    "file": "assets/ShowBracket.C6-5apza.js",
+    "name": "ShowBracket",
+    "src": "resources/js/Pages/Bracket/DoubleEliminationBracket/Bracket7/ShowBracket.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "_vendor.Dilc0e1Z.js",
+      "_PublicLayout.CrDxCOP8.js"
+    ]
+  },
+  "resources/js/Pages/Bracket/DoubleEliminationBracket/Bracket7/ShowStanding.jsx": {
+    "file": "assets/ShowStanding.mXX9ZN2z.js",
+    "name": "ShowStanding",
+    "src": "resources/js/Pages/Bracket/DoubleEliminationBracket/Bracket7/ShowStanding.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "_vendor.Dilc0e1Z.js",
+      "_PublicLayout.CrDxCOP8.js"
+    ]
+  },
+  "resources/js/Pages/Bracket/DoubleEliminationBracket/Bracket8/Bracket.jsx": {
+    "file": "assets/Bracket.BtE0t1DF.js",
+    "name": "Bracket",
+    "src": "resources/js/Pages/Bracket/DoubleEliminationBracket/Bracket8/Bracket.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "_vendor.Dilc0e1Z.js"
+    ]
+  },
+  "resources/js/Pages/Bracket/DoubleEliminationBracket/Bracket8/ShowBracket.jsx": {
+    "file": "assets/ShowBracket.BDlwXLh-.js",
+    "name": "ShowBracket",
+    "src": "resources/js/Pages/Bracket/DoubleEliminationBracket/Bracket8/ShowBracket.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "_vendor.Dilc0e1Z.js",
+      "_PublicLayout.CrDxCOP8.js"
+    ]
+  },
+  "resources/js/Pages/Bracket/DoubleEliminationBracket/Bracket8/ShowStanding.jsx": {
+    "file": "assets/ShowStanding.D8sQd1ms.js",
+    "name": "ShowStanding",
+    "src": "resources/js/Pages/Bracket/DoubleEliminationBracket/Bracket8/ShowStanding.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "_vendor.Dilc0e1Z.js",
+      "_PublicLayout.CrDxCOP8.js"
+    ]
+  },
+  "resources/js/Pages/Bracket/SingleEliminationBracket/Bracket2/Bracket2.jsx": {
+    "file": "assets/Bracket2.4LSsSB9X.js",
+    "name": "Bracket2",
+    "src": "resources/js/Pages/Bracket/SingleEliminationBracket/Bracket2/Bracket2.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "_vendor.Dilc0e1Z.js"
+    ]
+  },
+  "resources/js/Pages/Bracket/SingleEliminationBracket/Bracket2/ShowBracket.jsx": {
+    "file": "assets/ShowBracket.DMHWkyYe.js",
+    "name": "ShowBracket",
+    "src": "resources/js/Pages/Bracket/SingleEliminationBracket/Bracket2/ShowBracket.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "_vendor.Dilc0e1Z.js",
+      "_PublicLayout.CrDxCOP8.js"
+    ]
+  },
+  "resources/js/Pages/Bracket/SingleEliminationBracket/Bracket2/ShowStanding.jsx": {
+    "file": "assets/ShowStanding.CUfdJUew.js",
+    "name": "ShowStanding",
+    "src": "resources/js/Pages/Bracket/SingleEliminationBracket/Bracket2/ShowStanding.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "_vendor.Dilc0e1Z.js",
+      "_PublicLayout.CrDxCOP8.js"
+    ]
+  },
+  "resources/js/Pages/Bracket/SingleEliminationBracket/Bracket3/Bracket3.jsx": {
+    "file": "assets/Bracket3.C7luXgZp.js",
+    "name": "Bracket3",
+    "src": "resources/js/Pages/Bracket/SingleEliminationBracket/Bracket3/Bracket3.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "_vendor.Dilc0e1Z.js"
+    ]
+  },
+  "resources/js/Pages/Bracket/SingleEliminationBracket/Bracket3/ShowBracket.jsx": {
+    "file": "assets/ShowBracket.D3lokgRL.js",
+    "name": "ShowBracket",
+    "src": "resources/js/Pages/Bracket/SingleEliminationBracket/Bracket3/ShowBracket.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "_vendor.Dilc0e1Z.js",
+      "_PublicLayout.CrDxCOP8.js"
+    ]
+  },
+  "resources/js/Pages/Bracket/SingleEliminationBracket/Bracket3/ShowStanding.jsx": {
+    "file": "assets/ShowStanding.BsRYzZOb.js",
+    "name": "ShowStanding",
+    "src": "resources/js/Pages/Bracket/SingleEliminationBracket/Bracket3/ShowStanding.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "_vendor.Dilc0e1Z.js",
+      "_PublicLayout.CrDxCOP8.js"
+    ]
+  },
+  "resources/js/Pages/Bracket/SingleEliminationBracket/Bracket4/Bracket4.jsx": {
+    "file": "assets/Bracket4.BRUEzqQw.js",
+    "name": "Bracket4",
+    "src": "resources/js/Pages/Bracket/SingleEliminationBracket/Bracket4/Bracket4.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "_vendor.Dilc0e1Z.js"
+    ]
+  },
+  "resources/js/Pages/Bracket/SingleEliminationBracket/Bracket4/ShowBracket.jsx": {
+    "file": "assets/ShowBracket.B_W8Shyk.js",
+    "name": "ShowBracket",
+    "src": "resources/js/Pages/Bracket/SingleEliminationBracket/Bracket4/ShowBracket.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "_vendor.Dilc0e1Z.js",
+      "_PublicLayout.CrDxCOP8.js"
+    ]
+  },
+  "resources/js/Pages/Bracket/SingleEliminationBracket/Bracket4/ShowStanding.jsx": {
+    "file": "assets/ShowStanding.9-J0jC70.js",
+    "name": "ShowStanding",
+    "src": "resources/js/Pages/Bracket/SingleEliminationBracket/Bracket4/ShowStanding.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "_vendor.Dilc0e1Z.js",
+      "_PublicLayout.CrDxCOP8.js"
+    ]
+  },
+  "resources/js/Pages/Bracket/SingleEliminationBracket/Bracket5/Bracket5.jsx": {
+    "file": "assets/Bracket5.Bk8I1V5O.js",
+    "name": "Bracket5",
+    "src": "resources/js/Pages/Bracket/SingleEliminationBracket/Bracket5/Bracket5.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "_vendor.Dilc0e1Z.js"
+    ]
+  },
+  "resources/js/Pages/Bracket/SingleEliminationBracket/Bracket5/ShowBracket.jsx": {
+    "file": "assets/ShowBracket.CblbvYd-.js",
+    "name": "ShowBracket",
+    "src": "resources/js/Pages/Bracket/SingleEliminationBracket/Bracket5/ShowBracket.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "_vendor.Dilc0e1Z.js",
+      "_PublicLayout.CrDxCOP8.js"
+    ]
+  },
+  "resources/js/Pages/Bracket/SingleEliminationBracket/Bracket5/ShowStanding.jsx": {
+    "file": "assets/ShowStanding.DdbuVYqU.js",
+    "name": "ShowStanding",
+    "src": "resources/js/Pages/Bracket/SingleEliminationBracket/Bracket5/ShowStanding.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "_vendor.Dilc0e1Z.js",
+      "_PublicLayout.CrDxCOP8.js"
+    ]
+  },
+  "resources/js/Pages/Bracket/SingleEliminationBracket/Bracket6/Bracket6.jsx": {
+    "file": "assets/Bracket6.BflK-US6.js",
+    "name": "Bracket6",
+    "src": "resources/js/Pages/Bracket/SingleEliminationBracket/Bracket6/Bracket6.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "_vendor.Dilc0e1Z.js"
+    ]
+  },
+  "resources/js/Pages/Bracket/SingleEliminationBracket/Bracket6/ShowBracket.jsx": {
+    "file": "assets/ShowBracket.B7N1yrh3.js",
+    "name": "ShowBracket",
+    "src": "resources/js/Pages/Bracket/SingleEliminationBracket/Bracket6/ShowBracket.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "_vendor.Dilc0e1Z.js",
+      "_PublicLayout.CrDxCOP8.js"
+    ]
+  },
+  "resources/js/Pages/Bracket/SingleEliminationBracket/Bracket6/ShowStanding.jsx": {
+    "file": "assets/ShowStanding.C6I2MUNh.js",
+    "name": "ShowStanding",
+    "src": "resources/js/Pages/Bracket/SingleEliminationBracket/Bracket6/ShowStanding.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "_vendor.Dilc0e1Z.js",
+      "_PublicLayout.CrDxCOP8.js"
+    ]
+  },
+  "resources/js/Pages/Bracket/SingleEliminationBracket/Bracket7/Bracket7.jsx": {
+    "file": "assets/Bracket7.DEpcintI.js",
+    "name": "Bracket7",
+    "src": "resources/js/Pages/Bracket/SingleEliminationBracket/Bracket7/Bracket7.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "_vendor.Dilc0e1Z.js"
+    ]
+  },
+  "resources/js/Pages/Bracket/SingleEliminationBracket/Bracket7/ShowBracket.jsx": {
+    "file": "assets/ShowBracket.B4sXnLsI.js",
+    "name": "ShowBracket",
+    "src": "resources/js/Pages/Bracket/SingleEliminationBracket/Bracket7/ShowBracket.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "_vendor.Dilc0e1Z.js",
+      "_PublicLayout.CrDxCOP8.js"
+    ]
+  },
+  "resources/js/Pages/Bracket/SingleEliminationBracket/Bracket7/ShowStanding.jsx": {
+    "file": "assets/ShowStanding.BnlohXG-.js",
+    "name": "ShowStanding",
+    "src": "resources/js/Pages/Bracket/SingleEliminationBracket/Bracket7/ShowStanding.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "_vendor.Dilc0e1Z.js",
+      "_PublicLayout.CrDxCOP8.js"
+    ]
+  },
+  "resources/js/Pages/Bracket/SingleEliminationBracket/Bracket8/Bracket8.jsx": {
+    "file": "assets/Bracket8.kfEZqaUZ.js",
+    "name": "Bracket8",
+    "src": "resources/js/Pages/Bracket/SingleEliminationBracket/Bracket8/Bracket8.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "_vendor.Dilc0e1Z.js"
+    ]
+  },
+  "resources/js/Pages/Bracket/SingleEliminationBracket/Bracket8/ShowBracket.jsx": {
+    "file": "assets/ShowBracket.xLvCgv2g.js",
+    "name": "ShowBracket",
+    "src": "resources/js/Pages/Bracket/SingleEliminationBracket/Bracket8/ShowBracket.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "_vendor.Dilc0e1Z.js",
+      "_PublicLayout.CrDxCOP8.js"
+    ]
+  },
+  "resources/js/Pages/Bracket/SingleEliminationBracket/Bracket8/ShowStanding.jsx": {
+    "file": "assets/ShowStanding.QpY1LQp5.js",
+    "name": "ShowStanding",
+    "src": "resources/js/Pages/Bracket/SingleEliminationBracket/Bracket8/ShowStanding.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "_vendor.Dilc0e1Z.js",
+      "_PublicLayout.CrDxCOP8.js"
+    ]
+  },
+  "resources/js/Pages/Complaints/AdminComplaints.jsx": {
+    "file": "assets/AdminComplaints.BNzeykYo.js",
+    "name": "AdminComplaints",
+    "src": "resources/js/Pages/Complaints/AdminComplaints.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "_AuthenticatedLayout.BA5uTxXo.js",
+      "_vendor.Dilc0e1Z.js",
+      "_transition.DRRNCHc7.js"
+    ]
+  },
+  "resources/js/Pages/Complaints/PublicComplaintForm.jsx": {
+    "file": "assets/PublicComplaintForm.Cw_2NosF.js",
+    "name": "PublicComplaintForm",
+    "src": "resources/js/Pages/Complaints/PublicComplaintForm.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "_vendor.Dilc0e1Z.js",
+      "_PublicLayout.CrDxCOP8.js"
+    ]
+  },
+  "resources/js/Pages/CreateBracket.jsx": {
+    "file": "assets/CreateBracket.B-w6x867.js",
+    "name": "CreateBracket",
+    "src": "resources/js/Pages/CreateBracket.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "_vendor.Dilc0e1Z.js",
+      "_index.9-qugqKv.js",
+      "_AuthenticatedLayout.BA5uTxXo.js",
+      "resources/js/Pages/Bracket/DoubleEliminationBracket/Bracket3/Bracket.jsx",
+      "resources/js/Pages/Bracket/DoubleEliminationBracket/Bracket4/Bracket.jsx",
+      "resources/js/Pages/Bracket/DoubleEliminationBracket/Bracket5/Bracket.jsx",
+      "resources/js/Pages/Bracket/DoubleEliminationBracket/Bracket6/Bracket.jsx",
+      "resources/js/Pages/Bracket/DoubleEliminationBracket/Bracket7/Bracket.jsx",
+      "resources/js/Pages/Bracket/DoubleEliminationBracket/Bracket8/Bracket.jsx",
+      "resources/js/Pages/Bracket/SingleEliminationBracket/Bracket2/Bracket2.jsx",
+      "resources/js/Pages/Bracket/SingleEliminationBracket/Bracket3/Bracket3.jsx",
+      "resources/js/Pages/Bracket/SingleEliminationBracket/Bracket4/Bracket4.jsx",
+      "resources/js/Pages/Bracket/SingleEliminationBracket/Bracket5/Bracket5.jsx",
+      "resources/js/Pages/Bracket/SingleEliminationBracket/Bracket6/Bracket6.jsx",
+      "resources/js/Pages/Bracket/SingleEliminationBracket/Bracket7/Bracket7.jsx",
+      "resources/js/Pages/Bracket/SingleEliminationBracket/Bracket8/Bracket8.jsx",
+      "_transition.DRRNCHc7.js"
+    ]
+  },
+  "resources/js/Pages/CreateEvent.jsx": {
+    "file": "assets/CreateEvent.SGZMS8Vj.js",
+    "name": "CreateEvent",
+    "src": "resources/js/Pages/CreateEvent.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "_AuthenticatedLayout.BA5uTxXo.js",
+      "_vendor.Dilc0e1Z.js",
+      "_index.9-qugqKv.js",
+      "_transition.DRRNCHc7.js"
+    ]
+  },
+  "resources/js/Pages/CreateNews.jsx": {
+    "file": "assets/CreateNews.CXQv-sYC.js",
+    "name": "CreateNews",
+    "src": "resources/js/Pages/CreateNews.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "_AuthenticatedLayout.BA5uTxXo.js",
+      "_vendor.Dilc0e1Z.js",
+      "_transition.DRRNCHc7.js"
+    ]
+  },
+  "resources/js/Pages/Dashboard.jsx": {
+    "file": "assets/Dashboard.CaxdK-DD.js",
+    "name": "Dashboard",
+    "src": "resources/js/Pages/Dashboard.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "_AuthenticatedLayout.BA5uTxXo.js",
+      "_vendor.Dilc0e1Z.js",
+      "_transition.DRRNCHc7.js"
+    ]
+  },
+  "resources/js/Pages/News.jsx": {
+    "file": "assets/News.C9RBmQtW.js",
+    "name": "News",
+    "src": "resources/js/Pages/News.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "_vendor.Dilc0e1Z.js",
+      "_PublicLayout.CrDxCOP8.js"
+    ]
+  },
+  "resources/js/Pages/Profile/Edit.jsx": {
+    "file": "assets/Edit.DoWslB_m.js",
+    "name": "Edit",
+    "src": "resources/js/Pages/Profile/Edit.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "_AuthenticatedLayout.BA5uTxXo.js",
+      "_vendor.Dilc0e1Z.js",
+      "resources/js/Pages/Profile/Partials/DeleteUserForm.jsx",
+      "resources/js/Pages/Profile/Partials/UpdatePasswordForm.jsx",
+      "resources/js/Pages/Profile/Partials/UpdateProfileInformationForm.jsx",
+      "_transition.DRRNCHc7.js",
+      "_TextInput.D9UOrgoA.js"
+    ]
+  },
+  "resources/js/Pages/Profile/Partials/DeleteUserForm.jsx": {
+    "file": "assets/DeleteUserForm.Cheb_y4Z.js",
+    "name": "DeleteUserForm",
+    "src": "resources/js/Pages/Profile/Partials/DeleteUserForm.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "_vendor.Dilc0e1Z.js",
+      "_transition.DRRNCHc7.js",
+      "_TextInput.D9UOrgoA.js"
+    ]
+  },
+  "resources/js/Pages/Profile/Partials/UpdatePasswordForm.jsx": {
+    "file": "assets/UpdatePasswordForm.oGkKoWn_.js",
+    "name": "UpdatePasswordForm",
+    "src": "resources/js/Pages/Profile/Partials/UpdatePasswordForm.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "_TextInput.D9UOrgoA.js",
+      "_vendor.Dilc0e1Z.js",
+      "_transition.DRRNCHc7.js"
+    ]
+  },
+  "resources/js/Pages/Profile/Partials/UpdateProfileInformationForm.jsx": {
+    "file": "assets/UpdateProfileInformationForm.P313Kwm3.js",
+    "name": "UpdateProfileInformationForm",
+    "src": "resources/js/Pages/Profile/Partials/UpdateProfileInformationForm.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "_TextInput.D9UOrgoA.js",
+      "_vendor.Dilc0e1Z.js",
+      "_transition.DRRNCHc7.js"
+    ]
+  },
+  "resources/js/Pages/RegisterEvent.jsx": {
+    "file": "assets/RegisterEvent.BiyflGS8.js",
+    "name": "RegisterEvent",
+    "src": "resources/js/Pages/RegisterEvent.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "_vendor.Dilc0e1Z.js"
+    ]
+  },
+  "resources/js/Pages/Registrations/RegisteredTeams.jsx": {
+    "file": "assets/RegisteredTeams.CHhG17tA.js",
+    "name": "RegisteredTeams",
+    "src": "resources/js/Pages/Registrations/RegisteredTeams.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "_vendor.Dilc0e1Z.js"
+    ]
+  },
+  "resources/js/Pages/ShowEvent.jsx": {
+    "file": "assets/ShowEvent.Dcwu1RwS.js",
+    "name": "ShowEvent",
+    "src": "resources/js/Pages/ShowEvent.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "_vendor.Dilc0e1Z.js",
+      "_PublicLayout.CrDxCOP8.js"
+    ]
+  },
+  "resources/js/Pages/ShowNews.jsx": {
+    "file": "assets/ShowNews.BRSZMiHy.js",
+    "name": "ShowNews",
+    "src": "resources/js/Pages/ShowNews.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "_vendor.Dilc0e1Z.js",
+      "_PublicLayout.CrDxCOP8.js"
+    ]
+  },
+  "resources/js/Pages/Welcome.jsx": {
+    "file": "assets/Welcome.CZFVUTTX.js",
+    "name": "Welcome",
+    "src": "resources/js/Pages/Welcome.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "_vendor.Dilc0e1Z.js",
+      "_PublicLayout.CrDxCOP8.js"
+    ]
+  },
+  "resources/js/app.jsx": {
+    "file": "assets/app.6LWIl6Tz.js",
+    "name": "app",
+    "src": "resources/js/app.jsx",
+    "isEntry": true,
+    "imports": [
+      "_vendor.Dilc0e1Z.js"
+    ],
+    "dynamicImports": [
+      "resources/js/Pages/Auth/ConfirmPassword.jsx",
+      "resources/js/Pages/Auth/ForgotPassword.jsx",
+      "resources/js/Pages/Auth/Login.jsx",
+      "resources/js/Pages/Auth/Register.jsx",
+      "resources/js/Pages/Auth/ResetPassword.jsx",
+      "resources/js/Pages/Auth/VerifyEmail.jsx",
+      "resources/js/Pages/Bracket/DoubleEliminationBracket/Bracket3/Bracket.jsx",
+      "resources/js/Pages/Bracket/DoubleEliminationBracket/Bracket3/ShowBracket.jsx",
+      "resources/js/Pages/Bracket/DoubleEliminationBracket/Bracket3/ShowStanding.jsx",
+      "resources/js/Pages/Bracket/DoubleEliminationBracket/Bracket4/Bracket.jsx",
+      "resources/js/Pages/Bracket/DoubleEliminationBracket/Bracket4/ShowBracket.jsx",
+      "resources/js/Pages/Bracket/DoubleEliminationBracket/Bracket4/ShowStanding.jsx",
+      "resources/js/Pages/Bracket/DoubleEliminationBracket/Bracket5/Bracket.jsx",
+      "resources/js/Pages/Bracket/DoubleEliminationBracket/Bracket5/ShowBracket.jsx",
+      "resources/js/Pages/Bracket/DoubleEliminationBracket/Bracket5/ShowStanding.jsx",
+      "resources/js/Pages/Bracket/DoubleEliminationBracket/Bracket6/Bracket.jsx",
+      "resources/js/Pages/Bracket/DoubleEliminationBracket/Bracket6/ShowBracket.jsx",
+      "resources/js/Pages/Bracket/DoubleEliminationBracket/Bracket6/ShowStanding.jsx",
+      "resources/js/Pages/Bracket/DoubleEliminationBracket/Bracket7/Bracket.jsx",
+      "resources/js/Pages/Bracket/DoubleEliminationBracket/Bracket7/ShowBracket.jsx",
+      "resources/js/Pages/Bracket/DoubleEliminationBracket/Bracket7/ShowStanding.jsx",
+      "resources/js/Pages/Bracket/DoubleEliminationBracket/Bracket8/Bracket.jsx",
+      "resources/js/Pages/Bracket/DoubleEliminationBracket/Bracket8/ShowBracket.jsx",
+      "resources/js/Pages/Bracket/DoubleEliminationBracket/Bracket8/ShowStanding.jsx",
+      "resources/js/Pages/Bracket/SingleEliminationBracket/Bracket2/Bracket2.jsx",
+      "resources/js/Pages/Bracket/SingleEliminationBracket/Bracket2/ShowBracket.jsx",
+      "resources/js/Pages/Bracket/SingleEliminationBracket/Bracket2/ShowStanding.jsx",
+      "resources/js/Pages/Bracket/SingleEliminationBracket/Bracket3/Bracket3.jsx",
+      "resources/js/Pages/Bracket/SingleEliminationBracket/Bracket3/ShowBracket.jsx",
+      "resources/js/Pages/Bracket/SingleEliminationBracket/Bracket3/ShowStanding.jsx",
+      "resources/js/Pages/Bracket/SingleEliminationBracket/Bracket4/Bracket4.jsx",
+      "resources/js/Pages/Bracket/SingleEliminationBracket/Bracket4/ShowBracket.jsx",
+      "resources/js/Pages/Bracket/SingleEliminationBracket/Bracket4/ShowStanding.jsx",
+      "resources/js/Pages/Bracket/SingleEliminationBracket/Bracket5/Bracket5.jsx",
+      "resources/js/Pages/Bracket/SingleEliminationBracket/Bracket5/ShowBracket.jsx",
+      "resources/js/Pages/Bracket/SingleEliminationBracket/Bracket5/ShowStanding.jsx",
+      "resources/js/Pages/Bracket/SingleEliminationBracket/Bracket6/Bracket6.jsx",
+      "resources/js/Pages/Bracket/SingleEliminationBracket/Bracket6/ShowBracket.jsx",
+      "resources/js/Pages/Bracket/SingleEliminationBracket/Bracket6/ShowStanding.jsx",
+      "resources/js/Pages/Bracket/SingleEliminationBracket/Bracket7/Bracket7.jsx",
+      "resources/js/Pages/Bracket/SingleEliminationBracket/Bracket7/ShowBracket.jsx",
+      "resources/js/Pages/Bracket/SingleEliminationBracket/Bracket7/ShowStanding.jsx",
+      "resources/js/Pages/Bracket/SingleEliminationBracket/Bracket8/Bracket8.jsx",
+      "resources/js/Pages/Bracket/SingleEliminationBracket/Bracket8/ShowBracket.jsx",
+      "resources/js/Pages/Bracket/SingleEliminationBracket/Bracket8/ShowStanding.jsx",
+      "resources/js/Pages/Complaints/AdminComplaints.jsx",
+      "resources/js/Pages/Complaints/PublicComplaintForm.jsx",
+      "resources/js/Pages/CreateBracket.jsx",
+      "resources/js/Pages/CreateEvent.jsx",
+      "resources/js/Pages/CreateNews.jsx",
+      "resources/js/Pages/Dashboard.jsx",
+      "resources/js/Pages/News.jsx",
+      "resources/js/Pages/Profile/Edit.jsx",
+      "resources/js/Pages/Profile/Partials/DeleteUserForm.jsx",
+      "resources/js/Pages/Profile/Partials/UpdatePasswordForm.jsx",
+      "resources/js/Pages/Profile/Partials/UpdateProfileInformationForm.jsx",
+      "resources/js/Pages/RegisterEvent.jsx",
+      "resources/js/Pages/Registrations/RegisteredTeams.jsx",
+      "resources/js/Pages/ShowEvent.jsx",
+      "resources/js/Pages/ShowNews.jsx",
+      "resources/js/Pages/Welcome.jsx"
+    ],
+    "css": [
+      "assets/app.DSIDNkft.css"
+    ]
+  }
+}
