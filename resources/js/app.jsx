@@ -1,23 +1,55 @@
-import '../css/app.css'; // ✅ dito papasok si Tailwind
 import './bootstrap';
+import '../css/app.css';
 
-import { createInertiaApp } from '@inertiajs/react';
-import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { createRoot } from 'react-dom/client';
+import { createInertiaApp } from '@inertiajs/react';
 
-const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
+// Initialize the application
+const initializeApp = async () => {
+    const appName = import.meta.env.VITE_APP_NAME || 'SEMS';
 
-createInertiaApp({
-    title: (title) => `${title} - ${appName}`,
-    resolve: (name) =>
-        resolvePageComponent(
-            `./Pages/${name}.jsx`,
-            import.meta.glob('./Pages/**/*.jsx')
-        ),
-    setup({ el, App, props }) {
-        createRoot(el).render(<App {...props} />);
-    },
-    progress: {
-        color: '#4B5563',
-    },
+    // Dynamically import Ziggy for client-side only
+    let Ziggy = {};
+    if (typeof window !== 'undefined') {
+        const { default: ZiggyJS } = await import('ziggy-js');
+        const ziggyConfig = (await import('./ziggy')).default;
+        Ziggy = ZiggyJS;
+        
+        if (window.Ziggy) {
+            window.Ziggy = { ...window.Ziggy, ...ziggyConfig };
+        } else {
+            window.Ziggy = ziggyConfig;
+        }
+    }
+
+    // Create the main application
+    createInertiaApp({
+        title: (title) => title ? `${title} - ${appName}` : appName,
+        resolve: (name) => {
+            const pages = import.meta.glob('./Pages/**/*.jsx', { eager: true });
+            const page = pages[`./Pages/${name}.jsx`];
+            
+            if (!page) {
+                throw new Error(`Page ${name} not found`);
+            }
+            
+            return page;
+        },
+        setup({ el, App, props }) {
+            const root = createRoot(el);
+            
+            root.render(
+                <App {...props} />
+            );
+        },
+        progress: {
+            color: '#4F46E5',
+            showSpinner: true,
+        },
+    });
+};
+
+// Start the application
+initializeApp().catch((error) => {
+    console.error('Failed to initialize application:', error);
 });

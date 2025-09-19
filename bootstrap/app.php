@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Http\Request;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -14,26 +15,6 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->web(append: [
             \App\Http\Middleware\HandleInertiaRequests::class,
             \Illuminate\Http\Middleware\AddLinkHeadersForPreloadedAssets::class,
-        ]);
-
-        // Trust all proxies when running on Railway
-        $middleware->trustProxies(
-            at: '**',
-            headers: \Illuminate\Http\Request::HEADER_X_FORWARDED_FOR |
-                   \Illuminate\Http\Request::HEADER_X_FORWARDED_HOST |
-                   \Illuminate\Http\Request::HEADER_X_FORWARDED_PORT |
-                   \Illuminate\Http\Request::HEADER_X_FORWARDED_PROTO |
-                   \Illuminate\Http\Request::HEADER_X_FORWARDED_AWS_ELB
-        );
-        $middleware->trustHosts([
-            fn (string $host) => str($host)->is([
-                '*.railway.app',
-                '*.railway.railway.app',
-                '*.up.railway.app',
-                'localhost',
-                '127.0.0.1',
-                '::1',
-            ]),
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

@@ -1,14 +1,19 @@
 import axios from 'axios';
+import { Ziggy } from './ziggy';
+
+// Set default headers for all axios requests
 window.axios = axios;
-
-// Set default headers
 window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
-window.axios.defaults.headers.common['X-CSRF-TOKEN'] = document.head.querySelector('meta[name="csrf-token"]')?.content || '';
+window.axios.defaults.withCredentials = true;
+window.axios.defaults.withXSRFToken = true;
 
-// Configure base URL if needed
-// window.axios.defaults.baseURL = '/api';
+// Handle CSRF token
+const csrfToken = document.head.querySelector('meta[name="csrf-token"]');
+if (csrfToken) {
+    window.axios.defaults.headers.common['X-CSRF-TOKEN'] = csrfToken.content;
+}
 
-// Add request interceptor
+// Add a request interceptor
 window.axios.interceptors.request.use(
     config => {
         // Add auth token if exists
@@ -16,6 +21,7 @@ window.axios.interceptors.request.use(
         if (token) {
             config.headers.Authorization = `Bearer ${token}`;
         }
+        // Add loading indicator here if needed
         return config;
     },
     error => {

@@ -8,14 +8,14 @@ use Inertia\Middleware;
 class HandleInertiaRequests extends Middleware
 {
     /**
-     * The root template that is loaded on the first page visit.
+     * The root template that's loaded on the first page visit.
      *
      * @var string
      */
     protected $rootView = 'app';
 
     /**
-     * Determine the current asset version.
+     * Determines the current asset version.
      */
     public function version(Request $request): ?string
     {
@@ -35,14 +35,27 @@ class HandleInertiaRequests extends Middleware
                     'id' => $request->user()->id,
                     'name' => $request->user()->name,
                     'email' => $request->user()->email,
-                    // Add other user fields as needed
+                    'role' => $request->user()->role ?? 'user',
+                    'isAdmin' => $request->user()->role === 'admin',
                 ] : null,
             ],
-            'csrf_token' => csrf_token(),
             'flash' => [
-                'success' => $request->session()->get('success'),
-                'error'   => $request->session()->get('error'),
+                'success' => fn () => $request->session()->get('success'),
+                'error' => fn () => $request->session()->get('error'),
+                'warning' => fn () => $request->session()->get('warning'),
+                'info' => fn () => $request->session()->get('info'),
             ],
+            'app' => [
+                'name' => config('app.name'),
+                'env' => config('app.env'),
+                'url' => config('app.url'),
+            ],
+            'ziggy' => function () use ($request) {
+                return array_merge((new \Tighten\Ziggy\Ziggy)->toArray(), [
+                    'location' => $request->url(),
+                    'query' => $request->query(),
+                ]);
+            },
         ]);
     }
 }
