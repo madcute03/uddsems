@@ -4,7 +4,7 @@
 # Environment files
 .env
 .env.backup
-!.env.production  # Allow this file to be committed
+!.env.example  # Allow this file to be committed
 
 # Editor directories and files
 .DS_Store
@@ -26,8 +26,6 @@
 /public/hot
 
 # Storage
-/public/storage
-!/public/build
 /storage/*.key
 /storage/pail
 
@@ -36,5 +34,51 @@ Homestead.json
 Homestead.yaml
 Thumbs.db
 
-# Keep this file in version control
+# Railway specific
+.railway
+.railway
+
+# Laravel specific
+bootstrap/cache/*.php
+bootstrap/compiled.php
+bootstrap/config.php
+bootstrap/services.php
+bootstrap/packages.php
+
+# IDE specific
+.idea
+.vscode
+*.sublime-project
+*.sublime-workspace
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Testing
+/coverage
+
+# Local env files
+.env.*.local
 !.env.example
+
+# Debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Build files
+/public/build
+/public/hot
+/public/storage
+
+# Allow public build in production
+!/public/build
+
+# Allow storage link
+!/public/storage

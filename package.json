@@ -8,8 +8,9 @@
         "preview": "vite preview",
         "start": "npm run prod",
         "prod": "php artisan serve --host=0.0.0.0 --port=8000",
-        "dev:all": "concurrently \"npm run dev\" \"php artisan serve --port=8000\"",
+        "dev:all": "concurrently -n \"VITE,ARTISAN\" -c \"bgBlue.bold,bgMagenta.bold\" \"npm run dev\" \"php artisan serve --port=8000\"",
         "build:prod": "npm run build && php artisan config:cache && php artisan route:cache && php artisan view:cache",
+        "build:railway": "npm install && npm run build && php artisan config:cache && php artisan route:cache && php artisan view:cache",
         "setup": "composer install && npm install && cp .env.example .env && php artisan key:generate",
         "lint": "eslint . --ext .js,.jsx --fix",
         "format": "prettier --write \"**/*.{js,jsx,json,md}\"",
@@ -18,7 +19,10 @@
         "migrate:fresh": "php artisan migrate:fresh --seed",
         "db:seed": "php artisan db:seed",
         "optimize": "php artisan optimize",
-        "clear": "php artisan optimize:clear"
+        "clear": "php artisan optimize:clear",
+        "postinstall": "npm run build",
+        "inertia:setup": "php artisan inertia:middleware",
+        "storage:link": "php artisan storage:link"
     },
     "dependencies": {
         "@headlessui/react": "^1.7.17",

@@ -1,0 +1,23 @@
+[build]
+builder = "nixpacks"
+
+[build.args]
+NODE_VERSION = "18"
+PHP_VERSION = "8.2"
+COMPOSER_VERSION = "2.5"
+
+[build.build_command]
+command = "npm run build:railway"
+
+[build.start_command]
+command = "./start-server"
+
+[build.nixpacks]
+providers = ["node", "php"]
+
+[deploy]
+start_command = "./start-server"
+healthcheck_path = "/"
+healthcheck_timeout = 100
+restart_policy_type = "ON_FAILURE"
+restart_policy_max_retries = 10
