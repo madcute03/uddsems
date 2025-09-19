@@ -1,6 +1,35 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Log;
+
+// Test route to check basic functionality
+Route::get('/test', function () {
+    try {
+        // Test database connection
+        \DB::connection()->getPdo();
+        
+        // Test storage
+        \Storage::disk('local')->put('test.txt', 'Test file contents');
+        
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Basic functionality is working',
+            'php_version' => phpversion(),
+            'laravel_version' => app()->version(),
+            'environment' => app()->environment(),
+            'debug_mode' => config('app.debug'),
+        ]);
+    } catch (\Exception $e) {
+        return response()->json([
+            'status' => 'error',
+            'message' => $e->getMessage(),
+            'file' => $e->getFile(),
+            'line' => $e->getLine(),
+            'trace' => $e->getTraceAsString()
+        ], 500);
+    }
+});
 use Illuminate\Foundation\Application;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\DB;
@@ -18,11 +47,6 @@ use App\Http\Controllers\NewsController;
 use App\Http\Controllers\ComplaintController;
 use App\Models\Event;
 use App\Models\News;
-
-// Helper: safe error message
-function safeError(\Throwable $e) {
-    return app()->environment('local') ? $e->getMessage() : 'Something went wrong';
-}
 
 // ============================================
 // Health Check Route
@@ -74,21 +98,21 @@ Route::get('/news', [NewsController::class, 'publicIndex'])->name('news.index');
 Route::get('/news/{news}', [NewsController::class, 'show'])->name('news.show');
 
 // Events
-Route::get('/events/{event}', fn($event) => app(EventController::class)->show($event))
+Route::get('/events/{event}', [EventController::class, 'show'])
     ->name('events.show');
 
 // Event Registration
-Route::get('/events/{event}/register', fn($event) => app(EventRegistrationController::class)->create($event))
+Route::get('/events/{event}/register', [EventRegistrationController::class, 'create'])
     ->name('events.register');
-Route::post('/events/{event}/register', fn($event) => app(EventRegistrationController::class)->store($event))
+Route::post('/events/{event}/register', [EventRegistrationController::class, 'store'])
     ->name('eventregistrations.store');
-Route::get('/events/{event}/registrations', fn($event) => app(EventRegistrationController::class)->showTeamRegistrations($event))
+Route::get('/events/{event}/registrations', [EventRegistrationController::class, 'showTeamRegistrations'])
     ->name('events.registrations');
 
 // Complaints
-Route::get('/complaints', fn() => app(ComplaintController::class)->index())
+Route::get('/complaints', [ComplaintController::class, 'index'])
     ->name('complaints.index');
-Route::post('/complaints', fn() => app(ComplaintController::class)->store())
+Route::post('/complaints', [ComplaintController::class, 'store'])
     ->name('complaints.store');
 
 // Bracket Previews
