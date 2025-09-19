@@ -41,7 +41,7 @@ export default defineConfig(({ command, mode }) => {
             emptyOutDir: true,
             manifest: true,
             sourcemap: isProduction ? false : 'inline',
-            minify: isProduction ? 'terser' : false,
+            minify: 'terser',
             terserOptions: {
                 compress: {
                     drop_console: true,
