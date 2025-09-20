@@ -8,20 +8,20 @@
   
   [build.nixpacksPlan.phases.one]
     nixPkgs = [
-      "php83"
-      "php83.extensions.curl"
-      "php83.extensions.mbstring"
-      "php83.extensions.openssl"
-      "php83.extensions.pdo"
-      "php83.extensions.pdo_mysql"
-      "php83.extensions.mysqlnd"
-      "php83.extensions.tokenizer"
-      "php83.extensions.xml"
-      "php83.extensions.zip"
-      "php83.extensions.gd"
-      "php83.extensions.fileinfo"
-      "composer"
-      "nodejs-18_x"
+      "php83",
+      "php83.extensions.curl",
+      "php83.extensions.mbstring",
+      "php83.extensions.openssl",
+      "php83.extensions.pdo",
+      "php83.extensions.pdo_mysql",
+      "php83.extensions.mysqlnd",
+      "php83.extensions.tokenizer",
+      "php83.extensions.xml",
+      "php83.extensions.zip",
+      "php83.extensions.gd",
+      "php83.extensions.fileinfo",
+      "composer",
+      "nodejs-18_x",
       "yarn"
     ]
     cmds = [
