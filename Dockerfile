@@ -47,21 +47,20 @@
     
     # Install dependencies
     RUN if [ -f "composer.json" ]; then \
-            composer install --no-dev --optimize-autoloader --no-interaction --no-progress --ignore-platform-reqs; \
+            composer install --no-dev --optimize-autoloader --no-interaction --no-progress --ignore-platform-reqs --no-scripts; \
+            composer dump-autoload --optimize; \
         fi
     
     # Set permissions
     RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache && \
         chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
     
-    # Generate key if not exists and cache config
+    # Generate key if not exists (skip config caching during build)
     RUN if [ ! -f .env ]; then \
             cp .env.example .env && \
+            php -r "file_put_contents('.env', str_replace('DB_CONNECTION=sqlite', 'DB_CONNECTION=mysql', file_get_contents('.env')));" && \
             php artisan key:generate --force; \
-        fi && \
-        php artisan config:cache && \
-        php artisan route:cache && \
-        php artisan view:cache
+        fi
     
     # --------------------------
     # Stage 2: Node + Vite build
@@ -146,14 +145,12 @@
     
     EXPOSE 8000
     
-    # Copy nginx config
-    COPY docker/nginx.conf /etc/nginx/conf.d/default.conf
+    # Copy entrypoint script
+    COPY docker/start-container.sh /usr/local/bin/start-container
+    RUN chmod +x /usr/local/bin/start-container
     
-    # Copy supervisord config
-    COPY docker/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
-    
-    # Expose port 8000 for Railway
-    EXPOSE 8000
+    # Set the entrypoint
+    ENTRYPOINT ["start-container"]
     
     # Start supervisord
     CMD ["/usr/bin/supervisord", "-n", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
