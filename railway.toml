@@ -1,14 +1,10 @@
 [build]
-installCommand = "composer install --no-dev --optimize-autoloader && npm ci && npm run build"
-
-[deploy]
 builder = "heroku/buildpacks:20"
+installCommand = "composer install --no-dev && npm ci && npm run build"
 
 [start]
 command = "php artisan serve --host=0.0.0.0 --port=$PORT"
 
-[nixpacks]
-php = ["php", "pdo_mysql"]
 
 
 [env]

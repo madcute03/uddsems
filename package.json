@@ -18,7 +18,6 @@
         "db:seed": "php artisan db:seed",
         "optimize": "php artisan optimize",
         "clear": "php artisan optimize:clear",
-        "postinstall": "npm run build",
         "inertia:setup": "php artisan inertia:middleware",
         "storage:link": "php artisan storage:link"
     },
