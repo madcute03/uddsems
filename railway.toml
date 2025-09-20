@@ -4,7 +4,7 @@ installCommand = "composer install --no-dev --optimize-autoloader && npm ci --om
 
 
 [start]
-command = "php -S 0.0.0.0:$PORT -t public"
+command = ""
 
 [env]
 # Laravel App
