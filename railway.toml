@@ -6,34 +6,32 @@
                  php artisan storage:link && \
                  php artisan optimize:clear"
   
-  nixpacksPlan = """
-    [[phases]]
-      nixPkgs = [
-        'php83', 
-        'php83Extensions.composer', 
-        'php83Extensions.curl', 
-        'php83Extensions.mbstring', 
-        'php83Extensions.openssl', 
-        'php83Extensions.pdo', 
-        'php83Extensions.pdo_mysql',
-        'php83Extensions.mysqlnd',
-        'php83Extensions.tokenizer', 
-        'php83Extensions.xml', 
-        'php83Extensions.zip',
-        'php83Extensions.gd',
-        'php83Extensions.fileinfo'
-      ]
-      cmds = [
-        "composer install --no-interaction --prefer-dist --optimize-autoloader --no-dev",
-        "npm install && npm run build"
-      ]
-    
-    [[phases]]
-      nixPkgs = ['nodejs-18_x', 'yarn']
-    
-    [[start]]
-      cmd = "/app/vendor/bin/heroku-php-apache2 public/"
-  """
+  [build.nixpacksPlan.phases.one]
+    nixPkgs = [
+      "php83", 
+      "php83Extensions.composer", 
+      "php83Extensions.curl", 
+      "php83Extensions.mbstring", 
+      "php83Extensions.openssl", 
+      "php83Extensions.pdo", 
+      "php83Extensions.pdo_mysql",
+      "php83Extensions.mysqlnd",
+      "php83Extensions.tokenizer", 
+      "php83Extensions.xml", 
+      "php83Extensions.zip",
+      "php83Extensions.gd",
+      "php83Extensions.fileinfo"
+    ]
+    cmds = [
+      "composer install --no-interaction --prefer-dist --optimize-autoloader --no-dev",
+      "npm install && npm run build"
+    ]
+  
+  [build.nixpacksPlan.phases.two]
+    nixPkgs = ["nodejs-18_x", "yarn"]
+  
+  [build.nixpacksPlan.start]
+    cmd = "/app/vendor/bin/heroku-php-apache2 public/"
 
 [deploy]
   startCommand = "php artisan migrate --force && /app/vendor/bin/heroku-php-apache2 public/"
