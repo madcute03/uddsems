@@ -13,7 +13,7 @@ APP_NAME=Laravel
 APP_ENV=production
 APP_KEY=base64:PRMgg8BebBCOjKNOW2jG1DZ93EAON+FoDUgq5fQ8Gd8=
 APP_DEBUG=false
-APP_URL=http://uddsems-production.up.railway.app
+APP_URL=https://uddsems-production.up.railway.app
 
 APP_LOCALE=en
 APP_FALLBACK_LOCALE=en
