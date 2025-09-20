@@ -18,11 +18,28 @@
 
     <!-- Vite + React + Tailwind -->
     @routes
-    @viteReactRefresh
-    @vite([
-    'resources/css/app.css',
-    'resources/js/app.jsx',
-    ])
+    
+    @if (app()->environment('local'))
+        <!-- Development mode with Vite dev server -->
+        @viteReactRefresh
+        @vite(['resources/css/app.css', 'resources/js/app.jsx'])
+    @else
+        <!-- Production mode with built assets -->
+        @php
+            $manifest = json_decode(file_get_contents(public_path('build/manifest.json')), true);
+            $cssFile = $manifest['resources/css/app.css']['file'] ?? null;
+            $jsFile = $manifest['resources/js/app.jsx']['file'] ?? null;
+        @endphp
+        
+        @if($cssFile)
+            <link rel="stylesheet" href="{{ asset('build/' . $cssFile) }}">
+        @endif
+        
+        @if($jsFile)
+            <script type="module" src="{{ asset('build/' . $jsFile) }}"></script>
+        @endif
+    @endif
+    
     @inertiaHead
 </head>
 
