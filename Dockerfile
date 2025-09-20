@@ -16,7 +16,11 @@
             libjpeg62-turbo-dev \
             libfreetype6-dev \
             libwebp-dev \
-            libicu-dev; \
+            libicu-dev \
+            libpq-dev \
+            default-mysql-client \
+            supervisor \
+            nginx; \
         docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp; \
         docker-php-ext-install -j$(nproc) \
             pdo \
@@ -29,8 +33,11 @@
             gd \
             intl \
             opcache; \
+        # Install Composer
+        curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer; \
+        # Clean up
         apt-get clean; \
-        rm -rf /var/lib/apt/lists/*
+        rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
     
     # Install Composer
     COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
@@ -39,16 +46,20 @@
     COPY . .
     
     # Install dependencies
-    RUN composer install --no-dev --optimize-autoloader --no-interaction --no-progress
-    
-    # Generate key if not exists
-    RUN if [ ! -f .env ]; then \
-            cp .env.example .env && \
-            php artisan key:generate; \
+    RUN if [ -f "composer.json" ]; then \
+            composer install --no-dev --optimize-autoloader --no-interaction --no-progress --ignore-platform-reqs; \
         fi
     
-    # Cache configuration
-    RUN php artisan config:cache && \
+    # Set permissions
+    RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache && \
+        chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
+    
+    # Generate key if not exists and cache config
+    RUN if [ ! -f .env ]; then \
+            cp .env.example .env && \
+            php artisan key:generate --force; \
+        fi && \
+        php artisan config:cache && \
         php artisan route:cache && \
         php artisan view:cache
     
@@ -125,11 +136,24 @@
         chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache && \
         chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
     
+    # Wait for MySQL to be ready
+    COPY docker/wait-for-mysql.sh /usr/local/bin/
+    RUN chmod +x /usr/local/bin/wait-for-mysql.sh
+    
     # Health check
-    HEALTHCHECK --interval=30s --timeout=3s \
+    HEALTHCHECK --interval=30s --timeout=3s \dddddddddddddddddddddddddddd
         CMD curl -f http://localhost:8000/up || exit 1
     
     EXPOSE 8000
     
+    # Copy nginx config
+    COPY docker/nginx.conf /etc/nginx/conf.d/default.conf
+    
+    # Copy supervisord config
+    COPY docker/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+    
+    # Expose port 8000 for Railway
+    EXPOSE 8000
+    
     # Start supervisord
-    CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
+    CMD ["/usr/bin/supervisord", "-n", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
