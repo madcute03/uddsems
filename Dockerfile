@@ -104,26 +104,35 @@ RUN set -eux; \
 # --------------------------
 FROM php:8.2-fpm
 
-# Install system dependencies
-RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
-    nginx \
-    supervisor \
-    libzip-dev \
-    libpng-dev \
-    libjpeg62-turbo-dev \
-    libfreetype6-dev \
-    libwebp-dev \
-    libicu-dev \
-    && docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp \
-    && docker-php-ext-install -j$(nproc) \
+# Install system dependencies with cleanup in one layer
+RUN set -eux; \
+    apt-get update; \
+    # Install required packages
+    apt-get install -y --no-install-recommends \
+        nginx \
+        supervisor \
+        libzip-dev \
+        libpng-dev \
+        libjpeg62-turbo-dev \
+        libfreetype6-dev \
+        libwebp-dev \
+        libicu-dev \
+        ; \
+    # Configure and install PHP extensions
+    docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp; \
+    docker-php-ext-install -j$(nproc) \
         pdo \
-        pdo_mysql \
-        zip \
+        pdo_mysql \n        zip \
         gd \
         intl \
         opcache \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/*
+        ; \
+    # Clean up
+    apt-get clean; \
+    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /usr/share/doc/*; \
+    # Verify installations
+    php -m; \
+    php -v
 
 # Configure PHP for production
 RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini"
