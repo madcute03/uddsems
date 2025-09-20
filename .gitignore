@@ -1,22 +1,3 @@
-# Logs
-*.log
-
-# Environment files
-.env
-.env.backup
-!.env.example  # Allow this file to be committed
-
-# Editor directories and files
-.DS_Store
-.phpactor.json
-.phpunit.result.cache
-/.fleet
-/.idea
-/.nova
-/.phpunit.cache
-/.vscode
-/.zed
-
 # Dependencies
 /node_modules
 /vendor
@@ -25,60 +6,22 @@
 /public/build
 /public/hot
 
-# Storage
-/storage/*.key
-/storage/pail
-
-# Local development
-Homestead.json
-Homestead.yaml
-Thumbs.db
-
-# Railway specific
-.railway
-.railway
-
-# Laravel specific
-bootstrap/cache/*.php
-bootstrap/compiled.php
-bootstrap/config.php
-bootstrap/services.php
-bootstrap/packages.php
-
-# IDE specific
-.idea
-.vscode
-*.sublime-project
-*.sublime-workspace
-
-# OS generated files
-.DS_Store
-.DS_Store?
-._*
-.Spotlight-V100
-.Trashes
-ehthumbs.db
-Thumbs.db
-
-# Testing
-/coverage
-
-# Local env files
-.env.*.local
-!.env.example
-
-# Debug
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-
-# Build files
-/public/build
-/public/hot
+# Storage symlink
 /public/storage
 
-# Allow public build in production
-!/public/build
+# Environment files
+.env
+.env.backup
+!.env.example
 
-# Allow storage link
-!/public/storage
+# Laravel caches
+bootstrap/cache/*.php
+
+# Logs
+*.log
+
+# IDE/OS
+.idea
+.vscode
+.DS_Store
+Thumbs.db

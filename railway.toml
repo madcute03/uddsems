@@ -7,7 +7,7 @@ PHP_VERSION = "8.2"
 COMPOSER_VERSION = "2.5"
 
 [build.build_command]
-# Run composer first, then build assets
+# Composer first, then JS build, then Laravel optimize
 command = """
 composer install --no-dev --optimize-autoloader
 npm install
@@ -21,7 +21,7 @@ php artisan view:cache
 providers = ["node", "php"]
 
 [deploy]
-start_command = "php artisan serve --host=0.0.0.0 --port=8080"
+start_command = "php artisan serve --host=0.0.0.0 --port=${PORT}"
 healthcheck_path = "/"
 healthcheck_timeout = 100
 restart_policy_type = "ON_FAILURE"

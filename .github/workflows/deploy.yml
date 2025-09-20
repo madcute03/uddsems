@@ -9,45 +9,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # 1. Checkout
       - uses: actions/checkout@v3
 
-      # 2. Setup PHP (needed for Laravel)
-      - name: Setup PHP
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: '8.2'
-          extensions: mbstring, bcmath, pdo_mysql
-          coverage: none
-
-      # 3. Install Composer deps
-      - name: Install Composer dependencies
-        run: composer install --no-dev --optimize-autoloader
-
-      # 4. Setup Node.js for Vite
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: '18'
-          cache: npm
-
-      # 5. Install JS deps & build Vite
-      - name: Install NPM dependencies
-        run: npm install
-
-      - name: Build Assets
-        run: npm run build
-
-      # 6. Optimize Laravel
-      - name: Cache Laravel configs
-        run: |
-          php artisan config:cache
-          php artisan route:cache
-          php artisan view:cache
-
-      # 7. Deploy to Railway
       - name: Deploy to Railway
         uses: railwayapp/railway-deploy@v1
         with:
-          service: semsupdate  # replace with your Railway service name
+          service: semsupdate   # ⚡ replace with your Railway service name
           apiToken: ${{ secrets.RAILWAY_API_KEY }}
