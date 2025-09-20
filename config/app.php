@@ -133,6 +133,7 @@ return [
 
         // Package Service Providers...
         \Inertia\ServiceProvider::class,
+        Tighten\Ziggy\ZiggyServiceProvider::class,
 
         // Application Service Providers...
         App\Providers\AppServiceProvider::class,
