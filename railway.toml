@@ -7,16 +7,21 @@ PHP_VERSION = "8.2"
 COMPOSER_VERSION = "2.5"
 
 [build.build_command]
-command = "npm run build:railway"
-
-[build.start_command]
-command = "chmod +x start-server && ./start-server"
+# Run composer first, then build assets
+command = """
+composer install --no-dev --optimize-autoloader
+npm install
+npm run build
+php artisan config:cache
+php artisan route:cache
+php artisan view:cache
+"""
 
 [build.nixpacks]
 providers = ["node", "php"]
 
 [deploy]
-start_command = "./start-server"
+start_command = "php artisan serve --host=0.0.0.0 --port=8080"
 healthcheck_path = "/"
 healthcheck_timeout = 100
 restart_policy_type = "ON_FAILURE"

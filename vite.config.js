@@ -6,14 +6,10 @@ import path from 'path';
 export default defineConfig(({ mode }) => ({
     plugins: [
         laravel({
-            input: 'resources/js/app.jsx',
+            input: ['resources/css/app.css', 'resources/js/app.jsx'],
             refresh: true,
         }),
-        react({
-            jsxImportSource: 'react',
-            jsxRuntime: 'automatic',
-            fastRefresh: true,
-        }),
+        react(),
     ],
 
     resolve: {
@@ -22,7 +18,7 @@ export default defineConfig(({ mode }) => ({
             'ziggy-js': path.resolve(__dirname, 'vendor/tightenco/ziggy/dist'),
         },
     },
-    
+
     build: {
         outDir: 'public/build',
         emptyOutDir: true,
@@ -45,14 +41,5 @@ export default defineConfig(({ mode }) => ({
         },
         minify: mode === 'production' ? 'esbuild' : false,
         chunkSizeWarningLimit: 1600,
-    },
-    
-    server: {
-        host: 'localhost',
-        port: 5173,
-        strictPort: true,
-        hmr: {
-            host: 'localhost',
-        },
     },
 }));
