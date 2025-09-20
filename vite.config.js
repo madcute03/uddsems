@@ -25,7 +25,10 @@ export default defineConfig(({ mode }) => ({
         include: ['ziggy-js'],
         exclude: ['ziggy-js']
     },
-
+    server: {
+        host: '0.0.0.0', // Required for Railway
+        port: 5173,      // Vite dev server port
+    },
     build: {
         outDir: 'public/build',
         emptyOutDir: true,
