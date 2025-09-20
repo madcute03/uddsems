@@ -1,18 +1,20 @@
 [build]
 installCommand = "composer install --no-dev --optimize-autoloader && npm ci && npm run build"
 
-[build.environment]
-RAILS_ENV = "production"
+[deploy]
+builder = "heroku/buildpacks:20"
 
 [start]
-# Use Laravel's built-in server (development only) OR point to Apache/Nginx in production
-# Railway recommends PHP server via Nixpacks
-command = "php artisan serve --host=0.0.0.0 --port=8080"
+command = "php artisan serve --host=0.0.0.0 --port=$PORT"
+
+[nixpacks]
+php = ["php", "pdo_mysql"]
+
 
 [env]
 APP_NAME = "SEMS"
 APP_ENV = "production"
-APP_KEY = "base64:PRMgg8BebBCOjKNOW2jG1DZ93EAON+FoDUgq5fQ8Gd8="
+APP_KEY = "base64:1B2t1SHJv3KuMDl6yNjSNERFaaAnzsAu9ZZc4TwxS50="
 APP_DEBUG = "false"
 APP_URL = "https://uddsems-production.up.railway.app"
 
