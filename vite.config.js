@@ -1,8 +1,7 @@
-import { defineConfig, loadEnv } from 'vite';
+import { defineConfig } from 'vite';
 import laravel from 'laravel-vite-plugin';
 import react from '@vitejs/plugin-react';
 import path from 'path';
-import fs from 'fs';
 
 export default defineConfig(({ mode }) => ({
     plugins: [
@@ -10,18 +9,21 @@ export default defineConfig(({ mode }) => ({
             input: ['resources/css/app.css', 'resources/js/app.jsx'],
             refresh: true,
         }),
-        react(),
+        react({
+            // Add React plugin options if needed
+        }),
     ],
 
     resolve: {
         alias: {
             '@': path.resolve(__dirname, 'resources/js'),
-            'ziggy-js': path.resolve(__dirname, 'node_modules/ziggy-js')
+            'ziggy-js': path.resolve(__dirname, 'node_modules/ziggy-js/dist/index.js')
         },
     },
     
     optimizeDeps: {
-        include: ['ziggy-js']
+        include: ['ziggy-js'],
+        exclude: ['ziggy-js']
     },
 
     build: {

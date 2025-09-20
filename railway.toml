@@ -1,0 +1,42 @@
+[build]
+  builder = "heroku/buildpacks:20"
+  buildpacks = [
+    "heroku/php",
+    "heroku/nodejs"
+  ]
+  nixpacksPlan = """
+    [[phases]]
+      nixPkgs = ['php83', 'php83Extensions.composer', 'php83Extensions.curl', 'php83Extensions.mbstring', 'php83Extensions.openssl', 'php83Extensions.pdo', 'php83Extensions.tokenizer', 'php83Extensions.xml', 'php83Extensions.zip']
+    
+    [[phases]]
+      nixPkgs = ['nodejs-18_x', 'yarn']
+    
+    [[start]]
+      cmd = "/app/vendor/bin/heroku-php-apache2 public/"
+  """
+
+[deploy]
+  startCommand = "php artisan migrate --force && /app/vendor/bin/heroku-php-apache2 public/"
+
+[variables]
+  APP_ENV = "production"
+  APP_DEBUG = "false"
+  APP_KEY = { as = "APP_KEY", generate = "php -r \"echo 'base64:'.base64_encode(random_bytes(32)).PHP_EOL;\"" }
+  APP_URL = ""
+  
+  DB_CONNECTION = "pgsql"
+  
+  # Cache
+  CACHE_DRIVER = "redis"
+  SESSION_DRIVER = "redis"
+  QUEUE_CONNECTION = "redis"
+  
+  # Mail
+  MAIL_MAILER = "smtp"
+  
+[healthcheck]
+  enabled = true
+  interval = 5
+  timeout = 30
+  start_period = 30
+  retries = 5
