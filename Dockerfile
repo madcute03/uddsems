@@ -3,25 +3,28 @@
 # --------------------------
 FROM php:8.2-fpm AS php-builder
 
-# Install system dependencies
-RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
-    git \
-    unzip \
-    curl \
-    libzip-dev \
-    libonig-dev \
-    libxml2-dev \
-    libpng-dev \
-    libjpeg-dev \
-    libfreetype6-dev \
-    libwebp-dev \
-    libjpeg62-turbo-dev \
-    zip \
-    zlib1g-dev \
-    libicu-dev \
-    g++ \
-    && docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp \
-    && docker-php-ext-install -j$(nproc) \
+# Install system dependencies with cleanup in one layer
+RUN set -eux; \
+    apt-get update; \
+    # Install required packages
+    apt-get install -y --no-install-recommends \
+        git \
+        unzip \
+        curl \
+        libzip-dev \
+        libonig-dev \
+        libxml2-dev \
+        libpng-dev \
+        libjpeg-dev \
+        libfreetype6-dev \
+        libwebp-dev \
+        libjpeg62-turbo-dev \
+        libicu-dev \
+        g++ \
+        ; \
+    # Configure and install PHP extensions
+    docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp; \
+    docker-php-ext-install -j$(nproc) \
         pdo \
         pdo_mysql \
         zip \
@@ -31,7 +34,15 @@ RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
         bcmath \
         gd \
         intl \
-        opcache
+        opcache \
+        ; \
+    # Clean up
+    apt-get clean; \
+    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /usr/share/doc/*; \
+    # Verify installations
+    php -m; \
+    php -v; \
+    php -i | grep error_log
 
 # Install Composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
@@ -70,14 +81,23 @@ WORKDIR /var/www/html
 COPY package*.json ./
 COPY vite.config.js ./
 
-# Install Node dependencies
-RUN npm ci --prefer-offline --no-audit
+# Install Node dependencies with improved caching
+RUN set -eux; \
+    npm config set cache /tmp/npm-cache; \
+    npm ci --prefer-offline --no-audit --no-fund; \
+    # Clean npm cache to reduce image size
+    npm cache clean --force
 
-# Copy frontend source
-COPY resources resources
+# Copy frontend source (exclude node_modules in .dockerignore)
+COPY resources/ resources/
 
 # Build frontend assets for production
-RUN npm run build
+RUN set -eux; \
+    npm run build; \
+    # Clean up development dependencies
+    npm prune --production; \
+    # Remove cache and temporary files
+    rm -rf /tmp/npm-cache /tmp/*
 
 # --------------------------
 # Stage 3: Final image
