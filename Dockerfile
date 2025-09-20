@@ -141,7 +141,7 @@
     RUN chmod +x /usr/local/bin/wait-for-mysql.sh
     
     # Health check
-    HEALTHCHECK --interval=30s --timeout=3s \dddddddddddddddddddddddddddd
+    HEALTHCHECK --interval=30s --timeout=3s \
         CMD curl -f http://localhost:8000/up || exit 1
     
     EXPOSE 8000
