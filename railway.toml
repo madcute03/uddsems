@@ -10,7 +10,7 @@ COMPOSER_VERSION = "2.5"
 command = "npm run build:railway"
 
 [build.start_command]
-command = "./start-server"
+command = "chmod +x start-server && ./start-server"
 
 [build.nixpacks]
 providers = ["node", "php"]
