@@ -7,7 +7,7 @@ RAILS_ENV = "production"
 [start]
 # Use Laravel's built-in server (development only) OR point to Apache/Nginx in production
 # Railway recommends PHP server via Nixpacks
-command = "php artisan serve --host=0.0.0.0 --port=$PORT"
+command = "php artisan serve --host=0.0.0.0 --port=8080"
 
 [env]
 APP_NAME = "SEMS"
