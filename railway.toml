@@ -12,7 +12,7 @@ APP_NAME = "Laravel"
 APP_ENV = "production"
 APP_KEY = "base64:PRMgg8BebBCOjKNOW2jG1DZ93EAON+FoDUgq5fQ8Gd8="
 APP_DEBUG = "false"
-APP_URL = "https://<YOUR_RAILWAY_APP>.up.railway.app"
+APP_URL = "https://uddsems-production.up.railway.app"
 
 # Database
 DB_CONNECTION = "mysql"
