@@ -2,9 +2,9 @@
 # Install PHP + Node dependencies and build React frontend
 installCommand = "composer install --no-dev --optimize-autoloader && npm ci --omit=dev && npm run build"
 
+
 [start]
-# Start command is handled by Procfile, leave empty
-command = ""
+command = "php -S 0.0.0.0:$PORT -t public"
 
 [env]
 # Laravel App
