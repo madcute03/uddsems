@@ -16,10 +16,12 @@ export default defineConfig(({ mode }) => ({
     resolve: {
         alias: {
             '@': path.resolve(__dirname, 'resources/js'),
-            'ziggy-js': mode === 'production' 
-                ? path.resolve(__dirname, 'node_modules/ziggy-js')
-                : path.resolve(__dirname, 'vendor/tightenco/ziggy/dist'),
+            'ziggy-js': path.resolve(__dirname, 'node_modules/ziggy-js')
         },
+    },
+    
+    optimizeDeps: {
+        include: ['ziggy-js']
     },
 
     build: {

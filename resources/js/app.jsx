@@ -8,17 +8,14 @@ import { createInertiaApp } from '@inertiajs/react';
 const initializeApp = async () => {
     const appName = import.meta.env.VITE_APP_NAME || 'SEMS';
 
-    // Dynamically import Ziggy for client-side only
-    let Ziggy = {};
+    // Handle Ziggy routing
     if (typeof window !== 'undefined') {
-        const { default: ZiggyJS } = await import('ziggy-js');
-        const ziggyConfig = (await import('./ziggy')).default;
-        Ziggy = ZiggyJS;
-        
-        if (window.Ziggy) {
-            window.Ziggy = { ...window.Ziggy, ...ziggyConfig };
-        } else {
-            window.Ziggy = ziggyConfig;
+        try {
+            const { default: Ziggy } = await import('ziggy-js');
+            const ziggyConfig = (await import('./ziggy')).default;
+            window.Ziggy = { ...Ziggy, ...ziggyConfig };
+        } catch (error) {
+            console.warn('Ziggy configuration could not be loaded:', error);
         }
     }
 
